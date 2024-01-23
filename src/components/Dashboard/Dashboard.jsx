@@ -11,7 +11,7 @@ const Dashboard = () => {
   return (
     <div className="flex flex-col items-center">
       <div className="flex my-4 p-5 bg-white border-2 rounded-md lg:w-3/5 items-center justify-evenly w-11/12">
-        <Image src="/saldo.svg" width={65} height={75}></Image>
+        <Image src="/saldo.svg" width={65} height={75} alt="saldo"></Image>
         <p className="text-sm text-gray-500 font-medium">
           Tu saldo al{" "}
           {fecha.toLocaleString("es-ES", {
@@ -30,12 +30,16 @@ const Dashboard = () => {
           src="/banner-home.jpg"
           width={1280}
           height={230}
+          alt="banner-home"
           className="hidden rounded-md lg:block"
         ></Image>
-        <Image src="/banner-home-sm.jpg"
+        <Image
+          src="/banner-home-sm.jpg"
           width={1280}
           height={230}
-          className="rounded-md lg:hidden"></Image>
+          alt="banner-home-sm"
+          className="rounded-md lg:hidden"
+        ></Image>
       </div>
       <div className="flex flex-col lg:flex-row w-11/12 lg:w-3/5 lg:gap-8">
         <div className="flex flex-col lg:w-1/2 justify-center">
@@ -44,7 +48,12 @@ const Dashboard = () => {
             className="flex justify-center px-4 py-2 my-4 bg-[#3184e4] text-sm text-white font-semibold hover:bg-[#00478a] rounded-sm"
           >
             <button className="flex items-center">
-              <Image src="/camion.svg" width={35} height={23}></Image>
+              <Image
+                src="/camion.svg"
+                width={35}
+                height={23}
+                alt="camion"
+              ></Image>
               <p className="ml-3">HACER PEDIDO</p>
             </button>
           </Link>
@@ -53,23 +62,41 @@ const Dashboard = () => {
             className="flex justify-center px-4 py-2 my-2 bg-[#00478a] text-sm text-white font-semibold hover:bg-[#3184e4] rounded-sm"
           >
             <button className="flex items-center">
-              <Image src="/camion.svg" width={35} height={23}></Image>
+              <Image
+                src="/camion.svg"
+                width={35}
+                height={23}
+                alt="camion"
+              ></Image>
               <p className="ml-3">REPETIR ÚLTIMO PEDIDO</p>
             </button>
           </Link>
-          <div className="bg-[#00478a] px-4 py-2 my-4 text-white font-semibold rounded-sm hover:bg-[#3184e4] h-[11rem] lg:max-h-40" zindex={0}>
+          <div
+            className="bg-[#00478a] px-4 py-2 my-4 text-white font-semibold rounded-sm hover:bg-[#3184e4] h-[11rem] lg:max-h-40"
+            zindex={0}
+          >
             <Link href="/dashboard/pagar">
               <h4 className="text-xl m-2">¡Recomendar!</h4>
               <p className="text-sm m-2 pt-2 w-4/5 lg:w-4/5">
-                ¡Por cada amigo que recomiendes, recibirán cada uno un
-              
-                botellón de regalo! El regalo se efectuará cuando el
-              
-                recomendado realice su primer compra.
+                ¡Por cada amigo que recomiendes, recibirán cada uno un botellón
+                de regalo! El regalo se efectuará cuando el recomendado realice
+                su primer compra.
               </p>
               <div className="relative flex flex-row-reverse bottom-[4.6rem] -right-3 lg:bottom-[5.3rem] lg:-right-3">
-                <Image src="/regalo.png" width={105} height={114} className="hidden lg:flex"></Image>
-                <Image src="/regalo.png" width={73} height={79} className="lg:hidden"></Image>
+                <Image
+                  src="/regalo.png"
+                  width={105}
+                  height={114}
+                  alt="regalo"
+                  className="hidden lg:flex"
+                ></Image>
+                <Image
+                  src="/regalo.png"
+                  width={73}
+                  height={79}
+                  alt="regalo-sm"
+                  className="lg:hidden"
+                ></Image>
               </div>
             </Link>
           </div>

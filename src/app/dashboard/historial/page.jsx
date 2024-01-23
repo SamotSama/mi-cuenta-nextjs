@@ -7,9 +7,7 @@ export const metadata = {
 
 const App = () => {
   return (
-    <html>
       <Historial />
-    </html>
   );
 };
 

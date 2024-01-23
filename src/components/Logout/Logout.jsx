@@ -1,4 +1,4 @@
-// import { useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 const LogoutButton = () => {
   const { user, signOut } = useSession();
