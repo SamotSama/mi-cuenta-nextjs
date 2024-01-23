@@ -6,7 +6,7 @@ const Footer = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`api/empresa`, {
+        const response = await fetch(`http://localhost:3000/api/empresa`, {
           method: 'GET',
         })
 
