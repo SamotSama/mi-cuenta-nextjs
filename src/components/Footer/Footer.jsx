@@ -11,7 +11,7 @@ export const Footer = async () => {
   }))
 
   return (
-    <footer className="hidden lg:block lg:relative lg:bottom-0 w-full bg-[#00478a] lg:mt-20 p-4" zindex={10}>
+    <nav className="hidden lg:block lg:relative lg:bottom-0 w-full bg-[#00478a] lg:mt-20 p-4" zindex={10}>
       {empresaInfo.map((item) => (
         <p
           className="flex justify-center text-[#2cace2] text-xs font-regular"
@@ -21,8 +21,8 @@ export const Footer = async () => {
           Disclaimer
         </p>
       ))}
-    </footer>
-  )
-}
+    </nav>
+  );
+};
 
 export default Footer

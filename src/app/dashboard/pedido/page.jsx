@@ -1,13 +1,16 @@
-import Pedidos from "@/components/Pedidos/Pedidos"
+import Pedidos from "@/components/Pedidos/Pedidos";
+import React from "react";
 
 export const metadata = {
   title: "Ivess | Pedido",
-}
+};
 
 const App = () => {
   return (
-    <Pedidos />
-  )
-}
+    <html>
+      <Pedidos />
+    </html>
+  );
+};
 
-export default App
+export default App;

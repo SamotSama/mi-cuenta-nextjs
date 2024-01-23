@@ -1,16 +1,17 @@
-"use client"
+"use client";
 
-import "@/app/globals.css"
-import { Montserrat } from "next/font/google"
+import React from "react";
+import { Montserrat } from "next/font/google";
+import "@/app/globals.css";
 
-const Mont = Montserrat({ subsets: ["latin"] })
+const Mont = Montserrat({ subsets: ["latin"] });
 
-export default function RootLayout ({ children }) {
+export default function RootLayout({ children }) {
   return (
     <html lang="es" className={Mont.className}>
-      <body>
-        {children}
-      </body>
+
+      {children}
+
     </html>
-  )
+  );
 }
