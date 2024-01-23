@@ -26,14 +26,14 @@ const Footer = () => {
   }, [])
 
   return (
-    <nav className="hidden lg:block lg:relative lg:bottom-0 w-full bg-[#00478a] lg:mt-20 p-4" zindex={10}>
+    <footer className="hidden lg:block lg:relative lg:bottom-0 w-full bg-[#00478a] lg:mt-20 p-4" zindex={10}>
       {empresaInfo.map((item) => (
         <p className="flex justify-center text-[#2cace2] text-xs font-regular" key={item.id}>
           {item.nombre} empresa que elabora sus productos bajo normas IVESS. | Disclaimer
         </p>
       ))}
-    </nav>
-  );
-};
+    </footer>
+  )
+}
 
 export default Footer

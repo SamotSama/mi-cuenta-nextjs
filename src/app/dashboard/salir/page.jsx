@@ -1,15 +1,13 @@
-import React from "react";
-import LogoutButton from "@/components/Logout/Logout";
+import LogoutButton from "@/components/Logout/Logout"
+import React from "react"
 
 
 const App = () => {
   return (
-    <html>
-      <div>
-        <LogoutButton />
-      </div>
-    </html>
-  );
-};
+    <div>
+      <LogoutButton />
+    </div>
+  )
+}
 
-export default App;
+export default App

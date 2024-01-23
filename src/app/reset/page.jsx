@@ -1,17 +1,17 @@
-import React from "react";
-import ResetForm from "@/components/Forms/ResetFrom";
-import "@/app/globals.css";
+import "@/app/globals.css"
+import ResetForm from "@/components/Forms/ResetFrom"
+import React from "react"
 
 export const metadata = {
   title: "Ivess | Resetear Contraseña",
-};
+}
 
-ResetForm.getLayout = function getLayout(page) {
+ResetForm.getLayout = function getLayout (page) {
   return (
     <html>
       <ResetForm />
     </html>
-  );
-};
+  )
+}
 
-export default ResetForm;
+export default ResetForm

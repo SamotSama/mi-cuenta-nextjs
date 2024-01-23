@@ -1,16 +1,14 @@
-import React from "react";
 import Payment from "@/components/Payment/Payment"
+import React from "react"
 
 export const metadata = {
   title: "Ivess | Pagar",
-};
+}
 
 const App = () => {
   return (
-    <html>
-      <Payment />
-    </html>
-  );
-};
+    <Payment />
+  )
+}
 
-export default App;
+export default App
