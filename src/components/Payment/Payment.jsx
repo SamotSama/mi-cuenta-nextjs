@@ -9,7 +9,7 @@ const Payment = () => {
   const [saldo, setSaldo] = useState(null);
 
   const getSaldo = async () => {
-    const connection = useDb();
+    const connection = UseDb();
 
     const { data } = await connection.query("SELECT saldo FROM cliente_deuda WHERE id = 1");
     setSaldo(data[0].saldo);
@@ -20,7 +20,7 @@ const Payment = () => {
         Realizar un pago
       </h2>
       <div className="flex p-5 bg-white border-2 rounded-md w-11/12 lg:w-3/5 items-center justify-evenly">
-        <Image src="/saldo.svg" width={65} height={75}></Image>
+        <Image src="/saldo.svg" width={65} height={75} alt="saldo"></Image>
         <p className="text-sm text-gray-500 font-medium">
           Tu saldo al{" "}
           {fecha.toLocaleString("es-ES", {

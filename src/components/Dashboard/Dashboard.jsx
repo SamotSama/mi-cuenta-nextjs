@@ -109,6 +109,7 @@ const Dashboard = () => {
                 src="/user-circle-regular.svg"
                 width={27}
                 height={27}
+                alt="usuario"
               ></Image>
               <p className="ml-2"></p>
             </div>
