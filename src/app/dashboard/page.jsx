@@ -1,16 +1,16 @@
-import Dashboard from "@/components/Dashboard/Dashboard";
-import React from "react";
+import Dashboard from "@/components/Dashboard/Dashboard"
+import React from "react"
 
 export const metadata = {
   title: "Ivess | Mi cuenta",
-};
+}
 
 const App = () => {
   return (
-    <html>
-      <Dashboard />
-    </html>
-  );
-};
+    // <html>
+    <Dashboard />
+    //</html>
+  )
+}
 
-export default App;
+export default App
