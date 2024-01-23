@@ -2,9 +2,9 @@
 
 import { useRouter } from "next/navigation";
 
-const redirectToLogin = () => {
+const RedirectToLogin = () => {
   const router = useRouter();
   router.push("/login");
 };
 
-export default redirectToLogin;
+export default RedirectToLogin;
