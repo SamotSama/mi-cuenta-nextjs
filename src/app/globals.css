@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+body {
+  background-image: url(/background.jpg);
+  background-repeat: repeat;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+@media (max-width: 767px) {
+  body {
+    background-size: fit;
+    background-repeat: repeat;
+    background-position-x: center;
+    background-position-y: center;
+  }
+}
+
+.input-container {
+  margin-bottom: 15px;
+}
+
+.input {
+  color: rgb(107 114 128);
+  text-align: left;
+  padding: 10px;
+}
+
+@layer base {
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type="file"] {
+    display: none;
+  }
+  .custom-file-upload {
+    background-color: #3184e4;
+    color: white;
+    border-radius: 4px;
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+  }
+  .custom-file-upload:hover{
+    background-color: #046cb3;
+  }
+}
