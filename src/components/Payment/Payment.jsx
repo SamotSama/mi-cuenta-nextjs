@@ -76,6 +76,7 @@ const Payment = () => {
           width={33}
           height={25}
           className="mr-2"
+          alt="tarjeta-de-credito"
         ></Image>
         <Link href="/friocalor/solicitar">Adherirse al Débito Automático</Link>
       </button>
