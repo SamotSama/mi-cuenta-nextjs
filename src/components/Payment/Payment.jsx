@@ -38,8 +38,8 @@ const Payment = () => {
           ¿Qué deseas pagar?
         </h3>
         <hr className="m-2 border" />
-        <p className="flex items-center justify-center text-2xl p-2 text-[#3184e4] font-medium">
-          $
+        <div className="flex items-center justify-center text-2xl p-2 text-[#3184e4] font-medium">
+          <p className="mr-2">$</p>
           <input
             type="number"
             name="monto"
@@ -47,7 +47,7 @@ const Payment = () => {
             required
             className="flex justify-center py-2 my-2 bg-gray-100 rounded-md placeholder:px-2 focus:outline-none focus:border-[#3184e4] focus:ring-[#3184e4] focus:ring-4 w-1/4"
           ></input>
-        </p>
+        </div>
       </div>
       <div className="bg-white my-4 p-2 border-2 rounded-md w-11/12 lg:w-3/5">
         <h3 className="text-2xl p-2 text-[#3184e4] font-medium">
