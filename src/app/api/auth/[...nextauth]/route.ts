@@ -1,11 +1,12 @@
-import prisma from '@/../prisma/client';
-import { PrismaAdapter } from '@next-auth/prisma-adapter';
-import bcrypt from 'bcryptjs';
-import jwt from "jsonwebtoken";
-import { Account, NextAuthOptions, Profile, Session, User } from "next-auth";
-import { JWT } from 'next-auth/jwt';
-import NextAuth from 'next-auth/next';
-import Credentials from "next-auth/providers/credentials";
+import prisma from '@/../prisma/client'
+import { PrismaAdapter } from '@next-auth/prisma-adapter'
+import bcrypt from 'bcryptjs'
+import jwt from "jsonwebtoken"
+import { Account, NextAuthOptions, Profile, Session, User } from "next-auth"
+import { JWT } from 'next-auth/jwt'
+import NextAuth from 'next-auth/next'
+import Credentials from "next-auth/providers/credentials"
+import { JWTDecodeParams, JWTEncodeParams } from 'next-auth/jwt';
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -14,19 +15,41 @@ export const authOptions: NextAuthOptions = {
       name: "Credentials",
       credentials: {
         email: { label: 'Email', type: 'email', placeholder: 'Email' },
-        password: { label: 'Password', type: 'password', placeholder: 'Password' },
+        password: { label: 'Password', type: 'password' },
       },
-      async authorize (credentials) {
-        if (!credentials) return null
-        const { email, password } = credentials
-
-        const user = await prisma.usuarios.findUnique({ where: { usuario: email } })
-        if (!user) return null
-
-        const validPassword = bcrypt.compareSync(password, user.hashedPassword)
-        return validPassword ? user : null
-      }
-    })
+      async authorize(credentials: Record<"email" | "password", string> | undefined): Promise<User | null> {
+        try {
+          if (!credentials) {
+            return null; // Credenciales no proporcionadas
+          }
+    
+          const user = await prisma.usuarios.findUnique({ where: { usuario: credentials.email } })
+    
+          if (!user) {
+            return null; // Usuario no encontrado
+          }
+    
+          const validPassword = bcrypt.compareSync(credentials.password, user.clave as string)
+    
+          if (!validPassword) {
+            return null; // Contraseña inválida
+          }
+    
+          // Transformar el objeto de usuario antes de devolverlo
+          const transformedUser: User = {
+            id: user.id.toString(),
+            email: user.usuario, // Asegúrate de que el campo de email sea correcto
+            // Otras propiedades del usuario
+          }
+    
+          // Retorna el usuario transformado si las credenciales son válidas
+          return transformedUser
+        } catch (error) {
+          console.error("Error al autorizar usuario:", error)
+          return null
+        }
+      },
+    }),
   ],
   pages: {
     // Aca va la ruta donde tenes el login
@@ -35,31 +58,42 @@ export const authOptions: NextAuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
   jwt: {
-    async encode ({ secret, token }) {
+    async encode(params: JWTEncodeParams): Promise<string> {
+      const { token, secret } = params;
+  
       if (!token) {
-        throw new Error("No token to encode")
+        throw new Error("No token to encode");
       }
-      return jwt.sign(token, secret)
+  
+      return jwt.sign(token as any, secret);
     },
-    async decode ({ token, secret }) {
+    async decode(params: JWTDecodeParams): Promise<JWT | null> {
+      const { secret, token } = params;
       if (!token) {
-        throw new Error("No token to decode")
+        throw new Error("No token to decode");
       }
-      const decodedToken = jwt.verify(token, secret)
-      if (typeof decodedToken === "string") {
-        return JSON.parse(decodedToken)
-      } else {
-        return decodedToken
+      try {
+        const decodedToken = jwt.verify(token, secret);
+        if (typeof decodedToken === "string") {
+          return JSON.parse(decodedToken) as JWT;
+        } else {
+          return decodedToken as JWT;
+        }
+      } catch (error) {
+        console.error("Error decoding token:", error);
+        return null;
       }
-    }
+    },
   },
+  
+  
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60,
     updateAge: 24 * 60 * 60,
   },
   callbacks: {
-    async session (params: { session: Session; token: JWT; user: User }) {
+    async session (params: { session: Session; token: JWT; user: User }): Promise<Session> {
       if (params.session.user) {
         params.session.user.email = params.token.email
       }
@@ -71,17 +105,16 @@ export const authOptions: NextAuthOptions = {
       account?: Account | null | undefined,
       profile?: Profile | undefined,
       isNewUser?: boolean | undefined
-    }) {
+    }): Promise<JWT> {
       if (params.user) {
         params.token.email = params.user.email
       }
 
-      return params.token
+      return { ...params.token, email: params.user?.email } as JWT
     }
   }
 }
 
 const handler = NextAuth(authOptions)
 
-export { handler as GET, handler as POST };
-
+export { handler as GET, handler as POST }

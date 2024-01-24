@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "../../../../prisma/client";
+import bcrypt from "bcryptjs";
 
 function replacer(key: string, value: any): any {
   if (typeof value === "bigint") {
