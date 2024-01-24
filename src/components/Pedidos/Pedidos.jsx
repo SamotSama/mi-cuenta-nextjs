@@ -1,93 +1,72 @@
-'use client'
-import Image from "next/image"
-import { useState } from "react"
+"use client"
+
+import { useState, useEffect } from "react";
+import { DatePicker, Button } from "antd";
+
 
 const MarketComponent = () => {
+  const [cantidad, setCantidad] = useState([]);
+  const [fechaEntrega, setFechaEntrega] = useState(null);
+  const [productos, setProductos] = useState([]);
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   const onCantidadChange = (index, change) => {
     setCantidad((prevCantidad) => {
-      console.log(prevCantidad)
-      const newCantidad = [...prevCantidad]
-      newCantidad[index] = Math.max(0, newCantidad[index] + parseInt(change, 10))
-      return newCantidad
-    })
-  }
+      const newCantidad = [...prevCantidad];
+      newCantidad[index] = Math.max(0, newCantidad[index] + parseInt(change, 10));
+      return newCantidad;
+    });
+  };
 
-  const productos = [
-    {
-      nombre: "Sifon Plas. 1,5L (Unidad)",
-      precio: 100,
-      imagen: "/saldo.svg",
-    },
-    {
-      nombre: "Botellón de agua x 12L (Unidad)",
-      precio: 200,
-      imagen: "/saldo.svg",
-    },
-    {
-      nombre: "Botellón 12L V (Unidad)",
-      precio: 300,
-      imagen: "/saldo.svg",
-    },
-    {
-      nombre: "Botellon de agua x 20L (Unidad)",
-      precio: 400,
-      imagen: "/saldo.svg",
-    },
-    {
-      nombre: "Botellón de agua x 20L -sodio (Unidad)",
-      precio: 500,
-      imagen: "/saldo.svg",
-    },
-    {
-      nombre: "Agua Saborizada Pomelo (Unidad)",
-      precio: 600,
-      imagen: "/saldo.svg",
-    },
-    {
-      nombre: "Agua Saborizada Citrus (Unidad)",
-      precio: 700,
-      imagen: "/saldo.svg",
-    },
-    {
-      nombre: "Agua Saborizada Lemon (Unidad)",
-      precio: 800,
-      imagen: "/saldo.svg",
-    },
-    {
-      nombre: "Agua Saborizada Lima Limon (Unidad)",
-      precio: 900,
-      imagen: "/saldo.svg",
-    },
-    {
-      nombre: "Agua Saborizada Manzana Sin Gas (Unidad)",
-      precio: 1000,
-      imagen: "/saldo.svg",
-    },
-    {
-      nombre: "Agua Saborizada Naranja Sin Gas (Unidad)",
-      precio: 1000,
-      imagen: "/saldo.svg",
-    },
-    {
-      nombre: "Agua Saborizada Naranja Durazno (Unidad)",
-      precio: 1000,
-      imagen: "/saldo.svg",
-    },
-    {
-      nombre: "Agua Saborizada Pomelo Sin Gas (Unidad)",
-      precio: 1000,
-      imagen: "/saldo.svg",
-    },
-  ]
+  const handleDateChange = (date) => {
+    setFechaEntrega(date);
+  };
 
-  const [cantidad, setCantidad] = useState(Array(productos.length).fill(0))
+  const handleConfirmDate = () => {
+    setShowDatePicker(false);
+    // Aquí podrías hacer la carga de productos con la fecha seleccionada
+    // Puedes usar la fecha en el estado fechaEntrega para hacer la solicitud a la API
+  };
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch("/api/productos"); // Reemplaza 'tu_ruta' con la ruta correcta
+        const data = await response.json();
+
+        if (response.ok) {
+          setProductos(data);
+          setCantidad(Array(data.length).fill(0));
+        } else {
+          console.error("Error al obtener los productos:", data.error);
+        }
+      } catch (error) {
+        console.error("Error al realizar la solicitud:", error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+  
 
   return (
     <div className="container flex flex-col items-center mx-auto">
       <h2 className="flex font-medium justify-start text-3xl text-[#3184e4] mx-2 px-4 py-2">
         Pedidos
       </h2>
+      {!showDatePicker && (
+        <Button onClick={() => setShowDatePicker(true)}>Elegir Fecha</Button>
+      )}
+      {showDatePicker && (
+        <div>
+          <DatePicker
+            value={fechaEntrega}
+            onChange={handleDateChange}
+            format="DD/MM/YYYY"
+          />
+          <Button onClick={handleConfirmDate}>Confirmar Fecha</Button>
+        </div>
+      )}
       <div className="grid grid-cols-2 lg:grid-cols-4 lg:w-3/4 justify-center">
         {productos.map((producto, index) => (
           <div
@@ -95,15 +74,13 @@ const MarketComponent = () => {
             key={index}
           >
             <div className="producto flex flex-col items-center">
-              <Image
-                src={producto.imagen}
+              <img
+                src={producto.imagenes.url}
                 alt={producto.nombre}
-                width={180}
-                height={270}
                 className="py-8"
               />
               <h3 className="text-sm text-[#3184e4] font-semibold">
-                {producto.nombre}
+                {producto.nombre} ({producto.presentacion.nombre})
               </h3>
               <hr className="m-2 border w-full" />
               <p className="text-xl text-[#3184e4] font-medium">
@@ -121,7 +98,9 @@ const MarketComponent = () => {
                   type="number"
                   min="0"
                   value={cantidad[index]}
-                  onChange={(event) => onCantidadChange(index, event.target.value)}
+                  onChange={(event) =>
+                    onCantidadChange(index, event.target.value)
+                  }
                   className="w-14 py-2 text-3xl font-bold text-center text-gray-500 mx-5 input my-2 rounded-md focus:outline-none focus:border-[#3184e4] focus:ring-[#3184e4] focus:ring-1"
                 />
                 <button
@@ -137,7 +116,7 @@ const MarketComponent = () => {
         ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default MarketComponent
+export default MarketComponent;

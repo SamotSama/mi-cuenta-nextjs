@@ -3,13 +3,14 @@
 import Link from "next/link";
 import React from "react";
 import { useSession } from "next-auth/react";
+import Redirect from "@/components/Redirect/Redirect";
 
 const Perfil = () => {
   const { data: session } = useSession();
 
   if (!session) {
     // Manejar el caso en el que el usuario no está autenticado
-    return <p>Usuario no autenticado. Deberías redirigir a la página de inicio de sesión.</p>;
+    return <Redirect />
   }
 
   return (

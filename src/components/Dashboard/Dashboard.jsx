@@ -3,7 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
-import Navbar from "../Navbar/Navbar";
+import Redirect from "@/components/Redirect/Redirect"
+import { useSession } from "next-auth/react";
 
 const Dashboard = () => {
   const [fecha] = useState(new Date());
