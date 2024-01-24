@@ -9,7 +9,7 @@ const FrioCalor = () => {
         Dispenser Frío - Calor
       </h2>
       <button className="py-2 my-2 w-4/5 lg:w-2/6 bg-[#3184e4] text-white font-semibold hover:bg-[#00478a] rounded-sm">
-        <Link href="/dashboard/friocalor/solicitar">AGREGAR OTRO EQUIPO</Link>
+        <Link href="/dashboard/friocalor/solicitar">SOLICITAR EQUIPO</Link>
       </button>
       <button className="py-2 my-2 w-4/5 lg:w-2/6 bg-[#00478a] text-white font-semibold hover:bg-[#3184e4] rounded-sm">
         <Link href="/requisitos_fc.pdf" target="_blank">

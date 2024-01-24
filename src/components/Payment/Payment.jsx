@@ -4,14 +4,16 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
 
-const Payment = () => { 
+const Payment = () => {
   const [fecha] = useState(new Date());
   const [saldo, setSaldo] = useState(null);
 
   const getSaldo = async () => {
     const connection = UseDb();
 
-    const { data } = await connection.query("SELECT saldo FROM cliente_deuda WHERE id = 1");
+    const { data } = await connection.query(
+      "SELECT saldo FROM cliente_deuda WHERE id = 1"
+    );
     setSaldo(data[0].saldo);
   };
   return (
@@ -36,6 +38,16 @@ const Payment = () => {
           ¿Qué deseas pagar?
         </h3>
         <hr className="m-2 border" />
+        <p className="flex items-center justify-center text-2xl p-2 text-[#3184e4] font-medium">
+          $
+          <input
+            type="number"
+            name="monto"
+            placeholder="Ingresá el monto"
+            required
+            className="flex justify-center py-2 my-2 bg-gray-100 rounded-md placeholder:px-2 focus:outline-none focus:border-[#3184e4] focus:ring-[#3184e4] focus:ring-4 w-1/4"
+          ></input>
+        </p>
       </div>
       <div className="bg-white my-4 p-2 border-2 rounded-md w-11/12 lg:w-3/5">
         <h3 className="text-2xl p-2 text-[#3184e4] font-medium">

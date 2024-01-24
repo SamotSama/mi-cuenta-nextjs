@@ -67,7 +67,7 @@ const MarketComponent = () => {
           <Button onClick={handleConfirmDate}>Confirmar Fecha</Button>
         </div>
       )}
-      <div className="grid grid-cols-2 lg:grid-cols-4 lg:w-3/4 justify-center">
+      <div className="grid grid-cols-2 lg:grid-cols-4 lg:w-3/4 justify-center mb-24">
         {productos.map((producto, index) => (
           <div
             className="grid grid-row text-center justify-center bg-white shadow-xl p-2 m-2 rounded-xl mb-2 lg:mb-2"
