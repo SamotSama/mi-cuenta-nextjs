@@ -2,8 +2,16 @@
 
 import Link from "next/link";
 import React from "react";
+import { useSession } from "next-auth/react";
 
 const Perfil = () => {
+  const { data: session } = useSession();
+
+  if (!session) {
+    // Manejar el caso en el que el usuario no está autenticado
+    return <p>Usuario no autenticado. Deberías redirigir a la página de inicio de sesión.</p>;
+  }
+
   return (
     <div className="flex flex-col items-center text-start py-2 my-2 pb-20">
       <h2 className="flex font-medium justify-start text-3xl text-[#3184e4] mx-2 px-4 py-2">
@@ -20,7 +28,7 @@ const Perfil = () => {
             <input
               type="name"
               name="nombre"
-              placeholder={""}
+              placeholder={session.user.name}
               required
               className="input py-2 my-2 border-2 bg-gray-100 rounded-md  w-3/5 focus:outline-none focus:border-[#3184e4] focus:ring-[#3184e4] focus:ring-1"
             />

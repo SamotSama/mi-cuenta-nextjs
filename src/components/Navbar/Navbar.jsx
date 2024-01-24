@@ -1,12 +1,39 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { signOut, useSession } from "next-auth/react";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const ToggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
+  const router = useRouter();
+  const { data: session } = useSession();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut({ redirect: false });
+
+      // Muestra un toast de éxito al cerrar sesión
+      toast.success(`¡Hasta luego!`, {
+        onClose: () => {
+          // Redirige a la página de inicio u otra página después del cierre de sesión
+          router.push("/");
+        },
+      });
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+      // Muestra un toast de error en caso de fallo
+      toast.error("Error al cerrar sesión");
+    }
+  };
+
   return (
     <nav className="bg-white shadow-xl relative">
       <div className="max-w-6xl flex flex-wrap items-center justify-between mx-auto p-2">
@@ -85,8 +112,9 @@ const Navbar = () => {
             </li>
             <li>
               <Link
-                href="/dashboard/salir"
+                href="/dashboard"
                 className="flex text-sm text-[#00478a] font-bold hover:text-gray-800"
+                onClick={handleSignOut}
               >
                 <Image
                   src="/right-from-bracket-solid.svg"
@@ -173,8 +201,9 @@ const Navbar = () => {
             </li>
             <li>
               <Link
-                href="/dashboard/salir"
+                href="/dashboard"
                 className="flex text-sm font-bold p-2"
+                onClick={handleSignOut}
               >
                 <Image
                   src="/right-from-bracket-solid.svg"
@@ -189,6 +218,11 @@ const Navbar = () => {
           </ul>
         )}
       </div>
+      <ToastContainer 
+      position="bottom-center"
+      theme="colored"
+      autoClose={2000}
+      />
     </nav>
   );
 };

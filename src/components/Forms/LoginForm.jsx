@@ -1,36 +1,46 @@
 "use client"
 
-import React, { useState } from "react";
+import { useState } from "react";
+import { signIn } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await fetch("/api/usuarios", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
+      const result = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
       });
 
-      if (response.status === 200) {
-        // Login exitoso
-        console.log("Login exitoso");
-        // Puedes redirigir o realizar otras acciones después del login exitoso
+      if (result.error) {
+        console.error("Error al iniciar sesión:", result.error);
+        // Mostrar un toast de error
+        toast.error("Error al iniciar sesión");
       } else {
-        // Manejar errores de login
-        const data = await response.json();
-        console.error("Error al realizar el login:", data.message);
+        // El inicio de sesión fue exitoso
+        // Mostrar un toast de éxito
+        toast.success(`Inicio de Sesión Exitoso ¡Bienvenido/a!`, {
+          onClose: () => {
+            // Redirigir al usuario a la página /dashboard después de cerrar el toast
+            router.push("/dashboard");
+          },
+        });
       }
     } catch (error) {
-      console.error("Error al realizar la solicitud de login:", error);
+      console.error("Error al realizar la solicitud de inicio de sesión:", error);
+      // Mostrar un toast de error en caso de fallo
+      toast.error("Error al realizar la solicitud de inicio de sesión");
     }
   };
 
@@ -61,7 +71,7 @@ const LoginForm = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-        </label>  
+        </label>
         <button
           type="submit"
           className="bg-[#3184e4] text-white font-bold p-3 rounded-md w-80 mb-6"
@@ -72,8 +82,15 @@ const LoginForm = () => {
       <Link href="/reset" className="text-[#00478a] font-bold text-end">
         ¿Olvidó su contraseña?
       </Link>
+      
+      <ToastContainer
+      position="bottom-center"
+      theme="colored"
+      autoClose={2000}
+      />
     </div>
   );
 };
 
 export default LoginForm;
+
