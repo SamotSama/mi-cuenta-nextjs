@@ -38,8 +38,8 @@ export const authOptions: NextAuthOptions = {
           // Transformar el objeto de usuario antes de devolverlo
           const transformedUser: User = {
             id: user.id.toString(),
-            email: user.usuario, // Asegúrate de que el campo de email sea correcto
-            // Otras propiedades del usuario
+            email: user.usuario,
+            name: user.nombre,
           }
     
           // Retorna el usuario transformado si las credenciales son válidas
@@ -117,5 +117,4 @@ export const authOptions: NextAuthOptions = {
 
 const handler = NextAuth(authOptions)
 
-export const GET = handler.handlers.GET;
-export const POST = handler.handlers.POST;
+export { handler as GET, handler as POST }

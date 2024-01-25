@@ -16,12 +16,19 @@ const Navbar = () => {
   const router = useRouter();
   const { data: session } = useSession();
 
+  // Verificar si session está definido y si tiene una propiedad user
+  const user = session?.user;
+
+  // Verificar si user está definido
+  const name = user?.name;
+  const email = user?.email;
+
   const handleSignOut = async () => {
     try {
       await signOut({ redirect: false });
 
       // Muestra un toast de éxito al cerrar sesión
-      toast.success(`¡Hasta luego!`, {
+      toast.success(`¡Hasta luego! ${name}`, {
         onClose: () => {
           // Redirige a la página de inicio u otra página después del cierre de sesión
           router.push("/");
@@ -201,7 +208,7 @@ const Navbar = () => {
             </li>
             <li>
               <Link
-                href="/dashboard"
+                href="/"
                 className="flex text-sm font-bold p-2"
                 onClick={handleSignOut}
               >

@@ -24,14 +24,12 @@ const MarketComponent = () => {
 
   const handleConfirmDate = () => {
     setShowDatePicker(false);
-    // Aquí podrías hacer la carga de productos con la fecha seleccionada
-    // Puedes usar la fecha en el estado fechaEntrega para hacer la solicitud a la API
   };
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch("/api/productos"); // Reemplaza 'tu_ruta' con la ruta correcta
+        const response = await fetch("/api/productos"); 
         const data = await response.json();
 
         if (response.ok) {

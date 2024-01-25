@@ -8,9 +8,18 @@ import Redirect from "@/components/Redirect/Redirect";
 const Perfil = () => {
   const { data: session } = useSession();
 
+  // Verificar si session está definido y si tiene una propiedad user
+  const user = session?.user;
+
+  // Verificar si user está definido
+  const name = user?.name;
+  const email = user?.email;
+  const id = user?.id;
+
+
   if (!session) {
     // Manejar el caso en el que el usuario no está autenticado
-    return <Redirect />
+    return <Redirect />;
   }
 
   return (
@@ -27,9 +36,10 @@ const Perfil = () => {
           <div className="flex justify-between items-center">
             <p className="text-[#3184e4] font-medium my-1">Nombre</p>
             <input
-              type="name"
+              type="text"
               name="nombre"
-              placeholder={session.user.name}
+              placeholder={""}
+              value={name}
               required
               className="input py-2 my-2 border-2 bg-gray-100 rounded-md  w-3/5 focus:outline-none focus:border-[#3184e4] focus:ring-[#3184e4] focus:ring-1"
             />
@@ -39,6 +49,7 @@ const Perfil = () => {
             <input
               type="email"
               name="email"
+              value={email}
               placeholder={""}
               required
               className="input py-2 my-2 border-2 bg-gray-100 rounded-md  w-3/5 focus:outline-none focus:border-[#3184e4] focus:ring-[#3184e4] focus:ring-1"
@@ -79,6 +90,7 @@ const Perfil = () => {
             <input
               type="number"
               name="celular"
+              value={id}
               placeholder={""}
               required
               className="input py-2 my-2 border-2 bg-gray-100 rounded-md  w-3/5 focus:outline-none focus:border-[#3184e4] focus:ring-[#3184e4] focus:ring-1"

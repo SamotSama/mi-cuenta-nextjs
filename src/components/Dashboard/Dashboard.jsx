@@ -2,12 +2,21 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Redirect from "@/components/Redirect/Redirect"
 import { useSession } from "next-auth/react";
 
 const Dashboard = () => {
   const [fecha] = useState(new Date());
+  const { data: session } = useSession();
+
+  // Verificar si session está definido y si tiene una propiedad user
+  const user = session?.user;
+
+  // Verificar si user está definido
+  const name = user?.name;
+  const email = user?.email;
+
 
   return (
     <div className="flex flex-col items-center">
@@ -103,7 +112,7 @@ const Dashboard = () => {
           </div>
         </div>
         <div className="flex flex-col justify-between bg-white lg:w-1/2 font-medium px-4 py-2 lg:mt-3 mb-20 border-2 rounded-md max-h-60">
-          <h4 className="text-[#3184e4] text-xl pt-3">Tu dia de visita:</h4>
+          <h4 className="text-[#3184e4] text-xl pt-3">Tu dia de visita: {}</h4>
           <div className="flex flex-row justify-between text-gray-500 text-sm">
             <div className="flex items-center py-2">
               <Image
@@ -112,9 +121,9 @@ const Dashboard = () => {
                 height={27}
                 alt="usuario"
               ></Image>
-              <p className="ml-2"></p>
+              <p className="ml-2">{name}</p>
             </div>
-            <p>COD:</p>
+            <p>COD: {}</p>
           </div>
           <div className="text-gray-500 text-sm py-2">
             <p>VENDEDOR:</p>

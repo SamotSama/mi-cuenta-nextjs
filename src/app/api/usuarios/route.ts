@@ -12,25 +12,25 @@ function replacer(key: string, value: any): any {
 export async function GET(request: NextRequest, response: NextResponse) {
   try {
     const usuarios = await prisma.usuarios.findMany({
-      // select: {
-      //   id: true,
-      //   nombre: true,
-      //   usuario: true,
-      //   usuario_agua_clientes: {
-      //     select: {
-      //       id: true,
-      //       id_agua: true,
-      //       direccion: true,
-      //       usuario_id: true,
-      //     },
-      //   },
-      //   usuarios_roles: {
-      //     select: {
-      //       rol_id: true,
-      //       usuario_id: true,
-      //     },
-      //   },
-      // },
+      select: {
+        id: true,
+        nombre: true,
+        usuario: true,
+        usuario_agua_clientes: {
+          select: {
+            id: true,
+            id_agua: true,
+            direccion: true,
+            usuario_id: true,
+          },
+        },
+        usuarios_roles: {
+          select: {
+            rol_id: true,
+            usuario_id: true,
+          },
+        },
+      },
     });
 
     // Convertir BigInt a String usando replacer

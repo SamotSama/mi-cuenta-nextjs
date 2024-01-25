@@ -26,11 +26,11 @@ const LoginForm = () => {
       if (result.error) {
         console.error("Error al iniciar sesión:", result.error);
         // Mostrar un toast de error
-        toast.error("Error al iniciar sesión");
+        toast.error("Error al iniciar sesión, verifique usuario y/o contraseña");
       } else {
         // El inicio de sesión fue exitoso
         // Mostrar un toast de éxito
-        toast.success(`Inicio de Sesión Exitoso ¡Bienvenido/a!`, {
+        toast.success(`¡Bienvenido/a! Inicio de Sesión Exitoso `, {
           onClose: () => {
             // Redirigir al usuario a la página /dashboard después de cerrar el toast
             router.push("/dashboard");
