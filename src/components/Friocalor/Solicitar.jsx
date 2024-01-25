@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import axios from "axios";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const FrioCalor = () => {
   const [dni, setDni] = useState("");
@@ -48,7 +50,7 @@ const FrioCalor = () => {
           minLength="6"
           maxLength="8"
           required
-          className="py-2 my-2 bg-gray-100 rounded-md placeholder:px-2 focus:outline-none focus:border-[#3184e4] focus:ring-[#3184e4] focus:ring-4"
+          className="flex justify-center py-2 my-2 bg-gray-100 rounded-md placeholder:px-2 focus:outline-none focus:border-[#3184e4] focus:ring-[#3184e4] focus:ring-4"
           value={dni}
           onChange={(e) => setDni(e.target.value)}
         />

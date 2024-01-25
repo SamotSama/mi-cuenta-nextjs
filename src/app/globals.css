@@ -16,6 +16,12 @@
   }
 }
 
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+}
+
 body {
   background-image: url(/background.jpg);
   background-repeat: repeat;

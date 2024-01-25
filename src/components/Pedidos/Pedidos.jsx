@@ -1,8 +1,9 @@
 "use client"
 
 import { useState, useEffect } from "react";
-import { DatePicker, Button } from "antd";
-
+import { DatePicker, Button, Modal } from "antd";
+import Redirect from "@/components/Redirect/Redirect";
+import { useSession } from "next-auth/react";
 
 const MarketComponent = () => {
   const [cantidad, setCantidad] = useState([]);
@@ -29,7 +30,7 @@ const MarketComponent = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch("/api/productos"); 
+        const response = await fetch("/api/productos");
         const data = await response.json();
 
         if (response.ok) {
@@ -45,27 +46,36 @@ const MarketComponent = () => {
 
     fetchProducts();
   }, []);
-  
+
+  const { data: session } = useSession();
+
+  if (!session) {
+    // Manejar el caso en el que el usuario no está autenticado
+    return <Redirect />;
+  }
 
   return (
     <div className="container flex flex-col items-center mx-auto">
       <h2 className="flex font-medium justify-start text-3xl text-[#3184e4] mx-2 px-4 py-2">
         Pedidos
       </h2>
-      {!showDatePicker && (
+      <div>
         <Button onClick={() => setShowDatePicker(true)}>Elegir Fecha</Button>
-      )}
-      {showDatePicker && (
-        <div>
+        <Modal
+          title="Elegir Fecha"
+          contentBg="#3184e4"
+          visible={showDatePicker}
+          onOk={handleConfirmDate}
+          onCancel={() => setShowDatePicker(false)}
+        >
           <DatePicker
             value={fechaEntrega}
             onChange={handleDateChange}
             format="DD/MM/YYYY"
           />
-          <Button onClick={handleConfirmDate}>Confirmar Fecha</Button>
-        </div>
-      )}
-      <div className="grid grid-cols-2 lg:grid-cols-4 lg:w-3/4 justify-center mb-24">
+        </Modal>
+      </div>
+      <div className="grid grid-cols-2 lg:grid-cols-4 lg:w-3/4 justify-center mb-24 lg:my-1">
         {productos.map((producto, index) => (
           <div
             className="grid grid-row text-center justify-center bg-white shadow-xl p-2 m-2 rounded-xl mb-2 lg:mb-2"

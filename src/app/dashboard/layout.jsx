@@ -8,6 +8,7 @@ import Footer from "@/components/Footer/Footer";
 import Navbar from "@/components/Navbar/Navbar";
 import NavbarBlue from "@/components/Navbar/NavbarBlue";
 import Button from "@/components/WppButton/Button";
+import ScrollUp from "@/components/ScrollUp/ScrollUp"
 
 const Mont = Montserrat({ subsets: ["latin"] });
 
@@ -31,6 +32,7 @@ export default function RootLayout({ children, session }) {
           </body>
         </html>
       </>
+      <ScrollUp />
     </SessionProvider>
   );
 }

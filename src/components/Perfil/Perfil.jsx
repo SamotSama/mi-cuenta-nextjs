@@ -15,6 +15,7 @@ const Perfil = () => {
   const name = user?.name;
   const email = user?.email;
   const id = user?.id;
+  const password = user?.password;
 
 
   if (!session) {
@@ -113,8 +114,9 @@ const Perfil = () => {
           <div className="flex justify-between items-center ">
             <p className="text-[#3184e4] font-medium my-1">Contraseña</p>
             <input
-              type="password"
+              type="number"
               name="password"
+              value={password}  
               placeholder={""}
               required
               className="input py-2 my-2 border-2 bg-gray-100 rounded-md  w-3/5 focus:outline-none focus:border-[#3184e4] focus:ring-[#3184e4] focus:ring-1"
@@ -125,8 +127,9 @@ const Perfil = () => {
               Confirme Contraseña
             </p>
             <input
-              type="password"
+              type="number"
               name="password"
+              value={password}
               placeholder={""}
               required
               className="input py-2 my-2 border-2 bg-gray-100 rounded-md  w-3/5 focus:outline-none focus:border-[#3184e4] focus:ring-[#3184e4] focus:ring-1"
