@@ -41,6 +41,8 @@ export const authOptions: NextAuthOptions = {
             email: user.usuario,
             name: user.nombre,
           }
+
+          console.log(transformedUser);
     
           // Retorna el usuario transformado si las credenciales son válidas
           return transformedUser

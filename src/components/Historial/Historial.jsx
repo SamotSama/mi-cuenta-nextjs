@@ -2,22 +2,22 @@ import React from "react";
 
 const FrioCalor = () => {
   return (
-    <div className="flex flex-col items-center mt-2 pb-96">
-      <h2 className="flex font-medium justify-start text-3xl text-[#3184e4] mx-2 px-4 py-2">
+    <div className="mt-2 flex flex-col items-center pb-96">
+      <h2 className="mx-2 flex justify-start px-4 py-2 text-3xl font-medium text-[#3184e4]">
         Historial
       </h2>
       <div className="w-[95%]">
-        <table className="table-auto bg-white border-2 p-4 rounded-md mx-auto text-left w-[95%] lg:max-w-6xl">
+        <table className="mx-auto w-[95%] table-auto rounded-md border-2 bg-white p-4 text-left lg:max-w-6xl">
           <tbody>
-            <tr className="font-medium text-2xl text-[#3184e4]">
-              <td className="pl-2 lg:pr-60 py-4">Visitas</td>
+            <tr className="text-2xl font-medium text-[#3184e4]">
+              <td className="py-4 pl-2 lg:pr-60">Visitas</td>
             </tr>
-            <tr className="text-xs border">
-              <td className="pl-2 lg:lg:pr-32 py-4">Fecha y hora</td>
-              <td className="lg:pr-60 py-4 text-[#3184e4] font-bold">
+            <tr className="border text-xs">
+              <td className="py-4 pl-2 lg:lg:pr-32">Fecha y hora</td>
+              <td className="py-4 font-bold text-[#3184e4] lg:pr-60">
                 cantidad
               </td>
-              <td className="pl-2 lg:lg:pr-32 py-4">precio precio</td>
+              <td className="py-4 pl-2 lg:lg:pr-32">precio precio</td>
             </tr>
           </tbody>
         </table>

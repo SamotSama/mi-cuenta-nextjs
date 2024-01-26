@@ -3,8 +3,8 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import axios from "axios";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const FrioCalor = () => {
   const [dni, setDni] = useState("");
@@ -35,14 +35,14 @@ const FrioCalor = () => {
   };
 
   return (
-    <div className="flex flex-col items-center text-start py-2 my-2 pb-80">
-      <h2 className="flex font-medium justify-start text-3xl text-[#3184e4] mx-2 px-4 py-2">
+    <div className="my-2 flex flex-col items-center py-2 pb-80 text-start">
+      <h2 className="mx-2 flex justify-start px-4 py-2 text-3xl font-medium text-[#3184e4]">
         Dispenser Frío - Calor
       </h2>
-      <p className="text-[#707070] font-medium text-xl">
+      <p className="text-xl font-medium text-[#707070]">
         Envío de documentación
       </p>
-      <div className="flex flex-col bg-white border-2 p-4 m-2 w-11/12 lg:w-2/6 rounded-md">
+      <div className="m-2 flex w-11/12 flex-col rounded-md border-2 bg-white p-4 lg:w-2/6">
         <input
           type="number"
           name="dni"
@@ -50,11 +50,11 @@ const FrioCalor = () => {
           minLength="6"
           maxLength="8"
           required
-          className="flex justify-center py-2 my-2 bg-gray-100 rounded-md placeholder:px-2 focus:outline-none focus:border-[#3184e4] focus:ring-[#3184e4] focus:ring-4"
+          className="my-2 flex justify-center rounded-md bg-gray-100 py-2 placeholder:px-2 focus:border-[#3184e4] focus:outline-none focus:ring-4 focus:ring-[#3184e4]"
           value={dni}
           onChange={(e) => setDni(e.target.value)}
         />
-        <div className="flex items-center justify-between py-2 my-2 font-medium text-sm text-[#707070]">
+        <div className="my-2 flex items-center justify-between py-2 text-sm font-medium text-[#707070]">
           <p>FRENTE DEL DNI</p>
           <label htmlFor="archivo1" className="custom-file-upload">
             Adjuntar foto{" "}
@@ -63,16 +63,16 @@ const FrioCalor = () => {
               id="archivo1"
               name="archivo1"
               accept=".jpg, .jpeg, .png, .pdf"
-              className="py-2 my-2 file:mr-4 file:py-2 file:px-4
-              file:rounded-md file:border-0
-              file:text-sm file:font-semibold
-              file:bg-[#3184e4] file:text-white
+              className="my-2 py-2 file:mr-4 file:rounded-md file:border-0
+              file:bg-[#3184e4] file:px-4
+              file:py-2 file:text-sm
+              file:font-semibold file:text-white
               hover:file:bg-[#00478a]"
               onChange={(e) => setArchivo1(e.target.files[0])}
             />
           </label>
         </div>
-        <div className="flex items-center justify-between py-2 my-2 font-medium text-sm text-[#707070]">
+        <div className="my-2 flex items-center justify-between py-2 text-sm font-medium text-[#707070]">
           <p>DORSO DEL DNI</p>
           <label htmlFor="archivo2" className="custom-file-upload">
             Adjuntar foto
@@ -81,10 +81,10 @@ const FrioCalor = () => {
               id="archivo2"
               name="archivo2"
               accept=".jpg, .jpeg, .png, .pdf"
-              className="py-2 my-2 file:mr-4 file:py-2 file:px-4
-              file:rounded-md file:border-0
-              file:text-sm file:font-semibold
-              file:bg-[#3184e4] file:text-white
+              className="my-2 py-2 file:mr-4 file:rounded-md file:border-0
+              file:bg-[#3184e4] file:px-4
+              file:py-2 file:text-sm
+              file:font-semibold file:text-white
               hover:file:bg-[#00478a]"
               onChange={(e) => setArchivo2(e.target.files[0])}
             />
@@ -93,7 +93,7 @@ const FrioCalor = () => {
       </div>
       <button
         type="submit"
-        className="py-2 my-2 lg:w-2/6 w-11/12 bg-[#3184e4] text-white font-semibold hover:bg-[#00478a] rounded-sm"
+        className="my-2 w-11/12 rounded-sm bg-[#3184e4] py-2 font-semibold text-white hover:bg-[#00478a] lg:w-2/6"
         onClick={handleFormSubmit}
       >
         ENVIAR

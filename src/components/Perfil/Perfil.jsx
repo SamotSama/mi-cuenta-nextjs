@@ -15,8 +15,7 @@ const Perfil = () => {
   const name = user?.name;
   const email = user?.email;
   const id = user?.id;
-  const password = user?.password;
-
+  const password = user?.clave;
 
   if (!session) {
     // Manejar el caso en el que el usuario no está autenticado
@@ -24,7 +23,7 @@ const Perfil = () => {
   }
 
   return (
-    <div className="flex flex-col items-center text-start py-2 my-2 pb-20">
+    <div className="flex flex-col items-center text-start py-2 my-2 pb-20 lg:pb-1">
       <h2 className="flex font-medium justify-start text-3xl text-[#3184e4] mx-2 px-4 py-2">
         Perfil
       </h2>
@@ -40,7 +39,7 @@ const Perfil = () => {
               type="text"
               name="nombre"
               placeholder={""}
-              value={name}
+              defaultValue={name}
               required
               className="input py-2 my-2 border-2 bg-gray-100 rounded-md  w-3/5 focus:outline-none focus:border-[#3184e4] focus:ring-[#3184e4] focus:ring-1"
             />
@@ -50,7 +49,7 @@ const Perfil = () => {
             <input
               type="email"
               name="email"
-              value={email}
+              defaultValue={email}
               placeholder={""}
               required
               className="input py-2 my-2 border-2 bg-gray-100 rounded-md  w-3/5 focus:outline-none focus:border-[#3184e4] focus:ring-[#3184e4] focus:ring-1"
@@ -61,6 +60,7 @@ const Perfil = () => {
             <input
               type="text"
               name="direccion"
+              defaultValue={""}
               placeholder={""}
               required
               className="input py-2 my-2 border-2 bg-gray-100 rounded-md  w-3/5 focus:outline-none focus:border-[#3184e4] focus:ring-[#3184e4] focus:ring-1"
@@ -71,6 +71,7 @@ const Perfil = () => {
             <input
               type="number"
               name="dni"
+              defaultValue={""}
               placeholder={""}
               required
               className="input py-2 my-2 border-2 bg-gray-100 rounded-md  w-3/5 focus:outline-none focus:border-[#3184e4] focus:ring-[#3184e4] focus:ring-1"
@@ -81,6 +82,7 @@ const Perfil = () => {
             <input
               type="number"
               name="telefono"
+              defaultValue={""}
               placeholder={""}
               required
               className="input text-gray-500 py-2 my-2 border-2 bg-gray-100 rounded-md w-3/5 focus:outline-none focus:border-[#3184e4] focus:ring-[#3184e4] focus:ring-1"
@@ -91,7 +93,7 @@ const Perfil = () => {
             <input
               type="number"
               name="celular"
-              value={id}
+              defaultValue={""}
               placeholder={""}
               required
               className="input py-2 my-2 border-2 bg-gray-100 rounded-md  w-3/5 focus:outline-none focus:border-[#3184e4] focus:ring-[#3184e4] focus:ring-1"
@@ -116,7 +118,7 @@ const Perfil = () => {
             <input
               type="number"
               name="password"
-              value={password}  
+              defaultValue={password} 
               placeholder={""}
               required
               className="input py-2 my-2 border-2 bg-gray-100 rounded-md  w-3/5 focus:outline-none focus:border-[#3184e4] focus:ring-[#3184e4] focus:ring-1"
@@ -129,7 +131,7 @@ const Perfil = () => {
             <input
               type="number"
               name="password"
-              value={password}
+              defaultValue={password}
               placeholder={""}
               required
               className="input py-2 my-2 border-2 bg-gray-100 rounded-md  w-3/5 focus:outline-none focus:border-[#3184e4] focus:ring-[#3184e4] focus:ring-1"

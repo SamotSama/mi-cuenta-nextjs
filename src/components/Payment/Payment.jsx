@@ -12,18 +12,18 @@ const Payment = () => {
     const connection = UseDb();
 
     const { data } = await connection.query(
-      "SELECT saldo FROM cliente_deuda WHERE id = 1"
+      "SELECT saldo FROM cliente_deuda WHERE id = 1",
     );
     setSaldo(data[0].saldo);
   };
   return (
-    <div className="flex flex-col items-center pt-4 pb-16">
-      <h2 className="flex font-medium justify-start text-3xl text-[#3184e4] mx-2 px-4 py-2">
+    <div className="flex flex-col items-center pb-16 pt-4">
+      <h2 className="mx-2 flex justify-start px-4 py-2 text-3xl font-medium text-[#3184e4]">
         Realizar un pago
       </h2>
-      <div className="flex p-5 bg-white border-2 rounded-md w-11/12 lg:w-3/5 items-center justify-evenly">
+      <div className="flex w-11/12 items-center justify-evenly rounded-md border-2 bg-white p-5 lg:w-3/5">
         <Image src="/saldo.svg" width={65} height={75} alt="saldo"></Image>
-        <p className="text-sm text-gray-500 font-medium">
+        <p className="text-sm font-medium text-gray-500">
           Tu saldo al{" "}
           {fecha.toLocaleString("es-ES", {
             day: "2-digit",
@@ -31,30 +31,30 @@ const Payment = () => {
             year: "numeric",
           })}
         </p>
-        <p className="text-[#3184e4] text-xl font-medium">{saldo}</p>
+        <p className="text-xl font-medium text-[#3184e4]">{saldo}</p>
       </div>
-      <div className="bg-white my-4 p-2 border-2 rounded-md w-11/12 lg:w-3/5">
-        <h3 className="text-2xl p-2 text-[#3184e4] font-medium">
+      <div className="my-4 w-11/12 rounded-md border-2 bg-white p-2 lg:w-3/5">
+        <h3 className="p-2 text-2xl font-medium text-[#3184e4]">
           ¿Qué deseas pagar?
         </h3>
         <hr className="m-2 border" />
-        <div className="flex items-center justify-center text-2xl p-2 text-[#3184e4] font-medium">
+        <div className="flex items-center justify-center p-2 text-2xl font-medium text-[#3184e4]">
           <p className="mr-2">$</p>
           <input
             type="number"
             name="monto"
             placeholder="Ingresá el monto"
             required
-            className="flex justify-center py-2 my-2 bg-gray-100 rounded-md placeholder:px-2 focus:outline-none focus:border-[#3184e4] focus:ring-[#3184e4] focus:ring-4 w-1/4"
+            className="my-2 flex w-1/4 justify-center rounded-md bg-gray-100 py-2 placeholder:px-2 focus:border-[#3184e4] focus:outline-none focus:ring-4 focus:ring-[#3184e4]"
           ></input>
         </div>
       </div>
-      <div className="bg-white my-4 p-2 border-2 rounded-md w-11/12 lg:w-3/5">
-        <h3 className="text-2xl p-2 text-[#3184e4] font-medium">
+      <div className="my-4 w-11/12 rounded-md border-2 bg-white p-2 lg:w-3/5">
+        <h3 className="p-2 text-2xl font-medium text-[#3184e4]">
           Forma de pago
         </h3>
         <hr className="m-2 border" />
-        <div className="flex justify-center text-[#3184e4] font-medium">
+        <div className="flex justify-center font-medium text-[#3184e4]">
           <div className="p-2">
             <input
               type="radio"
@@ -77,12 +77,12 @@ const Payment = () => {
           </div>
         </div>
       </div>
-      <div className="bg-white my-4 p-4 border-2 rounded-md w-11/12 lg:w-3/5">
-        <button className="flex justify-center p-2 my-2 bg-[#79afed] text-white font-semibold hover:bg-[#00478a] rounded-sm w-full">
+      <div className="my-4 w-11/12 rounded-md border-2 bg-white p-4 lg:w-3/5">
+        <button className="my-2 flex w-full justify-center rounded-sm bg-[#79afed] p-2 font-semibold text-white hover:bg-[#00478a]">
           <Link href="/friocalor/solicitar">PAGAR</Link>
         </button>
       </div>
-      <button className=" flex justify-center py-2 my-2 bg-[#3184e4] text-white font-semibold hover:bg-[#00478a] rounded-sm w-11/12 lg:w-3/5">
+      <button className=" my-2 flex w-11/12 justify-center rounded-sm bg-[#3184e4] py-2 font-semibold text-white hover:bg-[#00478a] lg:w-3/5">
         <Image
           src="/credit-card.svg"
           width={33}

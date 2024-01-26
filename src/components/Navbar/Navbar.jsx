@@ -3,9 +3,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -42,23 +41,23 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white shadow-xl relative">
-      <div className="max-w-6xl flex flex-wrap items-center justify-between mx-auto p-2">
+    <nav className="relative bg-white shadow-xl">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between p-2">
         <Link
           href="/dashboard"
           className="flex items-center space-x-3 rtl:space-x-reverse"
         >
           <Image src="/logo.svg" alt="logo" width={120} height={45} />
-          <span className="text-lg text-[#00478a] font-bold hover:text-gray-800">
+          <span className="text-lg font-bold text-[#00478a] hover:text-gray-800">
             Mi Cuenta
           </span>
         </Link>
         <div className="hidden w-full lg:block lg:w-auto">
-          <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white  ">
+          <ul className="mt-4 flex flex-col rounded-lg border border-gray-100 bg-gray-50 p-4 font-medium md:mt-0 md:flex-row md:space-x-8 md:border-0 md:bg-white md:p-0 rtl:space-x-reverse  ">
             <li>
               <Link
                 href="/dashboard/perfil"
-                className="flex text-sm text-[#00478a] font-bold hover:text-gray-800"
+                className="flex text-sm font-bold text-[#00478a] hover:text-gray-800"
                 aria-current="page"
               >
                 <Image
@@ -74,7 +73,7 @@ const Navbar = () => {
             <li>
               <Link
                 href="/dashboard/historial"
-                className="flex text-sm text-[#00478a] font-bold hover:text-gray-800"
+                className="flex text-sm font-bold text-[#00478a] hover:text-gray-800"
               >
                 <Image
                   src="/shopping-cart-solid.svg"
@@ -89,7 +88,7 @@ const Navbar = () => {
             <li>
               <Link
                 href="/dashboard/contacto"
-                className="flex text-sm text-[#00478a] font-bold hover:text-gray-800"
+                className="flex text-sm font-bold text-[#00478a] hover:text-gray-800"
               >
                 <Image
                   src="/comments-solid.svg"
@@ -105,7 +104,7 @@ const Navbar = () => {
               <Link
                 href="/terms_cond.pdf"
                 target="_blank"
-                className="flex text-sm text-[#00478a] font-bold hover:text-gray-800"
+                className="flex text-sm font-bold text-[#00478a] hover:text-gray-800"
               >
                 <Image
                   src="/file-contract-solid.svg"
@@ -120,7 +119,7 @@ const Navbar = () => {
             <li>
               <Link
                 href="/dashboard"
-                className="flex text-sm text-[#00478a] font-bold hover:text-gray-800"
+                className="flex text-sm font-bold text-[#00478a] hover:text-gray-800"
                 onClick={handleSignOut}
               >
                 <Image
@@ -136,18 +135,18 @@ const Navbar = () => {
           </ul>
         </div>
         <button
-          className="menu-button inline-flex items-center p-2 justify-center text-5xl font-extrabold text-[#046cb3] md:hidden"
+          className="menu-button inline-flex items-center justify-center p-2 text-5xl font-extrabold text-[#046cb3] md:hidden"
           onClick={ToggleMenu}
           aria-label={isMenuOpen ? "Cerrar menú" : "Abrir menú"}
         >
           {isMenuOpen ? "✖" : "☰"}
         </button>
         {isMenuOpen && (
-          <ul className="my-2 mx-1 text-[#046cb3]">
+          <ul className="mx-1 my-2 text-[#046cb3]">
             <li>
               <Link
                 href="/dashboard/perfil"
-                className="flex text-sm font-bold p-2"
+                className="flex p-2 text-sm font-bold"
                 aria-current="page"
               >
                 <Image
@@ -163,7 +162,7 @@ const Navbar = () => {
             <li>
               <Link
                 href="/dashboard/historial"
-                className="flex text-sm font-bold p-2 "
+                className="flex p-2 text-sm font-bold "
               >
                 <Image
                   src="/shopping-cart-solid.svg"
@@ -178,7 +177,7 @@ const Navbar = () => {
             <li>
               <Link
                 href="/dashboard/contacto"
-                className="flex text-sm font-bold p-2"
+                className="flex p-2 text-sm font-bold"
               >
                 <Image
                   src="/comments-solid.svg"
@@ -194,7 +193,7 @@ const Navbar = () => {
               <Link
                 href="/terms_cond.pdf"
                 target="_blank"
-                className="flex text-sm font-bold p-2"
+                className="flex p-2 text-sm font-bold"
               >
                 <Image
                   src="/file-contract-solid.svg"
@@ -209,7 +208,7 @@ const Navbar = () => {
             <li>
               <Link
                 href="/"
-                className="flex text-sm font-bold p-2"
+                className="flex p-2 text-sm font-bold"
                 onClick={handleSignOut}
               >
                 <Image
@@ -225,10 +224,10 @@ const Navbar = () => {
           </ul>
         )}
       </div>
-      <ToastContainer 
-      position="bottom-center"
-      theme="colored"
-      autoClose={2000}
+      <ToastContainer
+        position="bottom-center"
+        theme="colored"
+        autoClose={2000}
       />
     </nav>
   );

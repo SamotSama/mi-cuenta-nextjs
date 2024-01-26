@@ -5,9 +5,15 @@ import Link from "next/link";
 
 const NavbarBlue = () => {
   return (
-    <nav className="flex fixed justify-start bottom-0 w-full lg:top-[5em] lg:table lg:static lg:min-w-full lg:justify-center bg-[#00478a] p-2 mx-auto text-sm" style={{ zIndex: "10" }}>
-      <ul className="flex justify-center space-x-4 font-bold text-white gap-10 lg:gap-40" style={{ textAlign: "-webkit-center" }}>
-        <li className="hidden lg:flex lg:flex-col items-center justify-center align-items-center hover:animate-pulse">
+    <nav
+      className="fixed bottom-0 mx-auto flex w-full justify-start bg-[#00478a] p-2 text-sm lg:static lg:top-[5em] lg:table lg:min-w-full lg:justify-center"
+      style={{ zIndex: "10" }}
+    >
+      <ul
+        className="flex justify-center gap-10 space-x-4 font-bold text-white lg:gap-40"
+        style={{ textAlign: "-webkit-center" }}
+      >
+        <li className="align-items-center hidden items-center justify-center hover:animate-pulse lg:flex lg:flex-col">
           <Link href="/dashboard">
             <Image
               src="/menu-secundario-home.svg"
