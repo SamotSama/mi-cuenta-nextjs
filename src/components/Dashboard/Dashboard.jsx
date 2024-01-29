@@ -1,21 +1,37 @@
 "use client";
 
+import React, { useState } from "react";
+import { useSession } from "next-auth/react";
+import { Modal, Radio, Space, Input, ConfigProvider } from "antd";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
-import Redirect from "@/components/Redirect/Redirect";
-import { useSession } from "next-auth/react";
+import locale from "antd/es/locale/es_ES";
 
 const Dashboard = () => {
   const [fecha] = useState(new Date());
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedDay, setSelectedDay] = useState(null);
+
   const { data: session } = useSession();
-
-  // Verificar si session está definido y si tiene una propiedad user
   const user = session?.user;
-
-  // Verificar si user está definido
   const name = user?.name;
   const email = user?.email;
+
+  const handleModalClick = () => {
+    setModalVisible(true);
+  };
+
+  const handleModalOk = () => {
+    // Lógica para guardar el día seleccionado
+    console.log("Día seleccionado:", selectedDay);
+    setModalVisible(false);
+  };
+
+  const handleModalCancel = () => {
+    setModalVisible(false);
+  };
+
+  const { TextArea } = Input;
 
   return (
     <div className="flex flex-col items-center">
@@ -125,7 +141,7 @@ const Dashboard = () => {
             <p>COD: {}</p>
           </div>
           <div className="py-2 text-sm text-gray-500">
-            <p>VENDEDOR:</p>
+            <p>VENDEDOR: {email}</p>
           </div>
           <div className="flex flex-col justify-between gap-6 pb-3 lg:flex-row">
             <Link
@@ -136,14 +152,50 @@ const Dashboard = () => {
                 <p>VER MI HISTORIAL</p>
               </button>
             </Link>
-            <Link
-              href="/dashboard/pagar"
-              className="flex w-full flex-row justify-center rounded-sm bg-[#00478a] px-4 py-2 text-sm font-semibold text-white hover:bg-[#3184e4]"
-            >
-              <button>
+            <div className="flex w-full flex-row justify-center rounded-sm bg-[#00478a] px-4 py-2 text-sm font-semibold text-white hover:bg-[#3184e4]">
+              <button onClick={handleModalClick}>
                 <p>CAMBIAR DÍA</p>
               </button>
-            </Link>
+            </div>
+
+            <ConfigProvider
+              locale={locale}
+              theme={{
+                components: {
+                  Modal: {
+                    titleFontSize: 20,
+                    titleColor: "#3184e4",
+                  },
+                },
+                token: {
+                  colorIcon: "#3184e4",
+                  colorIconHover: "#00478a",
+                },
+              }}
+            >
+              <Modal
+                title="Indicanos el día que deseas la visita"
+                visible={modalVisible}
+                onOk={handleModalOk}
+                onCancel={handleModalCancel}
+                centered
+              >
+                <Radio.Group
+                  onChange={(e) => setSelectedDay(e.target.value)}
+                  value={selectedDay}
+                >
+                  <Space direction="vertical">
+                    <Radio value="lunes">Lunes</Radio>
+                    <Radio value="martes">Martes</Radio>
+                    <Radio value="miercoles">Miércoles</Radio>
+                    <Radio value="jueves">Jueves</Radio>
+                    <Radio value="viernes">Viernes</Radio>
+                    <Radio value="sabado">Sábado</Radio>
+                  </Space>
+                </Radio.Group>
+                <TextArea rows={4} placeholder="Comentarios adicionales" />
+              </Modal>
+            </ConfigProvider>
           </div>
         </div>
       </div>

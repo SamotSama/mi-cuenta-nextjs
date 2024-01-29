@@ -13,7 +13,7 @@ const Perfil = () => {
 
   // Verificar si user está definido
   const name = user?.name;
-  const email = user?.email;
+  const email = user?.image;
   const id = user?.id;
   const password = user?.clave;
 

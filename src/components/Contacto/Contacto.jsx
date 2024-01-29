@@ -1,34 +1,39 @@
-import React from "react";
+"use client";
 
-const empresa = await prisma.empresa.findMany({
-  select: {
-    nombre: true,
-    cuit: true,
-    direccion: true,
-    localidad: true,
-    provincia: true,
-    telefono: true,
-    whatsapp: true,
-  },
-});
-
-const empresaInfo = empresa.map((item) => ({
-  nombre: item.nombre,
-  cuit: item.cuit,
-  direccion: item.direccion,
-  localidad: item.localidad,
-  provincia: item.provincia,
-  telefono: item.telefono,
-  whatsapp: item.whatsapp,
-}));
+import { useState, useEffect } from "react";
 
 const ContactInfo = () => {
+  const [empresaInfo, setEmpresaInfo] = useState([]);
+
+  useEffect(() => {
+    // Realizar la solicitud al servidor al montar el componente
+    const getEmpresa = async () => {
+      try {
+        const url = `https://micuenta.somoselagua.com.ar/micuenta/empresa/empresa`;
+
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            Authorization: "Bearer " + btoa("micuentaApp:mobeus"), // token es el valor que recibiste al hacer el login
+          },
+        });
+
+        const data = await response.json(); // data es el objeto con la información de la empresa
+        return data;
+      } catch (error) {
+        console.error(error); // maneja el error como quieras
+      }
+    };
+
+    getEmpresa(); // Llama a la función para realizar la solicitud
+  }, []); // El segundo argumento [] asegura que useEffect solo se ejecute una vez al montar el componente
+
   return (
     <div className="flex flex-col items-center pb-96">
       <h2 className="mb-2 flex justify-start px-4 py-2 text-3xl font-medium text-[#3184e4]">
         Contacto
       </h2>
-      {empresaInfo.map((item) => (
+      {Object.entries(empresaInfo).map(([key, value]) => (
         <div className="w-11/12" key={item.nombre}>
           <table className="mx-auto table-auto rounded-md border-2 bg-white p-4 text-left">
             <tbody>

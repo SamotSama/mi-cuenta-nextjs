@@ -2,42 +2,28 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { signOut, useSession } from "next-auth/react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const router = useRouter();
+
   const ToggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const router = useRouter();
-  const { data: session } = useSession();
+  const handleLogout = () => {
+    // Elimina el token de acceso almacenado en localStorage
+    localStorage.removeItem("access_token");
 
-  // Verificar si session está definido y si tiene una propiedad user
-  const user = session?.user;
-
-  // Verificar si user está definido
-  const name = user?.name;
-  const email = user?.email;
-
-  const handleSignOut = async () => {
-    try {
-      await signOut({ redirect: false });
-
-      // Muestra un toast de éxito al cerrar sesión
-      toast.success(`¡Hasta luego! ${name}`, {
-        onClose: () => {
-          // Redirige a la página de inicio u otra página después del cierre de sesión
-          router.push("/");
-        },
-      });
-    } catch (error) {
-      console.error("Error al cerrar sesión:", error);
-      // Muestra un toast de error en caso de fallo
-      toast.error("Error al cerrar sesión");
-    }
+    // Muestra un toast de éxito al cerrar sesión
+    toast.success("¡Hasta luego!", {
+      onClose: () => {
+        // Redirige a la página de login
+        router.push("/");
+      },
+    });
   };
 
   return (
@@ -117,10 +103,9 @@ const Navbar = () => {
               </Link>
             </li>
             <li>
-              <Link
-                href="/dashboard"
+              <button
                 className="flex text-sm font-bold text-[#00478a] hover:text-gray-800"
-                onClick={handleSignOut}
+                onClick={handleLogout}
               >
                 <Image
                   src="/right-from-bracket-solid.svg"
@@ -130,7 +115,7 @@ const Navbar = () => {
                   className="mr-2"
                 />
                 Salir
-              </Link>
+              </button>
             </li>
           </ul>
         </div>
@@ -206,10 +191,9 @@ const Navbar = () => {
               </Link>
             </li>
             <li>
-              <Link
-                href="/"
+              <button
                 className="flex p-2 text-sm font-bold"
-                onClick={handleSignOut}
+                onClick={handleLogout}
               >
                 <Image
                   src="/right-from-bracket-solid.svg"
@@ -219,7 +203,7 @@ const Navbar = () => {
                   className="mr-2"
                 />
                 Salir
-              </Link>
+              </button>
             </li>
           </ul>
         )}

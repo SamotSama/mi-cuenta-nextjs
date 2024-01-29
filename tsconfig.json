@@ -22,6 +22,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "prisma/client.ts", "src/app/api/usuarios/route.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "prisma/client.ts", "src/app/api/usuarios/route.ts", "src/app/api/login.js", "src/app/api/empresa/route.ts"],
   "exclude": ["node_modules"]
 }

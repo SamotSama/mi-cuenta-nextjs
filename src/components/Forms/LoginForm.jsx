@@ -1,12 +1,44 @@
 "use client";
 
 import { useState } from "react";
-import { signIn } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+require('dotenv').config()
+
+const makeLoginRequest = async (email, password) => {
+  try {
+    const url = `https://micuenta.somoselagua.com.ar/micuenta/oauth/token`;
+
+    const body = new URLSearchParams();
+    body.append("username", email);
+    body.append("password", password);
+    body.append("grant_type", "password");
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Authorization": "Basic " + btoa("micuentaApp:mobeus"),
+      },
+      body: body,
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      // Almacena el token de acceso en localStorage
+      localStorage.setItem("access_token", data.access_token);
+      return data;
+    } else {
+      throw new Error(`Error en la solicitud: ${response.statusText}`);
+    }
+  } catch (error) {
+    throw new Error(`Error en la solicitud: ${error.message}`);
+  }
+};
+
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -17,35 +49,30 @@ const LoginForm = () => {
     e.preventDefault();
 
     try {
-      const result = await signIn("credentials", {
-        redirect: false,
-        email,
-        password,
-      });
+      const loginData = await makeLoginRequest(email, password);
 
-      if (result.error) {
-        console.error("Error al iniciar sesión:", result.error);
-        // Mostrar un toast de error
-        toast.error(
-          "Error al iniciar sesión, verifique usuario y/o contraseña",
-        );
-      } else {
+      if (loginData.access_token) {
+        // Almacenar el token de acceso en el almacenamiento local
+        localStorage.setItem("access_token", loginData.access_token);
+
         // El inicio de sesión fue exitoso
-        // Mostrar un toast de éxito
         toast.success(`¡Bienvenido/a! Inicio de Sesión Exitoso `, {
           onClose: () => {
-            // Redirigir al usuario a la página /dashboard después de cerrar el toast
             router.push("/dashboard");
           },
         });
+      } else {
+        // Mostrar un toast de error en caso de fallo en la autenticación
+        toast.error(
+          "Error al iniciar sesión, verifique usuario y/o contraseña",
+        );
       }
     } catch (error) {
       console.error(
         "Error al realizar la solicitud de inicio de sesión:",
         error,
       );
-      // Mostrar un toast de error en caso de fallo
-      toast.error("Error al realizar la solicitud de inicio de sesión");
+      toast.error("Error al iniciar sesión, verifique usuario y/o contraseña");
     }
   };
 
@@ -104,3 +131,6 @@ const LoginForm = () => {
 };
 
 export default LoginForm;
+
+
+console.log("Valor de SERVER_IP:", process.env.SERVER_IP);
