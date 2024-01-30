@@ -10,7 +10,7 @@ require('dotenv').config()
 
 const makeLoginRequest = async (email, password) => {
   try {
-    const url = `https://micuenta.somoselagua.com.ar/micuenta/oauth/token`;
+    const url = `https://${process.env.SERVER_IP}/micuenta/oauth/token`;
 
     const body = new URLSearchParams();
     body.append("username", email);
@@ -133,4 +133,3 @@ const LoginForm = () => {
 export default LoginForm;
 
 
-console.log("Valor de SERVER_IP:", process.env.SERVER_IP);

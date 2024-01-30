@@ -7,25 +7,26 @@ const Button = () => {
   const [empresaInfo, setEmpresaInfo] = useState([]);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const getEmpresa = async () => {
       try {
-        const response = await fetch(`/api/empresa`, {
+        const url = `https://${process.env.SERVER_IP}/micuenta/empresa/empresa`;
+
+        const response = await fetch(url, {
           method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
         });
 
-        if (!response.ok) {
-          throw new Error("Respuesta de servidor no exitosa");
-        }
-
         const data = await response.json();
-        setEmpresaInfo(data);
+        setEmpresaInfo(data.data);
       } catch (error) {
-        console.error("Error fetching empresa data:", error.message);
-        setError("Error al cargar los datos de la empresa.");
+        console.error(error);
       }
     };
 
-    fetchData();
+    getEmpresa();
   }, []);
 
   return (
@@ -33,21 +34,18 @@ const Button = () => {
       className="fixed bottom-1 right-0 w-[70px] lg:bottom-24 lg:left-12"
       style={{ zIndex: "10" }}
     >
-      {empresaInfo.map((item) => (
-        <Link
-          href={`https://wa.me/${item.whatsapp}`}
-          target="_blank"
-          key={item.id}
-        >
-          <Image
-            src="/whatsapp.svg"
-            alt="Wp-button"
-            width={60}
-            height={60}
-            className="top-60"
-          />
-        </Link>
-      ))}
+      <Link
+        href={`https://wa.me/${empresaInfo.whatsapp}`}
+        target="_blank"
+      >
+        <Image
+          src="/whatsapp.svg"
+          alt="Wp-button"
+          width={60}
+          height={60}
+          className="top-60"
+        />
+      </Link>
     </div>
   );
 };
