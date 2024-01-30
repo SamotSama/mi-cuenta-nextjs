@@ -1,8 +1,12 @@
-import React from "react";
+"use client"
+
+import React, { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
 const FrioCalor = () => {
+
+
   return (
     <div className="mt-2 flex flex-col items-center">
       <h2 className="mx-2 flex justify-start px-4 py-2 text-3xl font-medium text-[#3184e4]">

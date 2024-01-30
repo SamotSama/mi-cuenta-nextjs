@@ -6,10 +6,10 @@ import axios from "axios";
 import Redirect from "@/components/Redirect/Redirect";
 
 const Perfil = () => {
-  const [empresaInfo, setEmpresaInfo] = useState({});
-
+  const [userInfo, setUserInfo] = useState({});
+   
   useEffect(() => {
-    const getEmpresa = async () => {
+    const getData = async () => {
       try {
         const url = `https://${process.env.SERVER_IP}/micuenta/usuarios/movimiento/164792/aaa`;
 
@@ -21,19 +21,20 @@ const Perfil = () => {
           },
         });
 
-        const data = await response.json();
-        
-        console.log("Data from API:", data);
+        const info = await response.json();
 
-        setEmpresaInfo(data.data);
+        // console.log("Data from API:", info);
+
+        setUserInfo(info);
       } catch (error) {
         console.error(error);
       }
     };
 
-
-    getEmpresa();
+    getData();
   }, []);
+
+  // console.log(userInfo);
 
   return (
     <div className="my-2 flex flex-col items-center py-2 pb-20 text-start lg:pb-1">
@@ -52,7 +53,7 @@ const Perfil = () => {
               type="text"
               name="nombre"
               placeholder={""}
-              defaultValue={empresaInfo.empresaId}
+              defaultValue={userInfo.nombre}
               required
               className="input my-2 w-3/5 rounded-md border-2 bg-gray-100  py-2 focus:border-[#3184e4] focus:outline-none focus:ring-1 focus:ring-[#3184e4]"
             />
@@ -62,7 +63,7 @@ const Perfil = () => {
             <input
               type="email"
               name="email"
-              defaultValue={empresaInfo?.mail || ""}
+              defaultValue={userInfo.mail}
               placeholder={""}
               required
               className="input my-2 w-3/5 rounded-md border-2 bg-gray-100  py-2 focus:border-[#3184e4] focus:outline-none focus:ring-1 focus:ring-[#3184e4]"
@@ -73,7 +74,7 @@ const Perfil = () => {
             <input
               type="text"
               name="direccion"
-              defaultValue={empresaInfo?.direccion || ""}
+              defaultValue={userInfo.direccion}
               placeholder={""}
               required
               className="input my-2 w-3/5 rounded-md border-2 bg-gray-100  py-2 focus:border-[#3184e4] focus:outline-none focus:ring-1 focus:ring-[#3184e4]"
@@ -84,7 +85,7 @@ const Perfil = () => {
             <input
               type="number"
               name="dni"
-              defaultValue={empresaInfo?.dniCuit || ""}
+              defaultValue={userInfo.dniCuit}
               placeholder={""}
               required
               className="input my-2 w-3/5 rounded-md border-2 bg-gray-100  py-2 focus:border-[#3184e4] focus:outline-none focus:ring-1 focus:ring-[#3184e4]"
@@ -95,7 +96,7 @@ const Perfil = () => {
             <input
               type="number"
               name="telefono"
-              defaultValue={empresaInfo?.telefono || ""}
+              defaultValue={userInfo.telefono}
               placeholder={""}
               required
               className="input my-2 w-3/5 rounded-md border-2 bg-gray-100 py-2 text-gray-500 focus:border-[#3184e4] focus:outline-none focus:ring-1 focus:ring-[#3184e4]"
@@ -106,7 +107,7 @@ const Perfil = () => {
             <input
               type="number"
               name="celular"
-              defaultValue={empresaInfo?.movil || ""}
+              defaultValue={userInfo.movil}
               placeholder={""}
               required
               className="input my-2 w-3/5 rounded-md border-2 bg-gray-100  py-2 focus:border-[#3184e4] focus:outline-none focus:ring-1 focus:ring-[#3184e4]"
@@ -131,7 +132,7 @@ const Perfil = () => {
             <input
               type="number"
               name="password"
-              defaultValue={empresaInfo?.idCliente || ""}
+              defaultValue={userInfo.idCliente}
               placeholder={""}
               required
               className="input my-2 w-3/5 rounded-md border-2 bg-gray-100  py-2 focus:border-[#3184e4] focus:outline-none focus:ring-1 focus:ring-[#3184e4]"
@@ -144,7 +145,7 @@ const Perfil = () => {
             <input
               type="number"
               name="password"
-              defaultValue={empresaInfo?.idCliente || ""}
+              defaultValue={userInfo.idCliente}
               placeholder={""}
               required
               className="input my-2 w-3/5 rounded-md border-2 bg-gray-100  py-2 focus:border-[#3184e4] focus:outline-none focus:ring-1 focus:ring-[#3184e4]"

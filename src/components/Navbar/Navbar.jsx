@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -25,6 +25,33 @@ const Navbar = () => {
       },
     });
   };
+  const [empresaInfo, setEmpresaInfo] = useState({});
+
+  useEffect(() => {
+    const getEmpresa = async () => {
+      try {
+        const url = `https://${process.env.SERVER_IP}/micuenta/empresa/empresa`;
+
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        });
+
+        const data = await response.json();
+
+        console.log("Data from API:", data);
+
+        setEmpresaInfo(data.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    getEmpresa();
+  }, []);
 
   return (
     <nav className="relative bg-white shadow-xl">
@@ -88,7 +115,7 @@ const Navbar = () => {
             </li>
             <li>
               <Link
-                href="/terms_cond.pdf"
+                 href={`https://${process.env.SERVER_IP}${empresaInfo.termsConditions}`}
                 target="_blank"
                 className="flex text-sm font-bold text-[#00478a] hover:text-gray-800"
               >
@@ -176,7 +203,7 @@ const Navbar = () => {
             </li>
             <li>
               <Link
-                href="/terms_cond.pdf"
+                href={`https://${process.env.SERVER_IP}${empresaInfo.termsConditions}`}
                 target="_blank"
                 className="flex p-2 text-sm font-bold"
               >

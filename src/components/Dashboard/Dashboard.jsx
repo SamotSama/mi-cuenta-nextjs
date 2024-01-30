@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { Modal, Radio, Space, Input, ConfigProvider } from "antd";
 import Image from "next/image";
@@ -8,14 +8,37 @@ import Link from "next/link";
 import locale from "antd/es/locale/es_ES";
 
 const Dashboard = () => {
+  const [userInfo, setUserInfo] = useState({});
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const url = `https://${process.env.SERVER_IP}/micuenta/usuarios/movimiento/164792/aaa`;
+
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        });
+
+        const info = await response.json();
+
+        console.log("Data from API:", info);
+
+        setUserInfo(info);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    getData();
+  }, []);
+
   const [fecha] = useState(new Date());
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedDay, setSelectedDay] = useState(null);
-
-  const { data: session } = useSession();
-  const user = session?.user;
-  const name = user?.name;
-  const email = user?.email;
 
   const handleModalClick = () => {
     setModalVisible(true);
@@ -45,7 +68,7 @@ const Dashboard = () => {
             year: "numeric",
           })}
         </p>
-        <p className="text-xl font-medium text-[#3184e4]"></p>{" "}
+        <p className="text-xl font-medium text-[#3184e4]">${userInfo.saldo}</p>
         <button className="flex justify-center rounded-sm bg-[#3184e4] px-2 py-2 text-xs font-semibold text-white hover:bg-[#00478a]">
           <Link href="/dashboard/pagar">PAGAR</Link>
         </button>
@@ -128,7 +151,7 @@ const Dashboard = () => {
         </div>
         <div className="mb-20 flex max-h-60 flex-col justify-between rounded-md border-2 bg-white px-4 py-2 font-medium lg:mt-3 lg:w-1/2">
           <h4 className="pt-3 text-xl text-[#3184e4]">Tu dia de visita: {}</h4>
-          <div className="flex flex-row justify-between text-sm text-gray-500">
+          <div className="flex flex-row items-center justify-between text-sm text-gray-500">
             <div className="flex items-center py-2">
               <Image
                 src="/user-circle-regular.svg"
@@ -136,12 +159,12 @@ const Dashboard = () => {
                 height={27}
                 alt="usuario"
               ></Image>
-              <p className="ml-2">{name}</p>
+              <p className="ml-2">{userInfo.nombre}</p>
             </div>
-            <p>COD: {}</p>
+            <p>COD: {userInfo.idCliente}</p>
           </div>
           <div className="py-2 text-sm text-gray-500">
-            <p>VENDEDOR: {email}</p>
+            <p>VENDEDOR: {userInfo.titularReparto}</p>
           </div>
           <div className="flex flex-col justify-between gap-6 pb-3 lg:flex-row">
             <Link

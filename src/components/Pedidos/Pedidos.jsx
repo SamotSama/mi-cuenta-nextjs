@@ -10,7 +10,6 @@ import dayjs from "dayjs";
 const MarketComponent = () => {
   const [cantidad, setCantidad] = useState([]);
   const [fechaEntrega, setFechaEntrega] = useState(null);
-  const [productos, setProductos] = useState([]);
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const onCantidadChange = (index, change) => {
@@ -32,32 +31,37 @@ const MarketComponent = () => {
     setShowDatePicker(false);
   };
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch("/api/productos");
-        const data = await response.json();
+  const [productsInfo, setProductsInfo] = useState([]);
 
-        if (response.ok) {
-          setProductos(data.sort((a, b) => a.orden - b.orden));
-          setCantidad(Array(data.length).fill(0));
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const url = `https://${process.env.SERVER_IP}/micuenta/producto/todos`;
+
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        });
+
+        const info = await response.json();
+
+        console.log("Data from API:", info);
+
+        if (Array.isArray(info)) {
+          setProductsInfo(info);
         } else {
-          console.error("Error al obtener los productos:", data.error);
+          console.error("Data received is not an array:", info);
         }
       } catch (error) {
-        console.error("Error al realizar la solicitud:", error);
+        console.error(error);
       }
     };
 
-    fetchProducts();
+    getData();
   }, []);
-
-  const { data: session } = useSession();
-
-  if (!session) {
-    // Manejar el caso en el que el usuario no está autenticado
-    return <Redirect />;
-  }
 
   const disabledDate = (current) => {
     // Can not select days before today and today
@@ -109,19 +113,19 @@ const MarketComponent = () => {
         </ConfigProvider>
       </div>
       <div className="mb-24 grid grid-cols-2 justify-center lg:my-1 lg:w-3/4 lg:grid-cols-4">
-        {productos.map((producto, index) => (
+      {productsInfo.map((producto, index) => (
           <div
             className="grid-row m-2 mb-2 grid justify-center rounded-xl bg-white p-2 text-center shadow-xl lg:mb-2"
             key={producto.orden}
           >
             <div className="producto flex flex-col items-center">
               <img
-                src={producto.imagenes.url}
-                alt={producto.nombre}
+                src={producto.imagen.url}
+                alt="foto_producto"
                 className="py-8"
               />
               <h3 className="text-sm font-semibold text-[#3184e4]">
-                {producto.nombre} ({producto.presentacion.nombre})
+                {producto.nombre} ({producto.nombre})
               </h3>
               <hr className="m-2 w-full border" />
               <p className="text-xl font-medium text-[#3184e4]">
