@@ -2,20 +2,38 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Payment = () => {
   const [fecha] = useState(new Date());
-  const [saldo, setSaldo] = useState(null);
+  const [userInfo, setUserInfo] = useState({});
+  
+    useEffect(() => {
+      const getData = async () => {
+        try {
+          const url = `https://${process.env.SERVER_IP}/micuenta/usuarios/movimiento/164792/aaa`;
+  
+          const response = await fetch(url, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+          });
+  
+          const info = await response.json();
+  
+          console.log("Data from API:", info);
+  
+          setUserInfo(info);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+  
+      getData();
+    }, []);
 
-  const getSaldo = async () => {
-    const connection = UseDb();
-
-    const { data } = await connection.query(
-      "SELECT saldo FROM cliente_deuda WHERE id = 1",
-    );
-    setSaldo(data[0].saldo);
-  };
   return (
     <div className="flex flex-col items-center pb-16 pt-4">
       <h2 className="mx-2 flex justify-start px-4 py-2 text-3xl font-medium text-[#3184e4]">
@@ -31,7 +49,7 @@ const Payment = () => {
             year: "numeric",
           })}
         </p>
-        <p className="text-xl font-medium text-[#3184e4]">{saldo}</p>
+        <p className="text-xl font-medium text-[#3184e4]">${userInfo.saldo}</p>
       </div>
       <div className="my-4 w-11/12 rounded-md border-2 bg-white p-2 lg:w-3/5">
         <h3 className="p-2 text-2xl font-medium text-[#3184e4]">

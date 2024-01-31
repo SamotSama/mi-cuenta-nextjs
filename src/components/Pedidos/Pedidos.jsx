@@ -50,8 +50,8 @@ const MarketComponent = () => {
 
         console.log("Data from API:", info);
 
-        if (Array.isArray(info)) {
-          setProductsInfo(info);
+        if (Array.isArray(info.data)) {
+          setProductsInfo(info.data);
         } else {
           console.error("Data received is not an array:", info);
         }
@@ -125,7 +125,7 @@ const MarketComponent = () => {
                 className="py-8"
               />
               <h3 className="text-sm font-semibold text-[#3184e4]">
-                {producto.nombre} ({producto.nombre})
+                {producto.nombre} ({producto.presentacion.nombre})
               </h3>
               <hr className="m-2 w-full border" />
               <p className="text-xl font-medium text-[#3184e4]">

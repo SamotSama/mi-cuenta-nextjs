@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
 import { Modal, Radio, Space, Input, ConfigProvider } from "antd";
 import Image from "next/image";
 import Link from "next/link";

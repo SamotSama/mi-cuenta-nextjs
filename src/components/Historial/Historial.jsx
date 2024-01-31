@@ -28,7 +28,7 @@ const FrioCalor = () => {
           console.error("Data received is not an array:", info);
         }
       } catch (error) {
-        console.error(error);
+        console.error("Error fetching data:", error);
       }
     };
 
@@ -36,7 +36,7 @@ const FrioCalor = () => {
   }, []);
 
   return (
-    <div className="mt-2 flex flex-col items-center pb-96">
+    <div className="mt-2 flex flex-col items-center pb-96 lg-pb-1">
       <h2 className="mx-2 flex justify-start px-4 py-2 text-3xl font-medium text-[#3184e4]">
         Historial
       </h2>
@@ -52,9 +52,27 @@ const FrioCalor = () => {
                   {visit.fecha_horario}
                 </td>
                 <td className="py-4 font-bold text-[#3184e4] lg:pr-60">
-                  cantidad
+                  {visit.compro === "S"
+                    ? visit.itemsDTOList.map((item, idx) => (
+                        <div key={idx}>
+                          {item.cantidad} {item.descripcion}
+                        </div>
+                      ))
+                    : visit.motivo}
                 </td>
-                <td className="py-4 pl-2 lg:lg:pr-32">{visit.itemsDTOList.pu}</td>
+                <td className="py-4 pl-2 font-medium text-gray-500 lg:lg:pr-32">
+                  {visit.compro === "S"
+                    ? `El total es de $${visit.itemTotal}`
+                    : ""}
+                  {visit.pago > 0 && (
+                    <div className="text-gray-500">
+                      Hiciste un pago de{" "}
+                      <span className="font-bold text-gray-500">
+                        ${visit.pago}
+                      </span>
+                    </div>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>
