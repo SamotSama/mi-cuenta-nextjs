@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ToastContainer, toast } from "react-toastify";
+import { Flip, ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Navbar = () => {
@@ -239,6 +239,7 @@ const Navbar = () => {
         position="bottom-center"
         theme="colored"
         autoClose={2000}
+        transition={Flip}
       />
     </nav>
   );
