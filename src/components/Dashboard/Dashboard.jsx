@@ -26,7 +26,9 @@ const Dashboard = () => {
 
         const info = await response.json();
 
-        // console.log("Data from API:", info);
+        console.log("Data from API:", info);
+
+        localStorage.setItem("reparto", info.ruta);
 
         setUserInfo(info);
         setLoading(false);

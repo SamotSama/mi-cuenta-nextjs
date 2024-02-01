@@ -13,7 +13,7 @@ const Payment = () => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const url = `https://${process.env.SERVER_IP}/micuenta/usuarios/movimiento/164792/aaa`;
+        const url = `https://${process.env.SERVER_IP}/micuenta/usuarios/movimiento/${localStorage.getItem("nroCta")}/aaa`;
 
         const response = await fetch(url, {
           method: "GET",
