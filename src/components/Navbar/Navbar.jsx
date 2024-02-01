@@ -115,7 +115,7 @@ const Navbar = () => {
             </li>
             <li>
               <Link
-                 href={`https://${process.env.SERVER_IP}${empresaInfo.termsConditions}`}
+                href={`https://${process.env.SERVER_IP}${empresaInfo.termsConditions}`}
                 target="_blank"
                 className="flex text-sm font-bold text-[#00478a] hover:text-gray-800"
               >
@@ -131,7 +131,7 @@ const Navbar = () => {
             </li>
             <li>
               <button
-                className="flex text-sm font-bold text-[#00478a] hover:text-gray-800"
+                className="flex items-center text-sm font-bold text-[#00478a] hover:text-gray-800"
                 onClick={handleLogout}
               >
                 <Image
@@ -219,7 +219,7 @@ const Navbar = () => {
             </li>
             <li>
               <button
-                className="flex p-2 text-sm font-bold"
+                className="flex items-center p-2 text-sm font-bold"
                 onClick={handleLogout}
               >
                 <Image

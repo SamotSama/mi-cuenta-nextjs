@@ -53,7 +53,7 @@ const Payment = () => {
           </h2>
           <div className="flex w-11/12 items-center justify-evenly rounded-md border-2 bg-white p-5 lg:w-3/5">
             <Image src="/saldo.svg" width={65} height={75} alt="saldo"></Image>
-            <p className="text-sm font-medium text-gray-500">
+            <p className="p-8 text-center text-sm font-medium text-gray-500">
               Tu saldo al{" "}
               {fecha.toLocaleString("es-ES", {
                 day: "2-digit",

@@ -73,8 +73,9 @@ const handleLogin = async (e) => {
       if (loginData.nro_cuentas_hijas.length > 1) {
         // Show a modal with a Select component for a user-friendly selection
         Modal.info({
-          title: "Elegí la cuenta a la que deseas entrar",
+          title: "Seleciona la cuenta",
           centered: true,
+          closable: true,
           content: (
             <Select
               centered

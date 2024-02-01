@@ -71,7 +71,13 @@ const Dashboard = () => {
       ) : (
         <div className="flex flex-col items-center">
           <div className="my-4 flex w-11/12 items-center justify-between rounded-md border-2 bg-white p-5 lg:w-3/5">
-            <Image src="/saldo.svg" width={65} height={75} alt="saldo" />
+            <Image
+              src="/saldo.svg"
+              width={65}
+              height={75}
+              alt="saldo"
+              className="lg:ml-32"
+            />
             <p className="text-center text-sm font-medium text-gray-500">
               Tu saldo al{" "}
               {fecha.toLocaleString("es-ES", {
@@ -80,10 +86,10 @@ const Dashboard = () => {
                 year: "numeric",
               })}
             </p>
-            <p className="text-center text-xl font-medium text-[#3184e4]">
+            <p className="text-center text-xl font-medium text-[#3184e4] mr-5">
               ${userInfo.saldo}
             </p>
-            <button className="flex justify-center rounded-sm bg-[#3184e4] px-2 py-2 text-xs font-semibold text-white hover:bg-[#00478a]">
+            <button className="flex justify-center rounded-sm bg-[#3184e4] px-2 py-2 text-xs font-semibold text-white hover:bg-[#00478a] lg:mr-32">
               <Link href="/dashboard/pagar">PAGAR</Link>
             </button>
           </div>
