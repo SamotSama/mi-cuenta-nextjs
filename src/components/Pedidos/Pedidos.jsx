@@ -16,6 +16,75 @@ const MarketComponent = () => {
   const [carrito, setCarrito] = useState([]);
   const [carritoVisible, setCarritoVisible] = useState(false);
   const [carritoCambiado, setCarritoCambiado] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [productsInfo, setProductsInfo] = useState([]);
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const url = `https://${process.env.SERVER_IP}/micuenta/producto/productosPrecioCte?reparto=${localStorage.getItem("reparto")}&codCliente=${localStorage.getItem("nroCta")}`;
+  
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        });
+  
+        const info = await response.json();
+  
+        if (Array.isArray(info.data)) {
+          setProductsInfo(info.data);
+          setLoading(false);
+  
+          // Inicializar fechaEntrega con la fecha existente
+          setFechaEntrega(info.fechaEntrega); // Ajusta esto según cómo esté estructurada tu respuesta
+
+          // Abrir el modal una vez que los datos estén disponibles
+          setModalVisible(true);
+        } else {
+          console.error("Data received is not an array:", info);
+        }
+      } catch (error) {
+        console.error(error);
+        setLoading(false);
+      }
+    };
+  
+    getData();
+  }, []);
+
+  useEffect(() => {
+    if (modalVisible) {
+      Modal.info({
+        title: "Seleccione la fecha",
+        centered: true,
+        content: (
+          <DatePicker
+            locale={locale}
+            value={fechaEntrega}
+            disabledDate={disabledDate}
+            onChange={handleDateChange}
+            format="DD/MM/YYYY"
+          />
+        ),
+        onOk: handleConfirmDate,
+        onCancel: () => {
+          setShowDatePicker(false);
+          setModalVisible(false); // Cierra el modal y evita que se abra de nuevo
+        },
+        className: "text-[#3184e4]",
+      });
+    }
+  }, [modalVisible, fechaEntrega]);
+
+  useEffect(() => {
+    if (productsInfo.length > 0) {
+      setCantidad(productsInfo.map(() => 0));
+      setCarrito(productsInfo.map(() => ({ cantidad: 0, total: 0 })));
+    }
+  }, [productsInfo]);
 
   const onCantidadChange = (index, change) => {
     setCantidad((prevCantidad) => {
@@ -60,72 +129,10 @@ const MarketComponent = () => {
     setShowDatePicker(false);
   };
 
-  useEffect(() => {
-    Modal.info({
-      title: "Seleccione la fecha",
-      centered: true,
-      content: (
-        <DatePicker
-          locale={locale}
-          value={fechaEntrega}
-          disabledDate={disabledDate}
-          onChange={handleDateChange}
-          format="DD/MM/YYYY"
-        />
-      ),
-      onOk: handleConfirmDate,
-      onCancel: () => setShowDatePicker(false),
-      className: "text-[#3184e4]", // You can add a custom class for additional styling
-    });
-  }, [fechaEntrega]);
-
-  const [productsInfo, setProductsInfo] = useState([]);
-
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        const url = `https://${process.env.SERVER_IP}/micuenta/producto/productosPrecioCte?reparto=${localStorage.getItem("reparto")}&codCliente=${localStorage.getItem("nroCta")}`;
-
-        const response = await fetch(url, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-          },
-        });
-
-        const info = await response.json();
-
-        if (Array.isArray(info.data)) {
-          setProductsInfo(info.data);
-          setLoading(false);
-        } else {
-          console.error("Data received is not an array:", info);
-        }
-      } catch (error) {
-        console.error(error);
-        setLoading(false);
-      }
-    };
-
-    getData();
-  }, []);
-
-  useEffect(() => {
-    if (productsInfo.length > 0) {
-      setCantidad(productsInfo.map(() => 0));
-      setCarrito(productsInfo.map(() => ({ cantidad: 0, total: 0 })));
-    }
-  }, [productsInfo]);
-
   const disabledDate = (current) => {
     // Can not select days before today and today
     return current && current < dayjs().endOf("day");
   };
-
-  useEffect(() => {
-    setCantidad(productsInfo.map(() => 0));
-  }, [productsInfo]);
 
   return (
     <div>

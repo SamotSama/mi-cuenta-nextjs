@@ -37,7 +37,11 @@ const Perfil = () => {
     getData();
   }, []);
 
-  // console.log(userInfo);
+  const formatDate = (inputDate) => {
+    // Convierte la fecha al formato YYYY-MM-DD
+    const [day, month, year] = inputDate.split('/');
+    return `${year}-${month}-${day}`;
+  };
 
   return (
     <div>
@@ -104,11 +108,13 @@ const Perfil = () => {
                 />
               </div>
               <div className="flex items-center justify-between">
-                <p className="my-1 font-medium text-[#3184e4]">Teléfono Fijo</p>
+                <p className="my-1 font-medium text-[#3184e4]">
+                  Fecha de Nacimiento
+                </p>
                 <input
-                  type="number"
-                  name="telefono"
-                  defaultValue={userInfo.telefono}
+                  type="date"
+                  name="fechNac"
+                  defaultValue={formatDate(userInfo.fechanNacimiento)}
                   placeholder={""}
                   required
                   className="input my-2 w-3/5 rounded-md border-2 bg-gray-100 py-2 text-gray-500 focus:border-[#3184e4] focus:outline-none focus:ring-1 focus:ring-[#3184e4]"

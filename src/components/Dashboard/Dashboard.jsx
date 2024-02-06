@@ -1,15 +1,19 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Modal, Radio, Space, Input, ConfigProvider } from "antd";
+import { Modal, Radio, Space, Input, ConfigProvider, Form, Button } from "antd";
 import Image from "next/image";
 import Link from "next/link";
 import locale from "antd/es/locale/es_ES";
 import { BounceLoader } from "react-spinners";
+const { TextArea } = Input;
 
 const Dashboard = () => {
   const [userInfo, setUserInfo] = useState({});
   const [loading, setLoading] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedDay, setSelectedDay] = useState(null);
+  const [modalFormVisible, setModalFormVisible] = useState(false);
 
   useEffect(() => {
     const getData = async () => {
@@ -26,8 +30,6 @@ const Dashboard = () => {
 
         const info = await response.json();
 
-        console.log("Data from API:", info);
-
         localStorage.setItem("reparto", info.ruta);
 
         setUserInfo(info);
@@ -41,12 +43,12 @@ const Dashboard = () => {
     getData();
   }, []);
 
-  const [fecha] = useState(new Date());
-  const [modalVisible, setModalVisible] = useState(false);
-  const [selectedDay, setSelectedDay] = useState(null);
-
   const handleModalClick = () => {
     setModalVisible(true);
+  };
+
+  const handleModalFormClick = () => {
+    setModalFormVisible(true);
   };
 
   const handleModalOk = () => {
@@ -59,7 +61,11 @@ const Dashboard = () => {
     setModalVisible(false);
   };
 
-  const { TextArea } = Input;
+  const onFinish = (values) => {
+    console.log("Formulario enviado:", values);
+    // Aquí puedes agregar lógica adicional para enviar los datos del formulario al servidor
+    setModalFormVisible(false);
+  };
 
   return (
     <div>
@@ -82,13 +88,13 @@ const Dashboard = () => {
             />
             <p className="text-center text-sm font-medium text-gray-500">
               Tu saldo al{" "}
-              {fecha.toLocaleString("es-ES", {
+              {new Date().toLocaleString("es-ES", {
                 day: "2-digit",
                 month: "2-digit",
                 year: "numeric",
               })}
             </p>
-            <p className="text-center text-xl font-medium text-[#3184e4] mr-5">
+            <p className="mr-5 text-center text-xl font-medium text-[#3184e4]">
               ${userInfo.saldo}
             </p>
             <button className="flex justify-center rounded-sm bg-[#3184e4] px-2 py-2 text-xs font-semibold text-white hover:bg-[#00478a] lg:mr-32">
@@ -145,7 +151,7 @@ const Dashboard = () => {
                 className="my-4 h-[11rem] rounded-sm bg-[#00478a] px-4 py-2 font-semibold text-white hover:bg-[#3184e4] lg:max-h-40"
                 zindex={0}
               >
-                <Link href="/dashboard/pagar">
+                <button onClick={handleModalFormClick}>
                   <h4 className="m-2 text-xl">¡Recomendar!</h4>
                   <p className="m-2 w-4/5 pt-2 text-sm lg:w-4/5">
                     ¡Por cada amigo que recomiendes, recibirán cada uno un
@@ -168,7 +174,7 @@ const Dashboard = () => {
                       className="lg:hidden"
                     ></Image>
                   </div>
-                </Link>
+                </button>
               </div>
             </div>
             <div className="mb-20 flex max-h-60 flex-col justify-between rounded-md border-2 bg-white px-4 py-2 font-medium lg:mt-3 lg:w-1/2">
@@ -229,18 +235,69 @@ const Dashboard = () => {
                   >
                     <Radio.Group
                       onChange={(e) => setSelectedDay(e.target.value)}
-                      value={selectedDay}
+                      defaultValue={userInfo.diaSemana}
                     >
                       <Space direction="vertical">
-                        <Radio value="lunes">Lunes</Radio>
-                        <Radio value="martes">Martes</Radio>
-                        <Radio value="miercoles">Miércoles</Radio>
-                        <Radio value="jueves">Jueves</Radio>
-                        <Radio value="viernes">Viernes</Radio>
-                        <Radio value="sabado">Sábado</Radio>
+                        <Radio value="Lunes">Lunes</Radio>
+                        <Radio value="Martes">Martes</Radio>
+                        <Radio value="Miercoles">Miércoles</Radio>
+                        <Radio value="Jueves">Jueves</Radio>
+                        <Radio value="Viernes">Viernes</Radio>
+                        <Radio value="Sabado">Sábado</Radio>
                       </Space>
                     </Radio.Group>
-                    <TextArea rows={4} placeholder="Comentarios adicionales" />
+                    <TextArea
+                      rows={4}
+                      placeholder="Comentarios adicionales"
+                      className="mt-4"
+                    />
+                  </Modal>
+
+                  <Modal
+                    title="Indicanos algunos datos de tu referido"
+                    visible={modalFormVisible}
+                    onCancel={() => setModalFormVisible(false)}
+                    centered
+                    footer={null}
+                  >
+                    <Form form={Form} layout="vertical" onFinish={onFinish}>
+                      <Form.Item
+                        label="Username"
+                        name="username"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input your username!",
+                          },
+                        ]}
+                      >
+                        <Input />
+                      </Form.Item>
+                      <Form.Item
+                        label="Correo electrónico del referido"
+                        name="correoReferido"
+                        rules={[
+                          {
+                            required: true,
+                            message:
+                              "Por favor ingresa el correo electrónico del referido",
+                          },
+                          {
+                            type: "email",
+                            message:
+                              "Por favor ingresa un correo electrónico válido",
+                          },
+                        ]}
+                      >
+                        <Input />
+                      </Form.Item>
+
+                      <Form.Item>
+                        <Button type="primary" htmlType="submit">
+                          Enviar
+                        </Button>
+                      </Form.Item>
+                    </Form>
                   </Modal>
                 </ConfigProvider>
               </div>

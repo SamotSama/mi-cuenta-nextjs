@@ -113,7 +113,7 @@ const Historial = () => {
                           ))
                         : visit.motivo}
                     </td>
-                    <td className="py-4 pl-2 font-medium text-gray-500 lg:lg:pr-32">
+                    <td className="py-4 pl-2 font-semibold text-[#3184e4] lg:lg:pr-32">
                       {visit.compro === "S"
                         ? `El total es de $${visit.itemTotal}`
                         : ""}
