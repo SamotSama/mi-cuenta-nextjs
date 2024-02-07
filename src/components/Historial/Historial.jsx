@@ -171,7 +171,7 @@ const Historial = () => {
                   <td className="py-4 pl-2 lg:pr-60">Últimas remitos</td>
                 </tr>
                 {facturaInfo
-                  .filter((factura) => factura.documento.startsWith("R"))
+                  .filter((factura) => factura.documento.startsWith("R") || factura.documento.startsWith("N"))
                   .map((factura, index) => (
                     <tr className="border text-xs" key={index}>
                       <td className="flex py-4 pl-2 font-semibold text-[#00478a] lg:lg:pr-32">

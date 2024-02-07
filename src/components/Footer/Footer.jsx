@@ -31,12 +31,10 @@ const Footer = () => {
       className="hidden w-full bg-[#00478a] p-4 lg:relative lg:bottom-0 lg:mt-20 lg:block"
       zindex={10}
     >
-        <p
-          className="font-regular flex justify-center text-xs text-[#2cace2]"
-        >
-          {empresaInfo.nombre} empresa que elabora sus productos bajo normas IVESS. |
-          Disclaimer
-        </p>
+      <p className="font-regular flex justify-center text-xs text-[#2cace2]">
+        {empresaInfo.nombre} empresa que elabora sus productos bajo normas
+        IVESS. | Disclaimer
+      </p>
     </footer>
   );
 };

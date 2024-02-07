@@ -61,68 +61,80 @@ const LoginForm = () => {
 
   const { Option } = Select;
 
-const handleLogin = async (e) => {
-  e.preventDefault();
+  const handleLogin = async (e) => {
+    e.preventDefault();
 
-  try {
-    setLoading(true);
-    const loginData = await makeLoginRequest(email, password);
+    try {
+      setLoading(true);
+      const loginData = await makeLoginRequest(email, password);
 
-    if (processLoginResponse(loginData)) {
-      // Check if there are multiple nroCta options
-      if (loginData.nro_cuentas_hijas.length > 1) {
-        // Show a modal with a Select component for a user-friendly selection
-        Modal.info({
-          title: "Seleciona la cuenta",
-          centered: true,
-          closable: true,
-          content: (
-            <Select
-              centered
-              style={{ width: "100%" }}
-              onChange={(value) => {
-                // Store the selected nroCta
-                localStorage.setItem("nroCta", value.toString());
-                // Redirect to the dashboard
-                router.push("/dashboard");
-                // Close the modal
-                Modal.destroyAll();
-                toast.success(`¡Bienvenido/a! Inicio de Sesión Exitoso`);
-              }}
-            >
-              {loginData.nro_cuentas_hijas.map((account, index) => (
-                <Option key={index} value={account.nroCta}>
-                  {account.direccion}
-                </Option>
-              ))}
-            </Select>
-          ),
-        });
+      if (processLoginResponse(loginData)) {
+        // Check if there are multiple nroCta options
+        if (loginData.nro_cuentas_hijas.length > 1) {
+          // Show a modal with a Select component for a user-friendly selection
+          Modal.info({
+            title: "Seleciona la cuenta",
+            centered: true,
+            closable: true,
+            content: (
+              <Select
+                centered
+                style={{ width: "100%" }}
+                onChange={(value) => {
+                  // Store the selected nroCta
+                  localStorage.setItem("nroCta", value.toString());
+                  // Redirect to the dashboard
+                  router.push("/dashboard");
+                  // Close the modal
+                  Modal.destroyAll();
+                  toast.success(`¡Bienvenido/a! Inicio de Sesión Exitoso`);
+                }}
+              >
+                {loginData.nro_cuentas_hijas.map((account, index) => (
+                  <Option key={index} value={account.nroCta}>
+                    {account.direccion}
+                  </Option>
+                ))}
+              </Select>
+            ),
+          });
+        } else {
+          // If there's only one nroCta, store it directly
+          localStorage.setItem(
+            "nroCta",
+            loginData.nro_cuentas_hijas[0].nroCta.toString(),
+          );
+          // Redirect to the dashboard
+          router.push("/dashboard");
+          toast.success(`¡Bienvenido/a! Inicio de Sesión Exitoso`);
+        }
       } else {
-        // If there's only one nroCta, store it directly
-        localStorage.setItem(
-          "nroCta",
-          loginData.nro_cuentas_hijas[0].nroCta.toString()
+        toast.error(
+          "Error al iniciar sesión, verifique usuario y/o contraseña",
         );
-        // Redirect to the dashboard
-        router.push("/dashboard");
-        toast.success(`¡Bienvenido/a! Inicio de Sesión Exitoso`);
       }
-    } else {
-      toast.error("Error al iniciar sesión, verifique usuario y/o contraseña");
-    }
-  } catch (error) {
-    console.error("Error al realizar la solicitud de inicio de sesión:", error);
+    } catch (error) {
+      console.error(
+        "Error al realizar la solicitud de inicio de sesión:",
+        error,
+      );
 
-    if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
-      toast.error("Error de red. Por favor, verifica tu conexión a Internet.");
-    } else {
-      toast.error("Error al iniciar sesión. Por favor, verifica usuario y/o contraseña.");
+      if (
+        error instanceof TypeError &&
+        error.message.includes("Failed to fetch")
+      ) {
+        toast.error(
+          "Error de red. Por favor, verifica tu conexión a Internet.",
+        );
+      } else {
+        toast.error(
+          "Error al iniciar sesión. Por favor, verifica usuario y/o contraseña.",
+        );
+      }
+    } finally {
+      setLoading(false);
     }
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   return (
     <div className="mt-56 flex flex-col items-center text-[#046cb3]">
@@ -142,7 +154,7 @@ const handleLogin = async (e) => {
             id="email"
             placeholder="Email"
             required
-            className="mb-6 w-80 rounded-md p-3"
+            className="mb-6 w-80 rounded-md p-3 focus:border-[#3184e4] focus:outline-none focus:ring-4 focus:ring-[#3184e4]"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -153,7 +165,7 @@ const handleLogin = async (e) => {
             id="password"
             placeholder="Contraseña"
             required
-            className="mb-6 w-80 rounded-md p-3"
+            className="mb-6 w-80 rounded-md p-3 focus:border-[#3184e4] focus:outline-none focus:ring-4 focus:ring-[#3184e4]"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
