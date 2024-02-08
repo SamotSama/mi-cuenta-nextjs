@@ -11,8 +11,9 @@ const ResetToken = async (email) => {
   try {
     const url = `https://${process.env.SERVER_IP}/micuenta/usuarios/codigoresetpass`;
 
-    const body = new URLSearchParams();
-    body.append("usuario", email);
+    const body = JSON.stringify({
+      usuario: email
+    });
 
     const response = await fetch(url, {
       method: "POST",
@@ -33,8 +34,10 @@ const ResetToken = async (email) => {
   }
 };
 
+
 const ResetForm = () => {
   const [email, setEmail] = useState("");
+  const [errorMessage, setErrorMessage] = useState(""); // Nuevo estado para almacenar el mensaje de error
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -43,7 +46,13 @@ const ResetForm = () => {
       await ResetToken(email);
       toast.success("¡Se ha enviado un correo de restablecimiento de contraseña!");
     } catch (error) {
-      toast.error(`Error: ${error.message}`);
+      if (error.response) {
+        const responseData = await error.response.json();
+        setErrorMessage(responseData.message); // Establecer el mensaje de error del servidor en el estado
+        toast.error(`Error: ${responseData.message}`);
+      } else {
+        toast.error(`Error: ${error.message}`);
+      }
     }
   };
 
@@ -80,9 +89,13 @@ const ResetForm = () => {
       <Link href="/login" className="text-end font-bold text-[#00478a]">
         Ingresar
       </Link>
-      <ToastContainer />
+      <ToastContainer 
+      position="bottom-center"
+      theme="colored"
+      />
     </div>
   );
 };
+
 
 export default ResetForm;

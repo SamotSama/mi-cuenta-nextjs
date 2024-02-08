@@ -1,5 +1,5 @@
 import "@/app/globals.css"
-import ResetForm from "@/components/Forms/ResetFrom"
+import ResetForm from "@/components/Forms/ResetForm"
 import React from "react"
 
 export const metadata = {

@@ -22,7 +22,7 @@ const ContactInfo = () => {
 
         const data = await response.json();
 
-        console.log("Data from API:", data);
+        // console.log("Data from API:", data);
 
         setEmpresaInfo(data.data);
         setLoading(false);
@@ -47,7 +47,7 @@ const ContactInfo = () => {
       ) : (
         <div className="flex flex-col items-center pb-96">
           <h2 className="mb-2 flex justify-start px-4 py-2 text-3xl font-medium text-[#3184e4]">
-            Información de la Empresa
+            Contacto
           </h2>
           <div className="w-11/12">
             <table className="mx-auto table-auto rounded-md border-2 bg-white p-4 text-left">

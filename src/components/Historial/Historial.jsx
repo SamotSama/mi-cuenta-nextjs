@@ -6,29 +6,32 @@ import { BounceLoader } from "react-spinners";
 
 const downloadInvoice = async (tipo, codigo, numero) => {
   try {
-    const response = await fetch(`https://${process.env.SERVER_IP}/micuenta/report/comprobante_get_${tipo}?codmov=${codigo}&nromov=${numero}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+    const response = await fetch(
+      `https://${process.env.SERVER_IP}/micuenta/report/comprobante_get_${tipo}?codmov=${codigo}&nromov=${numero}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
       },
-    });
+    );
 
     if (!response.ok) {
-      throw new Error('Failed to fetch invoice');
+      throw new Error("Failed to fetch invoice");
     }
 
     const blob = await response.blob();
 
     // Create a link element to trigger the download
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
     link.download = `invoice_${codigo}_${numero}.pdf`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   } catch (error) {
-    console.error('Error downloading invoice:', error);
+    console.error("Error downloading invoice:", error);
   }
 };
 
@@ -36,14 +39,14 @@ const Historial = () => {
   const [userInfo, setUserInfo] = useState([]);
   const [loading, setLoading] = useState(true);
   const [facturaInfo, setFactura] = useState([]);
-  const [tipo, setTipo] = useState('factura'); // Set your initial values here
-  const [codigo, setCodigo] = useState('your-codigo');
-  const [numero, setNumero] = useState('your-numero');
+  const [tipo, setTipo] = useState("factura"); // Set your initial values here
+  const [codigo, setCodigo] = useState("your-codigo");
+  const [numero, setNumero] = useState("your-numero");
 
-  const handleDownload = () => {
+  const handleDownload = (codigo, numero) => {
+    const tipo = "factura"; // Supongo que siempre estás descargando una factura aquí
     downloadInvoice(tipo, codigo, numero);
   };
-
 
   useEffect(() => {
     const getData = async () => {
@@ -139,28 +142,34 @@ const Historial = () => {
                 </tr>
                 {facturaInfo
                   .filter((factura) => factura.documento.startsWith("A"))
-                  .map((factura, index) => (
-                    <tr className="border text-xs" key={index}>
-                      <td className="flex py-4 pl-2 font-semibold text-[#00478a] lg:lg:pr-32">
-                        <button onClick={handleDownload} className="flex">
-                          <Image
-                            src="/file-arrow-down-solid.svg"
-                            width={12}
-                            height={16}
-                            alt="download-file"
-                            className="mr-2"
-                          />
-                          Fact. {factura.documento}
-                        </button>
-                      </td>
-                      <td className="text-grey-500 py-4 font-medium lg:pr-60">
-                        {factura.fecha}
-                      </td>
-                      <td className="py-4 pl-2 font-bold text-[#3184e4] lg:lg:pr-32">
-                        ${factura.importe}
-                      </td>
-                    </tr>
-                  ))}
+                  .map((factura, index) => {
+                    const [codigo, numero] = factura.documento.split(" ");
+                    return (
+                      <tr className="border text-xs" key={index}>
+                        <td className="flex py-4 pl-2 font-semibold text-[#00478a] lg:lg:pr-32">
+                          <button
+                            onClick={() => handleDownload(codigo, numero)}
+                            className="flex"
+                          >
+                            <Image
+                              src="/file-arrow-down-solid.svg"
+                              width={12}
+                              height={16}
+                              alt="download-file"
+                              className="mr-2"
+                            />
+                            Fact. {factura.documento}
+                          </button>
+                        </td>
+                        <td className="text-grey-500 py-4 font-medium lg:pr-60">
+                          {factura.fecha}
+                        </td>
+                        <td className="py-4 pl-2 font-bold text-[#3184e4] lg:lg:pr-32">
+                          ${factura.importe}
+                        </td>
+                      </tr>
+                    );
+                  })}
               </tbody>
             </table>
           </div>
@@ -171,30 +180,52 @@ const Historial = () => {
                   <td className="py-4 pl-2 lg:pr-60">Últimas remitos</td>
                 </tr>
                 {facturaInfo
-                  .filter((factura) => factura.documento.startsWith("R") || factura.documento.startsWith("N"))
-                  .map((factura, index) => (
-                    <tr className="border text-xs" key={index}>
-                      <td className="flex py-4 pl-2 font-semibold text-[#00478a] lg:lg:pr-32">
-                        <Image
-                          src="/file-arrow-down-solid.svg"
-                          width={12}
-                          height={16}
-                          alt="download-file"
-                          className="mr-2"
-                        />
-                        {factura.documento}{" "}
-                      </td>
-                      <td className="text-grey-500 py-4 font-medium lg:pr-60">
-                        {factura.fecha}
-                      </td>
-                      <td className="py-4 pl-2 font-bold text-[#3184e4] lg:lg:pr-32">
-                        ${factura.importe}
-                      </td>
-                    </tr>
-                  ))}
+                  .filter(
+                    (factura) =>
+                      factura.documento.startsWith("R") ||
+                      factura.documento.startsWith("N"),
+                  )
+                  .map((factura, index) => {
+                    const [codigo, numero] = factura.documento.split(" ");
+                    return (
+                      <tr className="border text-xs" key={index}>
+                        <td className="flex py-4 pl-2 font-semibold text-[#00478a] lg:lg:pr-32">
+                          <Image
+                            src="/file-arrow-down-solid.svg"
+                            width={12}
+                            height={16}
+                            alt="download-file"
+                            className="mr-2"
+                          />
+                          <button
+                            onClick={() => handleDownload(codigo, numero)}
+                            className="flex"
+                          >
+                            {factura.documento}{" "}
+                          </button>
+                        </td>
+                        <td className="text-grey-500 py-4 font-medium lg:pr-60">
+                          {factura.fecha}
+                        </td>
+                        <td className="py-4 pl-2 font-bold text-[#3184e4] lg:lg:pr-32">
+                          ${factura.importe}
+                        </td>
+                      </tr>
+                    );
+                  })}
               </tbody>
             </table>
           </div>
+          <button className="flex items-center justify-center mt-4 w-3/5 rounded-sm bg-[#3184e4] p-2 font-bold text-white hover:bg-[#00478a]">
+            <Image
+              src="/cloud-arrow-down-solid.svg"
+              width={30}
+              height={30}
+              alt="download"
+              className="mr-2"
+            />
+            Descargar Análisis de Cuenta
+          </button>
         </div>
       )}
     </div>
