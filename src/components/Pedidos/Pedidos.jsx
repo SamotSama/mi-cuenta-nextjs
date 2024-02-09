@@ -23,7 +23,7 @@ const MarketComponent = () => {
     const getData = async () => {
       try {
         const url = `https://${process.env.SERVER_IP}/micuenta/producto/productosPrecioCte?reparto=${localStorage.getItem("reparto")}&codCliente=${localStorage.getItem("nroCta")}`;
-  
+
         const response = await fetch(url, {
           method: "GET",
           headers: {
@@ -31,13 +31,13 @@ const MarketComponent = () => {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,
           },
         });
-  
+
         const info = await response.json();
-  
+
         if (Array.isArray(info.data)) {
           setProductsInfo(info.data);
           setLoading(false);
-  
+
           // Inicializar fechaEntrega con la fecha existente
           setFechaEntrega(info.fechaEntrega); // Ajusta esto según cómo esté estructurada tu respuesta
 
@@ -51,7 +51,7 @@ const MarketComponent = () => {
         setLoading(false);
       }
     };
-  
+
     getData();
   }, []);
 
@@ -60,14 +60,25 @@ const MarketComponent = () => {
       Modal.info({
         title: "Seleccione la fecha",
         centered: true,
+        footer: null,
         content: (
-          <DatePicker
-            locale={locale}
-            value={fechaEntrega}
-            disabledDate={disabledDate}
-            onChange={handleDateChange}
-            format="DD/MM/YYYY"
-          />
+          <ConfigProvider
+            theme={{
+              components: {
+                DatePicker: {
+                  cellHoverBg: "#3184e4"
+                },
+              },
+            }}
+          >
+            <DatePicker
+              locale={locale}
+              value={fechaEntrega}
+              disabledDate={disabledDate}
+              onChange={handleDateChange}
+              format="DD/MM/YYYY"
+            />
+          </ConfigProvider>
         ),
         onOk: handleConfirmDate,
         onCancel: () => {
