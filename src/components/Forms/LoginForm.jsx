@@ -77,6 +77,14 @@ const LoginForm = () => {
             centered: true,
             closable: true,
             content: (
+              <ConfigProvider
+                theme={{
+                  components: {
+                    Select: {
+                      optionActiveBg: "#3184e4",
+                      optionSelectedColor: "#FFFFFF",
+                    }}}}
+               >
               <Select
                 centered
                 style={{ width: "100%" }}
@@ -96,6 +104,7 @@ const LoginForm = () => {
                   </Option>
                 ))}
               </Select>
+              </ConfigProvider>
             ),
           });
         } else {
