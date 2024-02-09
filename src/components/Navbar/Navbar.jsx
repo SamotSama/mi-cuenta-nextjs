@@ -21,7 +21,7 @@ const Navbar = () => {
     toast.success("¡Hasta luego!", {
       onClose: () => {
         // Redirige a la página de login
-        router.push("/");
+        router.push("");
       },
     });
   };
