@@ -232,6 +232,7 @@ const Dashboard = () => {
                     onOk={handleModalOk}
                     onCancel={handleModalCancel}
                     centered
+                    footer={null}
                   >
                     <Radio.Group
                       onChange={(e) => setSelectedDay(e.target.value)}
@@ -251,6 +252,12 @@ const Dashboard = () => {
                       placeholder="Comentarios adicionales"
                       className="mt-4"
                     />
+                    <Button
+                        type="primary"
+                        className="w-[25vw] bg-[#3184e4] font-semibold text-white mt-4"
+                      >
+                        ENVIAR
+                      </Button>
                   </Modal>
 
                   <Modal
@@ -260,44 +267,54 @@ const Dashboard = () => {
                     centered
                     footer={null}
                   >
-                    <Form form={Form} layout="vertical" onFinish={onFinish}>
-                      <Form.Item
-                        label="Username"
-                        name="username"
-                        rules={[
-                          {
-                            required: true,
-                            message: "Please input your username!",
-                          },
-                        ]}
+                    <Space
+                      direction="vertical"
+                      size="large"
+                      align="center"
+                      className="w-[25vw]"
+                    >
+                      <Space.Compact>
+                        <Input
+                          style={{ width: "25vw" }}
+                          addonBefore="Nombre"
+                          allowClear
+                        />
+                      </Space.Compact>
+                      <Space.Compact>
+                        <Input
+                          style={{ width: "25vw" }}
+                          addonBefore="Email"
+                          allowClear
+                        />
+                      </Space.Compact>
+                      <Space.Compact>
+                        <Input
+                          style={{ width: "25vw" }}
+                          addonBefore="Celular"
+                          allowClear
+                        />
+                      </Space.Compact>
+                      <Space.Compact>
+                        <Input
+                          style={{ width: "25vw" }}
+                          addonBefore="Dirección"
+                          allowClear
+                        />
+                      </Space.Compact>
+                      <Space.Compact>
+                        <Input
+                          style={{ width: "25vw" }}
+                          addonBefore="Localidad"
+                          allowClear
+                        />
+                      </Space.Compact>
+                      <Button
+                        type="primary"
+                        className="w-[25vw] bg-[#3184e4] font-semibold text-white"
                       >
-                        <Input />
-                      </Form.Item>
-                      <Form.Item
-                        label="Correo electrónico del referido"
-                        name="correoReferido"
-                        rules={[
-                          {
-                            required: true,
-                            message:
-                              "Por favor ingresa el correo electrónico del referido",
-                          },
-                          {
-                            type: "email",
-                            message:
-                              "Por favor ingresa un correo electrónico válido",
-                          },
-                        ]}
-                      >
-                        <Input />
-                      </Form.Item>
-
-                      <Form.Item>
-                        <Button type="primary" htmlType="submit">
-                          Enviar
-                        </Button>
-                      </Form.Item>
-                    </Form>
+                        ENVIAR
+                      </Button>
+                    </Space>
                   </Modal>
                 </ConfigProvider>
               </div>
