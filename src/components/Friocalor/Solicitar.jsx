@@ -1,8 +1,6 @@
-"use client";
+"use client"
 
 import React, { useState } from "react";
-import Link from "next/link";
-import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -13,23 +11,37 @@ const FrioCalor = () => {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
-      // Crear un objeto FormData para enviar archivos
       const formData = new FormData();
-      formData.append("id", dni);
-      formData.append("dnia", archivo1);
-      formData.append("dnib", archivo2);
-
-      // Realizar la solicitud POST al endpoint
-      const response = await axios.post("/api/friocalor", formData, {
+      formData.append("codigoCliente", `${localStorage.getItem("nroCta")}`);
+      formData.append("idReparto", `${localStorage.getItem("ruta")}`);
+      formData.append("descripcion", JSON.stringify([
+        {
+          descripcion: "solicitud_fc",
+          domicilio: `${localStorage.getItem("direccion")}`
+        }
+      ]));
+      formData.append("dniFrente", archivo1);
+      formData.append("dniDorso", archivo2);
+      formData.append("accion", "solicitud_fc");
+  
+      const response = await fetch(`https://${process.env.SERVER_IP}/micuenta/pedido/insertar_llamada/`, {
+        method: "POST",
+        body: formData,
         headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+      }});
+  
+      if (!response.ok) {
+        throw new Error("Error al enviar la solicitud");
+      }
 
-      console.log(response.data); // Puedes manejar la respuesta según tus necesidades
+      toast.success("Solicitud enviada correctamente");
+      console.log("Solicitud POST exitosa");
     } catch (error) {
+      toast.error("Error al enviar la solicitud");
       console.error("Error al enviar la solicitud:", error);
     }
   };
@@ -62,7 +74,7 @@ const FrioCalor = () => {
               type="file"
               id="archivo1"
               name="archivo1"
-              accept=".jpg, .jpeg, .png, .pdf"
+              accept=".jpg, .jpeg, .png"
               className="my-2 py-2 file:mr-4 file:rounded-md file:border-0
               file:bg-[#3184e4] file:px-4
               file:py-2 file:text-sm
@@ -80,7 +92,7 @@ const FrioCalor = () => {
               type="file"
               id="archivo2"
               name="archivo2"
-              accept=".jpg, .jpeg, .png, .pdf"
+              accept=".jpg, .jpeg, .png"
               className="my-2 py-2 file:mr-4 file:rounded-md file:border-0
               file:bg-[#3184e4] file:px-4
               file:py-2 file:text-sm

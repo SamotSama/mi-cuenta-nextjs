@@ -31,6 +31,7 @@ const Dashboard = () => {
         const info = await response.json();
 
         localStorage.setItem("reparto", info.ruta);
+        localStorage.setItem("direccion", info.direccion);
 
         setUserInfo(info);
         setLoading(false);

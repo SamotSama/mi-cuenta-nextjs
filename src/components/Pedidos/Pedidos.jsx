@@ -60,7 +60,6 @@ const MarketComponent = () => {
       Modal.info({
         title: "Seleccione la fecha",
         centered: true,
-        footer: null,
         content: (
           <ConfigProvider
             theme={{

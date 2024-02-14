@@ -44,7 +44,7 @@ const ResetForm = () => {
 
     try {
       await ResetToken(email);
-      toast.success("¡Se ha enviado un correo de restablecimiento de contraseña!");
+      toast.success("Si su mail esta registrado, recibirá un correo de restablecimiento de contraseña.");
     } catch (error) {
       if (error.response) {
         const responseData = await error.response.json();
