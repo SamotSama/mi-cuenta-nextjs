@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
-import { useState, useEffect } from "react";
-import Redirect from "@/components/Redirect/Redirect";
+import React, { useState, useEffect } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { BounceLoader } from "react-spinners";
 
 const Perfil = () => {
@@ -37,6 +37,44 @@ const Perfil = () => {
     getData();
   }, []);
 
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const formData = new FormData(e.target);
+      formData.set("codigoCliente", userInfo.codigoCliente);
+      formData.set("idReparto", userInfo.idReparto);
+      formData.set("descripcion", JSON.stringify({
+        nombre: formData.get("nombre"),
+        email: formData.get("email"),
+        direccion: formData.get("direccion"),
+        dni: formData.get("dni"),
+        fechaNacimiento: formData.get("fechNac"),
+        telefono: formData.get("telefono"),
+        movil: formData.get("celular")
+      }));
+      formData.set("accion", "actualizar_perfil");
+
+      const response = await fetch(`https://${process.env.SERVER_IP}/micuenta/pedido/insertar_llamada/`, {
+        method: "POST",
+        body: formData,
+        headers: {
+          "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al actualizar el perfil");
+      }
+
+      toast.success("Perfil actualizado correctamente");
+      console.log("Solicitud POST exitosa");
+    } catch (error) {
+      toast.error(error.message);
+      console.error("Error al actualizar el perfil:", error);
+    }
+  };
+
   const formatDate = (inputDate) => {
     // Convierte la fecha al formato YYYY-MM-DD
     const [day, month, year] = inputDate.split('/');
@@ -45,6 +83,7 @@ const Perfil = () => {
 
   return (
     <div>
+      <ToastContainer />
       {loading ? (
         <BounceLoader
           color={"#3184e4"}
@@ -59,7 +98,7 @@ const Perfil = () => {
           </h2>
           <div className="flex w-full flex-col items-center">
             <div className="my-2 mt-2 flex w-11/12 flex-col justify-center rounded-md border-2 bg-white p-4 py-2 sm:w-4/12">
-              <h3 className="mb-2 pb-2 text-2xl font-medium text-[#3184e4]">
+            <h3 className="mb-2 pb-2 text-2xl font-medium text-[#3184e4]">
                 Mis Datos
               </h3>
               <hr className="border" />
@@ -142,14 +181,13 @@ const Perfil = () => {
                   className="input my-2 w-3/5 rounded-md border-2 bg-gray-100  py-2 focus:border-[#3184e4] focus:outline-none focus:ring-1 focus:ring-[#3184e4]"
                 />
               </div>
-              <Link
-                href="/dashboard/friocalor/solicitar"
-                className="my-2 flex justify-center rounded-sm bg-[#3184e4] py-2 font-semibold text-white hover:bg-[#00478a]"
+              <button
+                type="submit"
+                className="my-2 w-full rounded-sm bg-[#3184e4] py-2 font-semibold text-white hover:bg-[#00478a]"
+                onClick={handleFormSubmit}
               >
-                <button>
-                  <p>GUARDAR</p>
-                </button>
-              </Link>
+                GUARDAR
+              </button>
             </div>
             <div className="m-4 flex flex-col justify-center rounded-md border-2 bg-white p-4 sm:w-4/12 lg:mb-16">
               <h3 className="mb-2 pb-2 text-2xl font-medium text-[#3184e4]">
@@ -180,14 +218,13 @@ const Perfil = () => {
                   className="input my-2 w-3/5 rounded-md border-2 bg-gray-100  py-2 focus:border-[#3184e4] focus:outline-none focus:ring-1 focus:ring-[#3184e4]"
                 />
               </div>
-              <Link
-                href="/dashboard/friocalor/solicitar"
-                className="my-2 flex justify-center rounded-sm bg-[#3184e4] py-2 font-semibold text-white hover:bg-[#00478a]"
+              <button
+                type="submit"
+                className="my-2 w-full rounded-sm bg-[#3184e4] py-2 font-semibold text-white hover:bg-[#00478a]"
+                onClick={handleFormSubmit}
               >
-                <button>
-                  <p>GUARDAR</p>
-                </button>
-              </Link>
+                GUARDAR
+              </button>
             </div>
           </div>
         </div>
@@ -197,3 +234,4 @@ const Perfil = () => {
 };
 
 export default Perfil;
+
