@@ -26,7 +26,38 @@ const downloadInvoice = async (tipo, codigo, numero) => {
     // Create a link element to trigger the download
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = `invoice_${codigo}_${numero}.pdf`;
+    link.download = `${codigo}-${numero}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } catch (error) {
+    console.error("Error downloading invoice:", error);
+  }
+};
+
+const downloadAnalysis = async () => {
+  try {
+    const response = await fetch(
+      `https://${process.env.SERVER_IP}/micuenta/report/comprobante_get_analisiscta?nrocta=${localStorage.getItem("nroCta")}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch analysis");
+    }
+
+    const blob = await response.blob();
+
+    // Create a link element to trigger the download
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `Analisis-Cuenta-${localStorage.getItem("nroCta")}.pdf`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -46,6 +77,14 @@ const Historial = () => {
   const handleDownload = (codigo, numero) => {
     const tipo = "factura"; // Supongo que siempre estás descargando una factura aquí
     downloadInvoice(tipo, codigo, numero);
+  };
+  const handleDownload2 = (codigo, numero) => {
+    const tipo = "recibo"; // Supongo que siempre estás descargando una factura aquí
+    downloadInvoice(tipo, codigo, numero);
+  };
+
+  const handleAnalysis = (codigo, numero) => {
+    downloadAnalysis();
   };
 
   useEffect(() => {
@@ -198,7 +237,7 @@ const Historial = () => {
                             className="mr-2"
                           />
                           <button
-                            onClick={() => handleDownload(codigo, numero)}
+                            onClick={() => handleDownload2(codigo, numero)}
                             className="flex"
                           >
                             {factura.documento}{" "}
@@ -216,7 +255,10 @@ const Historial = () => {
               </tbody>
             </table>
           </div>
-          <button className="flex items-center justify-center mt-4 w-3/5 rounded-sm bg-[#3184e4] p-2 font-bold text-white hover:bg-[#00478a]">
+          <button
+            className="mt-4 flex w-3/5 items-center justify-center rounded-sm bg-[#3184e4] p-2 font-bold text-white hover:bg-[#00478a]"
+            onClick={() => handleAnalysis()}
+          >
             <Image
               src="/cloud-arrow-down-solid.svg"
               width={30}

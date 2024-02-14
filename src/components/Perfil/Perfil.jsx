@@ -8,6 +8,7 @@ import { BounceLoader } from "react-spinners";
 const Perfil = () => {
   const [userInfo, setUserInfo] = useState({});
   const [loading, setLoading] = useState(true);
+  const [disableUpdate, setDisableUpdate] = useState(false);
 
   useEffect(() => {
     const getData = async () => {
@@ -37,6 +38,19 @@ const Perfil = () => {
     getData();
   }, []);
 
+  useEffect(() => {
+    if (userInfo.nro_cuentas_hijas && userInfo.nro_cuentas_hijas.length > 1) {
+      userInfo.nro_cuentas_hijas.forEach((cuenta) => {
+        if (
+          localStorage.getItem("nroCta") === cuenta.nroCta &&
+          !cuenta.esCtaMadre
+        ) {
+          setDisableUpdate(true);
+        }
+      });
+    }
+  }, [userInfo]);
+
   const handleFormSubmit = async (e) => {
     e.preventDefault();
 
@@ -44,24 +58,30 @@ const Perfil = () => {
       const formData = new FormData(e.target);
       formData.set("codigoCliente", userInfo.codigoCliente);
       formData.set("idReparto", userInfo.idReparto);
-      formData.set("descripcion", JSON.stringify({
-        nombre: formData.get("nombre"),
-        email: formData.get("email"),
-        direccion: formData.get("direccion"),
-        dni: formData.get("dni"),
-        fechaNacimiento: formData.get("fechNac"),
-        telefono: formData.get("telefono"),
-        movil: formData.get("celular")
-      }));
+      formData.set(
+        "descripcion",
+        JSON.stringify({
+          nombre: formData.get("nombre"),
+          email: formData.get("email"),
+          direccion: formData.get("direccion"),
+          dni: formData.get("dni"),
+          fechaNacimiento: formData.get("fechNac"),
+          telefono: formData.get("telefono"),
+          movil: formData.get("celular"),
+        }),
+      );
       formData.set("accion", "actualizar_perfil");
 
-      const response = await fetch(`https://${process.env.SERVER_IP}/micuenta/pedido/insertar_llamada/`, {
-        method: "POST",
-        body: formData,
-        headers: {
-          "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
+      const response = await fetch(
+        `https://${process.env.SERVER_IP}/micuenta/pedido/insertar_llamada/`,
+        {
+          method: "POST",
+          body: formData,
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
         },
-      });
+      );
 
       if (!response.ok) {
         throw new Error("Error al actualizar el perfil");
@@ -77,7 +97,7 @@ const Perfil = () => {
 
   const formatDate = (inputDate) => {
     // Convierte la fecha al formato YYYY-MM-DD
-    const [day, month, year] = inputDate.split('/');
+    const [day, month, year] = inputDate.split("/");
     return `${year}-${month}-${day}`;
   };
 
@@ -98,7 +118,7 @@ const Perfil = () => {
           </h2>
           <div className="flex w-full flex-col items-center">
             <div className="my-2 mt-2 flex w-11/12 flex-col justify-center rounded-md border-2 bg-white p-4 py-2 sm:w-4/12">
-            <h3 className="mb-2 pb-2 text-2xl font-medium text-[#3184e4]">
+              <h3 className="mb-2 pb-2 text-2xl font-medium text-[#3184e4]">
                 Mis Datos
               </h3>
               <hr className="border" />
@@ -194,14 +214,17 @@ const Perfil = () => {
                 Seguridad
               </h3>
               <hr className="border" />
-              <div className="flex items-center justify-between ">
+              <div className="flex items-center justify-between">
                 <p className="my-1 font-medium text-[#3184e4]">Contraseña</p>
                 <input
-                  type="number"
+                  type="password"
                   name="password"
                   defaultValue={userInfo.idCliente}
-                  placeholder={""}
+                  placeholder={
+                    disableUpdate ? "*********" : "Ingrese su contraseña"
+                  }
                   required
+                  disabled={disableUpdate}
                   className="input my-2 w-3/5 rounded-md border-2 bg-gray-100  py-2 focus:border-[#3184e4] focus:outline-none focus:ring-1 focus:ring-[#3184e4]"
                 />
               </div>
@@ -210,11 +233,14 @@ const Perfil = () => {
                   Confirme Contraseña
                 </p>
                 <input
-                  type="number"
-                  name="password"
+                  type="password"
+                  name="confirmPassword"
                   defaultValue={userInfo.idCliente}
-                  placeholder={""}
+                  placeholder={
+                    disableUpdate ? "*********" : "Confirme su contraseña"
+                  }
                   required
+                  disabled={disableUpdate}
                   className="input my-2 w-3/5 rounded-md border-2 bg-gray-100  py-2 focus:border-[#3184e4] focus:outline-none focus:ring-1 focus:ring-[#3184e4]"
                 />
               </div>
@@ -223,7 +249,7 @@ const Perfil = () => {
                 className="my-2 w-full rounded-sm bg-[#3184e4] py-2 font-semibold text-white hover:bg-[#00478a]"
                 onClick={handleFormSubmit}
               >
-                GUARDAR
+                GUARDAR 
               </button>
             </div>
           </div>
@@ -234,4 +260,3 @@ const Perfil = () => {
 };
 
 export default Perfil;
-
