@@ -13,6 +13,10 @@ const Navbar = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
+
   const handleLogout = () => {
     // Elimina el token de acceso almacenado en localStorage
     localStorage.removeItem("access_token");
@@ -161,6 +165,7 @@ const Navbar = () => {
                 href="/dashboard/perfil"
                 className="flex p-2 text-sm font-bold"
                 aria-current="page"
+                onClick={closeMenu}
               >
                 <Image
                   src="/user-group-solid.svg"
@@ -176,6 +181,7 @@ const Navbar = () => {
               <Link
                 href="/dashboard/historial"
                 className="flex p-2 text-sm font-bold "
+                onClick={closeMenu}
               >
                 <Image
                   src="/shopping-cart-solid.svg"
@@ -191,6 +197,7 @@ const Navbar = () => {
               <Link
                 href="/dashboard/contacto"
                 className="flex p-2 text-sm font-bold"
+                onClick={closeMenu}
               >
                 <Image
                   src="/comments-solid.svg"
@@ -207,6 +214,7 @@ const Navbar = () => {
                 href={`https://${process.env.SERVER_IP}${empresaInfo.termsConditions}`}
                 target="_blank"
                 className="flex p-2 text-sm font-bold"
+                onClick={closeMenu}
               >
                 <Image
                   src="/file-contract-solid.svg"

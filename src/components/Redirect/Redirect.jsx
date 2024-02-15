@@ -8,7 +8,7 @@ const RedirectToLogin = () => {
 
   useEffect(() => {
     router.push("/login");
-  }, []);
+  }, [router]);
 
   return null; 
 };
