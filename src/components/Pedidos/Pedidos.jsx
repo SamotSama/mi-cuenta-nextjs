@@ -1,9 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { DatePicker, Button, Modal, ConfigProvider, Drawer } from "antd";
-import Redirect from "@/components/Redirect/Redirect";
-import { useSession } from "next-auth/react";
 import locale from "antd/es/locale/es_ES";
 import dayjs from "dayjs";
 import { BounceLoader } from "react-spinners";
@@ -38,11 +36,11 @@ const MarketComponent = () => {
           setProductsInfo(info.data);
           setLoading(false);
 
+          setFechaEntrega(info.fechaEntrega);
           // Inicializar fechaEntrega con la fecha existente
-          setFechaEntrega(info.fechaEntrega); // Ajusta esto según cómo esté estructurada tu respuesta
 
-          // Abrir el modal una vez que los datos estén disponibles
           setModalVisible(true);
+          // Abrir el modal una vez que los datos estén disponibles
         } else {
           console.error("Data received is not an array:", info);
         }
@@ -55,17 +53,29 @@ const MarketComponent = () => {
     getData();
   }, []);
 
+  const datePickerRef = useRef();
+
   useEffect(() => {
     if (modalVisible) {
       Modal.info({
         title: "Seleccione la fecha",
         centered: true,
+        footer: (
+          <Button
+            key="submit"
+            type="primary"
+            className="mx-auto mt-2 flex flex-col justify-center bg-[#3184e4] text-center font-semibold"
+            onClick={handleConfirmDate}
+          >
+            ACEPTAR
+          </Button>
+        ),
         content: (
           <ConfigProvider
             theme={{
               components: {
                 DatePicker: {
-                  cellHoverBg: "#3184e4"
+                  cellHoverBg: "#3184e4",
                 },
               },
             }}
@@ -75,14 +85,14 @@ const MarketComponent = () => {
               value={fechaEntrega}
               disabledDate={disabledDate}
               onChange={handleDateChange}
+              className="flex flex-col justify-center"
               format="DD/MM/YYYY"
             />
           </ConfigProvider>
         ),
         onOk: handleConfirmDate,
         onCancel: () => {
-          setShowDatePicker(false);
-          setModalVisible(false); // Cierra el modal y evita que se abra de nuevo
+          setModalVisible(false);
         },
         className: "text-[#3184e4]",
       });
@@ -136,7 +146,12 @@ const MarketComponent = () => {
   };
 
   const handleConfirmDate = () => {
-    setShowDatePicker(false);
+    // Seleccionar la fecha del DatePicker utilizando la referencia
+    if (datePickerRef.current) {
+      const selectedDate = datePickerRef.current.picker.getDate();
+      setFechaEntrega(selectedDate);
+    }
+    setModalVisible(false);
   };
 
   const disabledDate = (current) => {
@@ -214,7 +229,7 @@ const MarketComponent = () => {
             <Button
               type="primary"
               onClick={showCarritoDrawer}
-              className="text-bold fixed bottom-0 z-10 mb-4 bg-[#3184e4]"
+              className="text-bold fixed bottom-0 z-10 mb-4 bg-[#3184e4] font-semibold"
             >
               FINALIZAR PEDIDO
             </Button>

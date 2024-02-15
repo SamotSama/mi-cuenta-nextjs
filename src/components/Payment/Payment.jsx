@@ -25,7 +25,7 @@ const Payment = () => {
 
         const info = await response.json();
 
-        console.log("Data from API:", info);
+        // console.log("Data from API:", info);
 
         setUserInfo(info);
         setLoading(false);
@@ -67,7 +67,7 @@ const Payment = () => {
           </div>
           <div className="my-4 w-11/12 rounded-md border-2 bg-white p-2 lg:w-3/5">
             <h3 className="p-2 text-2xl font-medium text-[#3184e4]">
-              ¿Qué deseas pagar?
+              ¿Cuánto deseas pagar?
             </h3>
             <hr className="m-2 border" />
             <div className="flex items-center justify-center p-2 text-2xl font-medium text-[#3184e4]">
@@ -110,7 +110,7 @@ const Payment = () => {
             </div>
           </div>
           <div className="my-4 w-11/12 rounded-md border-2 bg-white p-4 lg:w-3/5">
-            <button className="my-2 flex w-full justify-center rounded-sm bg-[#79afed] p-2 font-semibold text-white hover:bg-[#00478a]">
+            <button className="my-2 flex w-full justify-center rounded-sm bg-[#3184e4] p-2 font-semibold text-white hover:bg-[#00478a]">
               <Link href="/friocalor/solicitar">PAGAR</Link>
             </button>
           </div>

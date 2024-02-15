@@ -102,7 +102,7 @@ const Historial = () => {
 
         const info = await response.json();
 
-        console.log("Data from API:", info);
+        // console.log("Data from API:", info);
 
         if (Array.isArray(info.ultimasComprasDTOList)) {
           setUserInfo(info.ultimasComprasDTOList);

@@ -25,7 +25,7 @@ const Perfil = () => {
 
         const info = await response.json();
 
-        console.log("Data from API:", info);
+        // console.log("Data from API:", info);
 
         setUserInfo(info);
         setLoading(false);
@@ -96,9 +96,15 @@ const Perfil = () => {
   };
 
   const formatDate = (inputDate) => {
-    // Convierte la fecha al formato YYYY-MM-DD
-    const [day, month, year] = inputDate.split("/");
-    return `${year}-${month}-${day}`;
+    // Verificar si inputDate no es undefined y no es null
+    if (inputDate) {
+      // Convierte la fecha al formato YYYY-MM-DD
+      const [day, month, year] = inputDate.split("/");
+      return `${year}-${month}-${day}`;
+    } else {
+      // Manejar el caso en que inputDate es undefined o null
+      return null; // o devuelve una cadena vacía, según lo que necesites
+    }
   };
 
   return (
