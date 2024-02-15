@@ -256,7 +256,7 @@ const Historial = () => {
             </table>
           </div>
           <button
-            className="mt-4 flex w-3/5 items-center justify-center rounded-sm bg-[#3184e4] p-2 font-bold text-white hover:bg-[#00478a]"
+            className="mt-4 flex w-11/12 items-center justify-center rounded-sm bg-[#3184e4] p-2 font-bold text-white hover:bg-[#00478a] lg:w-3/5"
             onClick={() => handleAnalysis()}
           >
             <Image

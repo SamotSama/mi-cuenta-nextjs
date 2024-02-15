@@ -53,9 +53,13 @@ const Dashboard = () => {
   };
 
   const handleModalOk = () => {
-    // Lógica para guardar el día seleccionado
-    console.log("Día seleccionado:", selectedDay);
-    setModalVisible(false);
+    if (selectedDay) {
+      enviarDiaReparto(selectedDay, comentario).then(() => {
+        setModalVisible(false);
+      });
+    } else {
+      setModalVisible(false);
+    }
   };
 
   const handleModalCancel = () => {
@@ -66,6 +70,34 @@ const Dashboard = () => {
     console.log("Formulario enviado:", values);
     // Aquí puedes agregar lógica adicional para enviar los datos del formulario al servidor
     setModalFormVisible(false);
+  };
+
+  const [comentario, setComentario] = useState("");
+
+  const enviarDiaReparto = async (nombreDia, comentario) => {
+    try {
+      const url = `https://${process.env.SERVER_IP}/micuenta/pedido/insertar_llamada`;
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+        body: JSON.stringify({
+          codigoCliente: `${localStorage.getItem("nroCta")}`,
+          idReparto: `${localStorage.getItem("reparto")}`,
+          descripcion: [{ nombreSemana: nombreDia, comentario }],
+          accion: "cambio_visita",
+        }),
+      });
+
+      const data = await response.json();
+      console.log("Respuesta del servidor:", data);
+
+      // Aquí puedes manejar la respuesta del servidor según sea necesario
+    } catch (error) {
+      console.error("Error al enviar el día de reparto:", error);
+    }
   };
 
   return (
@@ -230,7 +262,6 @@ const Dashboard = () => {
                   <Modal
                     title="Indicanos el día que deseas la visita"
                     visible={modalVisible}
-                    onOk={handleModalOk}
                     onCancel={handleModalCancel}
                     centered
                     footer={null}
@@ -252,13 +283,16 @@ const Dashboard = () => {
                       rows={4}
                       placeholder="Comentarios adicionales"
                       className="mt-4"
+                      value={comentario}
+                      onChange={(e) => setComentario(e.target.value)}
                     />
                     <Button
-                        type="primary"
-                        className="w-[25vw] bg-[#3184e4] font-semibold text-white mt-4"
-                      >
-                        ENVIAR
-                      </Button>
+                      type="primary"
+                      className="mt-4 w-[25vw] bg-[#3184e4] font-semibold text-white"
+                      onClick={handleModalOk} // Cambiar el evento para llamar a handleModalOk
+                    >
+                      ENVIAR
+                    </Button>
                   </Modal>
 
                   <Modal

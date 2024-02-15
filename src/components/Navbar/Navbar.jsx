@@ -16,15 +16,16 @@ const Navbar = () => {
   const handleLogout = () => {
     // Elimina el token de acceso almacenado en localStorage
     localStorage.removeItem("access_token");
-
+  
     // Muestra un toast de éxito al cerrar sesión
     toast.success("¡Hasta luego!", {
       onClose: () => {
-        // Redirige a la página de login
-        router.push("");
+        // Redirige a la página de inicio de sesión
+        router.push("/login");
       },
     });
   };
+  
   const [empresaInfo, setEmpresaInfo] = useState({});
 
   useEffect(() => {
@@ -42,7 +43,7 @@ const Navbar = () => {
 
         const data = await response.json();
 
-        console.log("Data from API:", data);
+        // console.log("Data from API:", data);
 
         setEmpresaInfo(data.data);
       } catch (error) {
