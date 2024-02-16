@@ -75,7 +75,6 @@ const Dashboard = () => {
 
   const [comentarioInput, setComentario] = useState("");
 
-
   const enviarDiaReparto = async (nombreDia, comentarioInput) => {
     try {
       const url = `https://${process.env.SERVER_IP}/micuenta/pedido/insertar_llamada`;
@@ -88,32 +87,39 @@ const Dashboard = () => {
         body: JSON.stringify({
           codigoCliente: `${localStorage.getItem("nroCta")}`,
           idReparto: `${localStorage.getItem("reparto")}`,
-          descripcion: [{
-            nombreSemana: nombreDia,
-            comentario: comentarioInput,
-          }],
+          descripcion: [
+            {
+              nombreSemana: nombreDia,
+              comentario: comentarioInput,
+            },
+          ],
           accion: "cambio_visita",
         }),
       });
-  
+
       const data = await response.json();
       console.log("Respuesta del servidor:", data);
-  
+
       // Mostrar un toast de éxito
-      toast.success("Solicitud de cambio de día de reparto enviada correctamente", {
-        position: "bottom-center",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        progress: undefined,
-        theme: "colored",
-      });
-  
+      toast.success(
+        "Solicitud de cambio de día de reparto enviada correctamente",
+        {
+          position: "bottom-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Flip,
+        },
+      );
+
       // Aquí puedes manejar la respuesta del servidor según sea necesario
     } catch (error) {
       console.error("Error al enviar la solicitud:", error);
-  
+
       // Mostrar un toast de error
       toast.error("Error al enviar la solicitud", {
         position: "bottom-center",
@@ -121,8 +127,10 @@ const Dashboard = () => {
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
+        draggable: true,
         progress: undefined,
         theme: "colored",
+        transition: Flip,
       });
     }
   };
