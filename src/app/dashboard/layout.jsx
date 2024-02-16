@@ -15,7 +15,6 @@ const Mont = Montserrat({ subsets: ["latin"] });
 export default function RootLayout({ children, session }) {
   return (
     <SessionProvider session={session}>
-      <>
         <Head>
           <link
             rel="stylesheet"
@@ -30,9 +29,8 @@ export default function RootLayout({ children, session }) {
             {children}
             <Footer />
           </body>
+          <ScrollUp />
         </html>
-      </>
-      <ScrollUp />
     </SessionProvider>
   );
 }
