@@ -240,7 +240,7 @@ const MarketComponent = () => {
             title="Carrito de Compras"
             placement="bottom"
             onClose={onCloseCarritoDrawer}
-            visible={carritoVisible}
+            open={carritoVisible}
             height={300}
           >
             {carrito.map((producto, index) => (

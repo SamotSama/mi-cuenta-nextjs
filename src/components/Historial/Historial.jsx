@@ -70,7 +70,7 @@ const Historial = () => {
   const [userInfo, setUserInfo] = useState([]);
   const [loading, setLoading] = useState(true);
   const [facturaInfo, setFactura] = useState([]);
-  const [tipo, setTipo] = useState("factura"); // Set your initial values here
+  const [tipo, setTipo] = useState([]); // Set your initial values here
   const [codigo, setCodigo] = useState("your-codigo");
   const [numero, setNumero] = useState("your-numero");
 
@@ -102,7 +102,9 @@ const Historial = () => {
 
         const info = await response.json();
 
-        // console.log("Data from API:", info);
+        setTipo(info);
+
+        // console.log("Data from API:", info.tipoCliente);
 
         if (Array.isArray(info.ultimasComprasDTOList)) {
           setUserInfo(info.ultimasComprasDTOList);
@@ -173,23 +175,65 @@ const Historial = () => {
               </tbody>
             </table>
           </div>
-          <div className="mt-6 w-[95%]">
-            <table className="mx-auto w-[95%] table-auto rounded-md border-2 bg-white p-4 text-left lg:max-w-6xl">
-              <tbody>
-                <tr className="text-2xl font-medium text-[#3184e4]">
-                  <td className="py-4 pl-2 lg:pr-60">Últimas facturas</td>
-                </tr>
-                {facturaInfo
-                  .filter((factura) => factura.documento.startsWith("A"))
-                  .map((factura, index) => {
-                    const [codigo, numero] = factura.documento.split(" ");
-                    return (
-                      <tr className="border text-xs" key={index}>
-                        <td className="flex py-4 pl-2 font-semibold text-[#00478a] lg:lg:pr-32">
-                          <button
-                            onClick={() => handleDownload(codigo, numero)}
-                            className="flex"
-                          >
+          {tipo.tipoCliente === '2' && (
+            <div className="mt-6 w-[95%]">
+              <table className="mx-auto w-[95%] table-auto rounded-md border-2 bg-white p-4 text-left lg:max-w-6xl">
+                <tbody>
+                  <tr className="text-2xl font-medium text-[#3184e4]">
+                    <td className="py-4 pl-2 lg:pr-60">Últimas facturas</td>
+                  </tr>
+                  {facturaInfo
+                    .filter((factura) => factura.documento.startsWith("A"))
+                    .map((factura, index) => {
+                      const [codigo, numero] = factura.documento.split(" ");
+                      return (
+                        <tr className="border text-xs" key={index}>
+                          <td className="flex py-4 pl-2 font-semibold text-[#00478a] lg:lg:pr-32">
+                            <button
+                              onClick={() => handleDownload(codigo, numero)}
+                              className="flex"
+                            >
+                              <Image
+                                src="/file-arrow-down-solid.svg"
+                                width={12}
+                                height={16}
+                                alt="download-file"
+                                className="mr-2"
+                              />
+                              Fact. {factura.documento}
+                            </button>
+                          </td>
+                          <td className="text-grey-500 py-4 font-medium lg:pr-60">
+                            {factura.fecha}
+                          </td>
+                          <td className="py-4 pl-2 font-bold text-[#3184e4] lg:lg:pr-32">
+                            ${factura.importe}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                </tbody>
+              </table>
+            </div>
+          )}
+          {tipo.tipoCliente === "2" && (
+            <div className="mt-6 w-[95%]">
+              <table className="mx-auto w-[95%] table-auto rounded-md border-2 bg-white p-4 text-left lg:max-w-6xl">
+                <tbody>
+                  <tr className="text-2xl font-medium text-[#3184e4]">
+                    <td className="py-4 pl-2 lg:pr-60">Últimas remitos</td>
+                  </tr>
+                  {facturaInfo
+                    .filter(
+                      (factura) =>
+                        factura.documento.startsWith("R") ||
+                        factura.documento.startsWith("N"),
+                    )
+                    .map((factura, index) => {
+                      const [codigo, numero] = factura.documento.split(" ");
+                      return (
+                        <tr className="border text-xs" key={index}>
+                          <td className="flex py-4 pl-2 font-semibold text-[#00478a] lg:lg:pr-32">
                             <Image
                               src="/file-arrow-down-solid.svg"
                               width={12}
@@ -197,77 +241,41 @@ const Historial = () => {
                               alt="download-file"
                               className="mr-2"
                             />
-                            Fact. {factura.documento}
-                          </button>
-                        </td>
-                        <td className="text-grey-500 py-4 font-medium lg:pr-60">
-                          {factura.fecha}
-                        </td>
-                        <td className="py-4 pl-2 font-bold text-[#3184e4] lg:lg:pr-32">
-                          ${factura.importe}
-                        </td>
-                      </tr>
-                    );
-                  })}
-              </tbody>
-            </table>
-          </div>
-          <div className="mt-6 w-[95%]">
-            <table className="mx-auto w-[95%] table-auto rounded-md border-2 bg-white p-4 text-left lg:max-w-6xl">
-              <tbody>
-                <tr className="text-2xl font-medium text-[#3184e4]">
-                  <td className="py-4 pl-2 lg:pr-60">Últimas remitos</td>
-                </tr>
-                {facturaInfo
-                  .filter(
-                    (factura) =>
-                      factura.documento.startsWith("R") ||
-                      factura.documento.startsWith("N"),
-                  )
-                  .map((factura, index) => {
-                    const [codigo, numero] = factura.documento.split(" ");
-                    return (
-                      <tr className="border text-xs" key={index}>
-                        <td className="flex py-4 pl-2 font-semibold text-[#00478a] lg:lg:pr-32">
-                          <Image
-                            src="/file-arrow-down-solid.svg"
-                            width={12}
-                            height={16}
-                            alt="download-file"
-                            className="mr-2"
-                          />
-                          <button
-                            onClick={() => handleDownload2(codigo, numero)}
-                            className="flex"
-                          >
-                            {factura.documento}{" "}
-                          </button>
-                        </td>
-                        <td className="text-grey-500 py-4 font-medium lg:pr-60">
-                          {factura.fecha}
-                        </td>
-                        <td className="py-4 pl-2 font-bold text-[#3184e4] lg:lg:pr-32">
-                          ${factura.importe}
-                        </td>
-                      </tr>
-                    );
-                  })}
-              </tbody>
-            </table>
-          </div>
-          <button
-            className="mt-4 flex w-11/12 items-center justify-center rounded-sm bg-[#3184e4] p-2 font-bold text-white hover:bg-[#00478a] lg:w-3/5"
-            onClick={() => handleAnalysis()}
-          >
-            <Image
-              src="/cloud-arrow-down-solid.svg"
-              width={30}
-              height={30}
-              alt="download"
-              className="mr-2"
-            />
-            Descargar Análisis de Cuenta
-          </button>
+                            <button
+                              onClick={() => handleDownload2(codigo, numero)}
+                              className="flex"
+                            >
+                              {factura.documento}{" "}
+                            </button>
+                          </td>
+                          <td className="text-grey-500 py-4 font-medium lg:pr-60">
+                            {factura.fecha}
+                          </td>
+                          <td className="py-4 pl-2 font-bold text-[#3184e4] lg:lg:pr-32">
+                            ${factura.importe}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                </tbody>
+              </table>
+            </div>
+          )}
+          {tipo.tipoCliente === "2" && (
+            <button
+              className="mt-4 flex w-11/12 items-center justify-center rounded-sm bg-[#3184e4] p-2 font-bold text-white hover:bg-[#00478a] lg:w-3/5"
+              onClick={() => handleAnalysis()}
+            >
+              <Image
+                src="/cloud-arrow-down-solid.svg"
+                width={30}
+                height={30}
+                alt="download"
+                className="mr-2"
+              />
+              Descargar Análisis de Cuenta
+            </button>
+          )}
         </div>
       )}
     </div>

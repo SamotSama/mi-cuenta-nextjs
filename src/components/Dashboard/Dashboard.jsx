@@ -55,7 +55,7 @@ const Dashboard = () => {
 
   const handleModalOk = () => {
     if (selectedDay) {
-      enviarDiaReparto(selectedDay, comentarioInput).then(() => {
+      enviarDiaReparto(selectedDay, comentario).then(() => {
         setModalVisible(false);
       });
     } else {
@@ -73,9 +73,9 @@ const Dashboard = () => {
     setModalFormVisible(false);
   };
 
-  const [comentarioInput, setComentario] = useState("");
+  const [comentario, setComentario] = useState("");
 
-  const enviarDiaReparto = async (nombreDia, comentarioInput) => {
+  const enviarDiaReparto = async (nombreDia, comentario) => {
     try {
       const url = `https://${process.env.SERVER_IP}/micuenta/pedido/insertar_llamada`;
       const response = await fetch(url, {
@@ -87,12 +87,7 @@ const Dashboard = () => {
         body: JSON.stringify({
           codigoCliente: `${localStorage.getItem("nroCta")}`,
           idReparto: `${localStorage.getItem("reparto")}`,
-          descripcion: [
-            {
-              nombreSemana: nombreDia,
-              comentario: comentarioInput,
-            },
-          ],
+          descripcion: [{ nombreSemana: nombreDia, comentario }],
           accion: "cambio_visita",
         }),
       });
@@ -318,13 +313,13 @@ const Dashboard = () => {
                       rows={4}
                       placeholder="Comentarios adicionales"
                       className="mt-4"
-                      value={comentarioInput}
+                      value={comentario}
                       onChange={(e) => setComentario(e.target.value)}
                     />
                     <Button
                       type="primary"
                       className="mt-4 w-[25vw] bg-[#3184e4] font-semibold text-white"
-                      onClick={handleModalOk} // Cambiar el evento para llamar a handleModalOk
+                      onClick={handleModalOk} 
                     >
                       ENVIAR
                     </Button>
