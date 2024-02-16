@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import locale from "antd/es/locale/es_ES";
 import { BounceLoader } from "react-spinners";
+import { toast } from "react-toastify";
 const { TextArea } = Input;
 
 const Dashboard = () => {
@@ -54,7 +55,7 @@ const Dashboard = () => {
 
   const handleModalOk = () => {
     if (selectedDay) {
-      enviarDiaReparto(selectedDay, comentario).then(() => {
+      enviarDiaReparto(selectedDay, comentarioInput).then(() => {
         setModalVisible(false);
       });
     } else {
@@ -72,9 +73,10 @@ const Dashboard = () => {
     setModalFormVisible(false);
   };
 
-  const [comentario, setComentario] = useState("");
+  const [comentarioInput, setComentario] = useState("");
 
-  const enviarDiaReparto = async (nombreDia, comentario) => {
+
+  const enviarDiaReparto = async (nombreDia, comentarioInput) => {
     try {
       const url = `https://${process.env.SERVER_IP}/micuenta/pedido/insertar_llamada`;
       const response = await fetch(url, {
@@ -86,17 +88,42 @@ const Dashboard = () => {
         body: JSON.stringify({
           codigoCliente: `${localStorage.getItem("nroCta")}`,
           idReparto: `${localStorage.getItem("reparto")}`,
-          descripcion: [{ nombreSemana: nombreDia, comentario }],
+          descripcion: [{
+            nombreSemana: nombreDia,
+            comentario: comentarioInput,
+          }],
           accion: "cambio_visita",
         }),
       });
-
+  
       const data = await response.json();
       console.log("Respuesta del servidor:", data);
-
+  
+      // Mostrar un toast de éxito
+      toast.success("Solicitud de cambio de día de reparto enviada correctamente", {
+        position: "bottom-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        progress: undefined,
+        theme: "colored",
+      });
+  
       // Aquí puedes manejar la respuesta del servidor según sea necesario
     } catch (error) {
-      console.error("Error al enviar el día de reparto:", error);
+      console.error("Error al enviar la solicitud:", error);
+  
+      // Mostrar un toast de error
+      toast.error("Error al enviar la solicitud", {
+        position: "bottom-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        progress: undefined,
+        theme: "colored",
+      });
     }
   };
 
@@ -283,7 +310,7 @@ const Dashboard = () => {
                       rows={4}
                       placeholder="Comentarios adicionales"
                       className="mt-4"
-                      value={comentario}
+                      value={comentarioInput}
                       onChange={(e) => setComentario(e.target.value)}
                     />
                     <Button
