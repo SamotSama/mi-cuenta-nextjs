@@ -83,27 +83,29 @@ const LoginForm = () => {
                     Select: {
                       optionActiveBg: "#3184e4",
                       optionSelectedColor: "#FFFFFF",
-                    }}}}
-               >
-              <Select
-                centered
-                style={{ width: "100%" }}
-                onChange={(value) => {
-                  // Store the selected nroCta
-                  localStorage.setItem("nroCta", value.toString());
-                  // Redirect to the dashboard
-                  router.push("/dashboard");
-                  // Close the modal
-                  Modal.destroyAll();
-                  toast.success(`¡Bienvenido/a! Inicio de Sesión Exitoso`);
+                    },
+                  },
                 }}
               >
-                {loginData.nro_cuentas_hijas.map((account, index) => (
-                  <Option key={index} value={account.nroCta}>
-                    {account.direccion}
-                  </Option>
-                ))}
-              </Select>
+                <Select
+                  centered
+                  style={{ width: "100%" }}
+                  onChange={(value) => {
+                    // Store the selected nroCta
+                    localStorage.setItem("nroCta", value.toString());
+                    // Redirect to the dashboard
+                    router.push("/dashboard");
+                    // Close the modal
+                    Modal.destroyAll();
+                    toast.success(`¡Bienvenido/a! Inicio de Sesión Exitoso`);
+                  }}
+                >
+                  {loginData.nro_cuentas_hijas.map((account, index) => (
+                    <Option key={index} value={account.nroCta}>
+                      {account.direccion}
+                    </Option>
+                  ))}
+                </Select>
               </ConfigProvider>
             ),
           });

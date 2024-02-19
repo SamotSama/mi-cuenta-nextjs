@@ -16,7 +16,8 @@ La estructura del proyecto se organiza de la siguiente manera:
 
 - `/src`: Contiene el código fuente de la aplicación Next.js.
 - `/public`: Contiene archivos estáticos.
-- `/services`: Integración con servicios de Mobeus.
+- `/middleware`: Contiene middleware utilizado en la aplicación para el control de la sesión del sitio.
+- `/context`: Contiene el contexto del estado de sesión del usuario.
 
 ## Instrucciones de Instalación
 

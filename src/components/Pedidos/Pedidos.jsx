@@ -160,7 +160,7 @@ const MarketComponent = () => {
   const disabledDate = (current) => {
     // Can not select days before today or Sundays
     return current && (current < dayjs().startOf("day") || current.day() === 0);
-  }
+  };
 
   return (
     <div>
@@ -232,7 +232,7 @@ const MarketComponent = () => {
             <Button
               type="primary"
               onClick={showCarritoDrawer}
-              className="text-lg fixed bottom-0 z-10 mb-20 h-10 bg-[#3184e4] font-bold"
+              className="fixed bottom-0 z-10 mb-20 h-10 bg-[#3184e4] text-lg font-bold"
             >
               FINALIZAR PEDIDO
             </Button>

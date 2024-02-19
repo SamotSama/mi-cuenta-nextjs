@@ -255,7 +255,7 @@ const Perfil = () => {
                 className="my-2 w-full rounded-sm bg-[#3184e4] py-2 font-semibold text-white hover:bg-[#00478a]"
                 onClick={handleFormSubmit}
               >
-                GUARDAR 
+                GUARDAR
               </button>
             </div>
           </div>
