@@ -110,6 +110,12 @@ const FrioCalor = () => {
       >
         ENVIAR
       </button>
+      <ToastContainer
+        position="bottom-center"
+        theme="colored"
+        autoClose={2000}
+        transition={Flip}
+      />
     </div>
   );
 };

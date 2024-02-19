@@ -9,7 +9,6 @@ import { BounceLoader } from "react-spinners";
 const MarketComponent = () => {
   const [cantidad, setCantidad] = useState([]);
   const [fechaEntrega, setFechaEntrega] = useState(null);
-  const [showDatePicker, setShowDatePicker] = useState(false);
   const [loading, setLoading] = useState(true);
   const [carrito, setCarrito] = useState([]);
   const [carritoVisible, setCarritoVisible] = useState(false);
@@ -53,6 +52,11 @@ const MarketComponent = () => {
     getData();
   }, []);
 
+  const handleConfirmDate = () => {
+    // Cerrar el modal actual después de seleccionar la fecha
+    setModalVisible(false);
+  };
+
   const datePickerRef = useRef();
 
   useEffect(() => {
@@ -90,7 +94,6 @@ const MarketComponent = () => {
             />
           </ConfigProvider>
         ),
-        onOk: handleConfirmDate,
         onCancel: () => {
           setModalVisible(false);
         },
@@ -145,19 +148,19 @@ const MarketComponent = () => {
     setFechaEntrega(date);
   };
 
-  const handleConfirmDate = () => {
-    // Seleccionar la fecha del DatePicker utilizando la referencia
-    if (datePickerRef.current) {
-      const selectedDate = datePickerRef.current.picker.getDate();
-      setFechaEntrega(selectedDate);
-    }
-    setModalVisible(false);
-  };
+  // const handleConfirmDate = () => {
+  //   // Seleccionar la fecha del DatePicker utilizando la referencia
+  //   if (datePickerRef.current) {
+  //     const selectedDate = datePickerRef.current.picker.getDate();
+  //     setFechaEntrega(selectedDate);
+  //   }
+  //   setModalVisible(false);
+  // };
 
   const disabledDate = (current) => {
-    // Can not select days before today and today
-    return current && current < dayjs().endOf("day");
-  };
+    // Can not select days before today or Sundays
+    return current && (current < dayjs().startOf("day") || current.day() === 0);
+  }
 
   return (
     <div>
@@ -229,7 +232,7 @@ const MarketComponent = () => {
             <Button
               type="primary"
               onClick={showCarritoDrawer}
-              className="text-bold fixed bottom-0 z-10 mb-4 bg-[#3184e4] font-semibold"
+              className="text-lg fixed bottom-0 z-10 mb-20 h-10 bg-[#3184e4] font-bold"
             >
               FINALIZAR PEDIDO
             </Button>
