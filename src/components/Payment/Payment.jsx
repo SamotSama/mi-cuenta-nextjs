@@ -77,7 +77,7 @@ const Payment = () => {
                 name="monto"
                 placeholder="Ingresá el monto"
                 required
-                className="my-2 flex w-1/4 justify-center rounded-md bg-gray-100 py-2 placeholder:px-2 focus:border-[#3184e4] focus:outline-none focus:ring-4 focus:ring-[#3184e4]"
+                className="my-2 flex lg:w-1/4 justify-center rounded-md bg-gray-100 py-2 placeholder:px-2 focus:border-[#3184e4] focus:outline-none focus:ring-4 focus:ring-[#3184e4]"
               ></input>
             </div>
           </div>
