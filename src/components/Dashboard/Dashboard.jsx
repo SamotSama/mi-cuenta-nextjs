@@ -319,7 +319,7 @@ const Dashboard = () => {
                     <Button
                       type="primary"
                       className="mt-4 w-[25vw] bg-[#3184e4] font-semibold text-white"
-                      onClick={handleModalOk} 
+                      onClick={handleModalOk}
                     >
                       ENVIAR
                     </Button>
@@ -336,46 +336,47 @@ const Dashboard = () => {
                       direction="vertical"
                       size="large"
                       align="center"
-                      className="w-[25vw]"
+                      className="w-[85vw] lg:w-[25vw]"
                     >
                       <Space.Compact>
                         <Input
-                          style={{ width: "25vw" }}
+                          className="w-[85vw] lg:w-[25vw]"
                           addonBefore="Nombre"
                           allowClear
                         />
                       </Space.Compact>
                       <Space.Compact>
                         <Input
-                          style={{ width: "25vw" }}
+                          className="w-[85vw] lg:w-[25vw]"
                           addonBefore="Email"
                           allowClear
                         />
                       </Space.Compact>
                       <Space.Compact>
                         <Input
-                          style={{ width: "25vw" }}
+                          className="w-[85vw] lg:w-[25vw]"
                           addonBefore="Celular"
                           allowClear
                         />
                       </Space.Compact>
                       <Space.Compact>
                         <Input
-                          style={{ width: "25vw" }}
+                          className="w-[85vw] lg:w-[25vw]"
                           addonBefore="Dirección"
                           allowClear
                         />
                       </Space.Compact>
                       <Space.Compact>
                         <Input
-                          style={{ width: "25vw" }}
+                          // style={{ width: "25vw" }}
+                          className="w-[85vw] lg:w-[25vw]"
                           addonBefore="Localidad"
                           allowClear
                         />
                       </Space.Compact>
                       <Button
                         type="primary"
-                        className="w-[25vw] bg-[#3184e4] font-semibold text-white"
+                        className="mx-auto flex w-[85vw] justify-center bg-[#3184e4] font-semibold text-white lg:w-[25vw]"
                       >
                         ENVIAR
                       </Button>
