@@ -25,6 +25,32 @@ const Payment = () => {
     }
   };
 
+  const [selectedInvoices, setSelectedInvoices] = useState([]);
+  const [paymentType, setPaymentType] = useState({}); // Estado para almacenar el tipo de pago para cada factura
+  
+  const handleInvoiceSelection = (documento, saldo, checked) => {
+    if (checked) {
+      setSelectedInvoices([...selectedInvoices, { documento, saldo }]);
+      setPaymentType({ ...paymentType, [documento]: 'total' }); // Por defecto, establece el tipo de pago como total
+    } else {
+      setSelectedInvoices(selectedInvoices.filter(invoice => invoice.documento !== documento));
+      const { [documento]: removed, ...rest } = paymentType;
+      setPaymentType(rest);
+    }
+  };
+  
+  const handlePaymentTypeChange = (documento, value) => {
+    setPaymentType({ ...paymentType, [documento]: value });
+  };
+  
+  const totalToPay = selectedInvoices.reduce((total, invoice) => {
+    if (paymentType[invoice.documento] === 'total') {
+      return total + invoice.saldo;
+    } else {
+      return total + parseFloat(paymentType[invoice.documento]); // Suma el valor del pago parcial
+    }
+  }, 0);
+
   useEffect(() => {
     const getData = async () => {
       try {
@@ -105,23 +131,40 @@ const Payment = () => {
               <hr className="m-2 border" />
               {userInfo.comprobanteDeudaDTOS.map((comprobante, index) => (
                 <tr
-                  className="flex items-center justify-end text-xs"
+                  className="flex items-center justify-between text-xs"
                   key={index}
                 >
                   <td className="py-4 pl-2 font-medium lg:pr-60">
-                    <Checkbox onChange={onChange} className="mr-2"></Checkbox>
+                    <Checkbox
+                      onChange={(e) =>
+                        handleInvoiceSelection(
+                          comprobante.documento,
+                          comprobante.saldo,
+                          e.target.checked,
+                        )
+                      }
+                      className="mr-2"
+                    />
                     {comprobante.documento}
                   </td>
                   <td className="text-grey-500 py-4 font-medium lg:pr-60">
                     {comprobante.fecha}
                   </td>
-                  <td className="py-4 pl-2 font-bold text-[#3184e4] lg:pr-60">
+                  <td className="py-4 pl-2 font-bold text-[#3184e4] lg:mr-12">
                     ${comprobante.saldo}
                   </td>
                 </tr>
               ))}
               <hr className="m-2 border" />
-              <p>Total a pagar</p>
+              <tr className="flex items-center justify-end">
+                <td className="text-grey-500 py-4 font-medium ">
+                  Total a pagar
+                </td>
+                <td className="py-4 pl-2 font-bold text-[#3184e4] lg:mr-12">
+                  ${totalToPay}
+                </td>
+              </tr>
+              
             </div>
           )}
           <div className="my-4 w-11/12 rounded-md border-2 bg-white p-2 lg:w-3/5">
