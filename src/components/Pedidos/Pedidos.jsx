@@ -64,16 +64,16 @@ const MarketComponent = () => {
       Modal.info({
         title: "Seleccione la fecha",
         centered: true,
-        footer: (
-          <Button
-            key="submit"
-            type="primary"
-            className="mx-auto mt-2 flex flex-col justify-center bg-[#3184e4] text-center font-semibold"
-            onClick={handleConfirmDate}
-          >
-            ACEPTAR
-          </Button>
-        ),
+        // footer: (
+        //   <Button
+        //     key="submit"
+        //     type="primary"
+        //     className="mx-auto mt-2 flex flex-col justify-center bg-[#3184e4] text-center font-semibold"
+        //     onClick={handleConfirmDate}
+        //   >
+        //     ACEPTAR
+        //   </Button>
+        // ),
         content: (
           <ConfigProvider
             theme={{
@@ -88,7 +88,7 @@ const MarketComponent = () => {
               locale={locale}
               value={fechaEntrega}
               disabledDate={disabledDate}
-              onChange={handleDateChange}
+              onOk={handleConfirmDate}
               className="flex flex-col justify-center"
               format="DD/MM/YYYY"
             />
