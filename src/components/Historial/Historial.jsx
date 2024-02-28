@@ -158,7 +158,7 @@ const Historial = () => {
                         : visit.motivo}
                     </td>
                     <td className="py-4 pl-2 font-semibold text-[#3184e4] lg:lg:pr-32">
-                      {visit.compro === "S"
+                      {visit.itemTotal > 0
                         ? `El total es de $${visit.itemTotal}`
                         : ""}
                       {visit.pago > 0 && (
@@ -221,7 +221,7 @@ const Historial = () => {
               <table className="mx-auto w-[95%] table-auto rounded-md border-2 bg-white p-4 text-left lg:max-w-6xl">
                 <tbody>
                   <tr className="text-2xl font-medium text-[#3184e4]">
-                    <td className="py-4 pl-2 lg:pr-60">Últimas remitos</td>
+                    <td className="py-4 pl-2 lg:pr-60">Últimos recibos</td>
                   </tr>
                   {facturaInfo
                     .filter(
