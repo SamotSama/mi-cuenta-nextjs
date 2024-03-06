@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { BounceLoader } from "react-spinners";
-import { Checkbox } from "antd";
+import { Checkbox, Modal } from "antd";
 
 const Payment = () => {
   const [fecha] = useState(new Date());
@@ -12,9 +12,12 @@ const Payment = () => {
   const [loading, setLoading] = useState(true);
   const [selectedOption, setSelectedOption] = useState("");
   const [showPaymentOptions, setShowPaymentOptions] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
   const onChange = (e) => {
     console.log(`checked = ${e.target.checked}`);
   };
+
+  // LOGICA PARA TIPO DE PAGO EN PPT
 
   const handleOptionChange = (e) => {
     setSelectedOption(e.target.value);
@@ -25,31 +28,36 @@ const Payment = () => {
     }
   };
 
+  // LOGICA PARA ELEGIR LAS FACTURAS A PAGAR
+
   const [selectedInvoices, setSelectedInvoices] = useState([]);
-  const [paymentType, setPaymentType] = useState({}); // Estado para almacenar el tipo de pago para cada factura
-  
+  const [paymentType, setPaymentType] = useState({});
+
   const handleInvoiceSelection = (documento, saldo, checked) => {
     if (checked) {
       setSelectedInvoices([...selectedInvoices, { documento, saldo }]);
-      setPaymentType({ ...paymentType, [documento]: 'total' }); // Por defecto, establece el tipo de pago como total
-    } else {
-      setSelectedInvoices(selectedInvoices.filter(invoice => invoice.documento !== documento));
+      setPaymentType({ ...paymentType, [documento]: "total" });
+      setSelectedInvoices(
+        selectedInvoices.filter((invoice) => invoice.documento !== documento),
+      );
       const { [documento]: removed, ...rest } = paymentType;
       setPaymentType(rest);
     }
   };
-  
+
   const handlePaymentTypeChange = (documento, value) => {
     setPaymentType({ ...paymentType, [documento]: value });
   };
-  
+
   const totalToPay = selectedInvoices.reduce((total, invoice) => {
-    if (paymentType[invoice.documento] === 'total') {
+    if (paymentType[invoice.documento] === "total") {
       return total + invoice.saldo;
     } else {
-      return total + parseFloat(paymentType[invoice.documento]); // Suma el valor del pago parcial
+      return total + parseFloat(paymentType[invoice.documento]);
     }
   }, 0);
+
+  // FETCH PARA OBTENCION DE DAT0S DEL USUARIO
 
   useEffect(() => {
     const getData = async () => {
@@ -77,6 +85,57 @@ const Payment = () => {
     };
     getData();
   }, []);
+
+  // POSTEO PARA ADHERIRSE A DEBITO AUTOMATICO PPT
+
+  const handleAdhesionDebitoAutomatico = async () => {
+    try {
+      const response = await fetch(
+        `http://${process.env.SERVER_IP}/micuenta/ppt/suscripcion`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + localStorage.getItem("access_token"),
+          },
+          body: JSON.stringify({
+            codigoCliente: userInfo.idCliente,
+            codigoTipoCliente: userInfo.tipoCliente,
+            idReparto: userInfo.ruta,
+            type: "adhesion",
+            currency_id: "ARS",
+            detail: {
+              external_reference: "999",
+              concept_id: "debitoautomatico",
+              concept_description: "Débito Automático",
+              amount: 0,
+            },
+            payer: {
+              id: userInfo.idCliente,
+              name: userInfo.nombre,
+              email: userInfo.mail,
+              identification: {
+                type: "DNI_ARG",
+                number: "",
+                country: "ARG",
+              },
+            },
+          }),
+        },
+      );
+
+      const data = await response.json();
+      if (data.form_url) {
+        // Abre el modal con la URL obtenida
+        setModalVisible(true);
+      } else {
+        // Manejar caso de error si es necesario
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      // Manejar caso de error si es necesario
+    }
+  };
 
   return (
     <div>
@@ -164,7 +223,6 @@ const Payment = () => {
                   ${totalToPay}
                 </td>
               </tr>
-              
             </div>
           )}
           <div className="my-4 w-11/12 rounded-md border-2 bg-white p-2 lg:w-3/5">
@@ -228,31 +286,34 @@ const Payment = () => {
             </button>
           </div>
           {userInfo.adheridoDebito === false ? (
-          <button className=" my-2 flex w-11/12 justify-center rounded-sm bg-[#3184e4] py-2 font-semibold text-white hover:bg-[#00478a] lg:w-3/5">
-            <Image
-              src="/credit-card.svg"
-              width={33}
-              height={25}
-              className="mr-2"
-              alt="tarjeta-de-credito"
-            ></Image>
-            <Link href="/friocalor/solicitar">
-              Adherirse al Débito Automático
-            </Link>
-          </button>
-          ):(
+            <button
+              onClick={handleAdhesionDebitoAutomatico}
+              className=" my-2 flex w-11/12 justify-center rounded-sm bg-[#3184e4] py-2 font-semibold text-white hover:bg-[#00478a] lg:w-3/5"
+            >
+              <Image
+                src="/credit-card.svg"
+                width={33}
+                height={25}
+                className="mr-2"
+                alt="tarjeta-de-credito"
+              ></Image>
+              <Link href="/friocalor/solicitar">
+                Adherirse al Débito Automático
+              </Link>
+            </button>
+          ) : (
             <button className=" my-2 flex w-11/12 justify-center rounded-sm bg-[#3184e4] py-2 font-semibold text-white hover:bg-[#00478a] lg:w-3/5">
-            <Image
-              src="/credit-card.svg"
-              width={33}
-              height={25}
-              className="mr-2"
-              alt="tarjeta-de-credito"
-            ></Image>
-            <Link href="/friocalor/solicitar">
-              Desadherirse al Débito Automático
-            </Link>
-          </button>
+              <Image
+                src="/credit-card.svg"
+                width={33}
+                height={25}
+                className="mr-2"
+                alt="tarjeta-de-credito"
+              ></Image>
+              <p>
+                Desadherirse al Débito Automático
+              </p>
+            </button>
           )}
         </div>
       )}
