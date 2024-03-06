@@ -8,6 +8,7 @@ import locale from "antd/es/locale/es_ES";
 import { BounceLoader } from "react-spinners";
 import { toast } from "react-toastify";
 const { TextArea } = Input;
+import { useRouter } from "next/navigation";
 
 const Dashboard = () => {
   const [userInfo, setUserInfo] = useState({});
@@ -15,6 +16,7 @@ const Dashboard = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedDay, setSelectedDay] = useState(null);
   const [modalFormVisible, setModalFormVisible] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const getData = async () => {
@@ -130,6 +132,12 @@ const Dashboard = () => {
     }
   };
 
+  const handleRepetirUltimoPedido = () => {
+    // Redirigir a la página de pedidos con la información de la última compra
+    const ultimaCompraString = JSON.stringify(userInfo.ultimaCompra);
+    router.push(`/dashboard/pedido?ultimaCompra=${encodeURIComponent(ultimaCompraString)}`);
+  };
+  
   return (
     <div>
       {loading ? (
@@ -196,20 +204,18 @@ const Dashboard = () => {
                   <p className="ml-3">HACER PEDIDO</p>
                 </button>
               </Link>
-              <Link
-                href="/dashboard/pagar"
+              <button
                 className="my-2 flex justify-center rounded-sm bg-[#00478a] px-4 py-2 text-sm font-semibold text-white hover:bg-[#3184e4]"
+                onClick={handleRepetirUltimoPedido}
               >
-                <button className="flex items-center">
-                  <Image
-                    src="/camion.svg"
-                    width={35}
-                    height={23}
-                    alt="camion"
-                  ></Image>
-                  <p className="ml-3">REPETIR ÚLTIMO PEDIDO</p>
-                </button>
-              </Link>
+                <Image
+                  src="/camion.svg"
+                  width={35}
+                  height={23}
+                  alt="camion"
+                ></Image>
+                <p className="ml-3">REPETIR ÚLTIMO PEDIDO</p>
+              </button>
               <div
                 className="my-4 h-[11rem] rounded-sm bg-[#00478a] px-4 py-2 font-semibold text-white hover:bg-[#3184e4] lg:max-h-40"
                 zindex={0}

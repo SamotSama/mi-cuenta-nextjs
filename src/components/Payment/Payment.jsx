@@ -227,6 +227,7 @@ const Payment = () => {
               <Link href="/friocalor/solicitar">PAGAR</Link>
             </button>
           </div>
+          {userInfo.adheridoDebito === false ? (
           <button className=" my-2 flex w-11/12 justify-center rounded-sm bg-[#3184e4] py-2 font-semibold text-white hover:bg-[#00478a] lg:w-3/5">
             <Image
               src="/credit-card.svg"
@@ -239,6 +240,20 @@ const Payment = () => {
               Adherirse al Débito Automático
             </Link>
           </button>
+          ):(
+            <button className=" my-2 flex w-11/12 justify-center rounded-sm bg-[#3184e4] py-2 font-semibold text-white hover:bg-[#00478a] lg:w-3/5">
+            <Image
+              src="/credit-card.svg"
+              width={33}
+              height={25}
+              className="mr-2"
+              alt="tarjeta-de-credito"
+            ></Image>
+            <Link href="/friocalor/solicitar">
+              Desadherirse al Débito Automático
+            </Link>
+          </button>
+          )}
         </div>
       )}
     </div>
