@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { useState } from "react";
 import { ToastContainer, toast, Flip } from "react-toastify";
@@ -9,31 +9,40 @@ const FrioCalor = () => {
   const [archivo1, setArchivo1] = useState(null);
   const [archivo2, setArchivo2] = useState(null);
 
+  // POSTEO PARA INSERTAR LLAMADA => SOLICITAR EQUIPO FRIO CALOR
+
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-  
+
     try {
       const formData = new FormData();
       formData.append("codigoCliente", `${localStorage.getItem("nroCta")}`);
       formData.append("idReparto", `${localStorage.getItem("ruta")}`);
-      formData.append("descripcion", JSON.stringify([
-        {
-          descripcion: "solicitud_fc",
-          domicilio: `${localStorage.getItem("direccion")}`
-        }
-      ]));
+      formData.append(
+        "descripcion",
+        JSON.stringify([
+          {
+            descripcion: "solicitud_fc",
+            domicilio: `${localStorage.getItem("direccion")}`,
+          },
+        ]),
+      );
       formData.append("dniFrente", archivo1);
       formData.append("dniDorso", archivo2);
       formData.append("accion", "solicitud_fc");
-  
-      const response = await fetch(`https://${process.env.SERVER_IP}/micuenta/pedido/insertar_llamada/`, {
-        method: "POST",
-        body: formData,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-      }});
-  
+
+      const response = await fetch(
+        `https://${process.env.SERVER_IP}/micuenta/pedido/insertar_llamada/`,
+        {
+          method: "POST",
+          body: formData,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        },
+      );
+
       if (!response.ok) {
         throw new Error("Error al enviar la solicitud");
       }

@@ -88,41 +88,38 @@ const Payment = () => {
 
   // POSTEO PARA ADHERIRSE A DEBITO AUTOMATICO PPT
 
-  const handleAdhesionDebitoAutomatico = async () => {
+  const handleAdhesion = async () => {
     try {
-      const response = await fetch(
-        `http://${process.env.SERVER_IP}/micuenta/ppt/suscripcion`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + localStorage.getItem("access_token"),
-          },
-          body: JSON.stringify({
-            codigoCliente: userInfo.idCliente,
-            codigoTipoCliente: userInfo.tipoCliente,
-            idReparto: userInfo.ruta,
-            type: "adhesion",
-            currency_id: "ARS",
-            detail: {
-              external_reference: "999",
-              concept_id: "debitoautomatico",
-              concept_description: "Débito Automático",
-              amount: 0,
-            },
-            payer: {
-              id: userInfo.idCliente,
-              name: userInfo.nombre,
-              email: userInfo.mail,
-              identification: {
-                type: "DNI_ARG",
-                number: "",
-                country: "ARG",
-              },
-            },
-          }),
+      const response = await fetch(`http://${process.env.SERVER_IP}/micuenta/ppt/suscripcion`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.getItem("access_token")
         },
-      );
+        body: JSON.stringify({
+          "codigoCliente": userInfo.idCliente,
+            "codigoTipoCliente": userInfo.tipoCliente,
+            "condicionPago": 1,
+            "idReparto": userInfo.ruta,
+            "type": "adhesion",
+            "currency_id": "ARS",
+            "detail": {
+                "external_reference": userInfo.idCliente,
+                "concept_id": "debitoautomatico",
+                "concept_description": "Debito Automatico",
+                "amount": 0
+            },
+            "payer": {
+                "name": userInfo.nombre,
+                "email": userInfo.mail,
+                "identification": {             
+                    "type": "DNI_ARG",
+                    "number": userInfo.idCliente,
+                    "country": "ARG"
+                }
+            }
+        })
+      });
 
       const data = await response.json();
       if (data.form_url) {
@@ -132,10 +129,11 @@ const Payment = () => {
         // Manejar caso de error si es necesario
       }
     } catch (error) {
-      console.error("Error:", error);
+      console.error('Error:', error);
       // Manejar caso de error si es necesario
     }
   };
+
 
   return (
     <div>
@@ -287,7 +285,7 @@ const Payment = () => {
           </div>
           {userInfo.adheridoDebito === false ? (
             <button
-              onClick={handleAdhesionDebitoAutomatico}
+              onClick={handleAdhesion}
               className=" my-2 flex w-11/12 justify-center rounded-sm bg-[#3184e4] py-2 font-semibold text-white hover:bg-[#00478a] lg:w-3/5"
             >
               <Image
@@ -297,9 +295,7 @@ const Payment = () => {
                 className="mr-2"
                 alt="tarjeta-de-credito"
               ></Image>
-              <p>
-                Adherirse al Débito Automático
-              </p>
+              <p>Adherirse al Débito Automático</p>
             </button>
           ) : (
             <button className=" my-2 flex w-11/12 justify-center rounded-sm bg-[#3184e4] py-2 font-semibold text-white hover:bg-[#00478a] lg:w-3/5">
@@ -310,9 +306,7 @@ const Payment = () => {
                 className="mr-2"
                 alt="tarjeta-de-credito"
               ></Image>
-              <p> 
-                Desadherirse al Débito Automático
-              </p>
+              <p>Desadherirse al Débito Automático</p>
             </button>
           )}
         </div>
