@@ -16,6 +16,8 @@ const MarketComponent = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [productsInfo, setProductsInfo] = useState([]);
 
+  // FETCH PARA OBTENER LOS PRODUCTOS DISPONIBLES POR REPARTO Y NROCTA
+
   useEffect(() => {
     const getData = async () => {
       try {
@@ -36,10 +38,8 @@ const MarketComponent = () => {
           setLoading(false);
 
           setFechaEntrega(info.fechaEntrega);
-          // Inicializar fechaEntrega con la fecha existente
 
           setModalVisible(true);
-          // Abrir el modal una vez que los datos estén disponibles
         } else {
           console.error("Data received is not an array:", info);
         }
@@ -53,9 +53,10 @@ const MarketComponent = () => {
   }, []);
 
   const handleConfirmDate = () => {
-    // Cerrar el modal actual después de seleccionar la fecha
     setModalVisible(false);
   };
+
+  // LOGICA DEL DATEPICKER
 
   const datePickerRef = useRef();
 
@@ -64,16 +65,6 @@ const MarketComponent = () => {
       Modal.info({
         title: "Seleccione la fecha",
         centered: true,
-        // footer: (
-        //   <Button
-        //     key="submit"
-        //     type="primary"
-        //     className="mx-auto mt-2 flex flex-col justify-center bg-[#3184e4] text-center font-semibold"
-        //     onClick={handleConfirmDate}
-        //   >
-        //     ACEPTAR
-        //   </Button>
-        // ),
         content: (
           <ConfigProvider
             theme={{
@@ -102,6 +93,8 @@ const MarketComponent = () => {
     }
   }, [modalVisible, fechaEntrega]);
 
+    // LOGICA DE LA TIENDA DE PRODUCTOS
+
   useEffect(() => {
     if (productsInfo.length > 0) {
       setCantidad(productsInfo.map(() => 0));
@@ -117,7 +110,6 @@ const MarketComponent = () => {
         newCantidad[index] + parseInt(change, 10),
       );
 
-      // Actualizar el carrito
       const updatedCarrito = [...carrito];
       updatedCarrito[index] = {
         ...productsInfo[index],
@@ -127,7 +119,6 @@ const MarketComponent = () => {
 
       setCarrito(updatedCarrito);
 
-      // Verificar si se ha cambiado el carrito
       if (!carritoCambiado && newCantidad[index] > 0) {
         setCarritoCambiado(true);
       }
@@ -148,17 +139,9 @@ const MarketComponent = () => {
     setFechaEntrega(date);
   };
 
-  // const handleConfirmDate = () => {
-  //   // Seleccionar la fecha del DatePicker utilizando la referencia
-  //   if (datePickerRef.current) {
-  //     const selectedDate = datePickerRef.current.picker.getDate();
-  //     setFechaEntrega(selectedDate);
-  //   }
-  //   setModalVisible(false);
-  // };
+    // LOGICA DE DÍAS DISPONIBLES PARA EL REPARTO
 
   const disabledDate = (current) => {
-    // Can not select days before today or Sundays
     return current && (current < dayjs().startOf("day") || current.day() === 0);
   };
 

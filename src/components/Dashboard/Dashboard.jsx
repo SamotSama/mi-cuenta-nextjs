@@ -18,6 +18,8 @@ const Dashboard = () => {
   const [modalFormVisible, setModalFormVisible] = useState(false);
   const router = useRouter();
 
+  // FETCH PARA OBTENCION DE DAT0S DEL USUARIO
+
   useEffect(() => {
     const getData = async () => {
       try {
@@ -35,6 +37,7 @@ const Dashboard = () => {
 
         localStorage.setItem("reparto", info.ruta);
         localStorage.setItem("direccion", info.direccion);
+        localStorage.setItem("friocalor", info.servicioFrioCalor);
 
         setUserInfo(info);
         setLoading(false);
@@ -71,11 +74,13 @@ const Dashboard = () => {
 
   const onFinish = (values) => {
     console.log("Formulario enviado:", values);
-    // Aquí puedes agregar lógica adicional para enviar los datos del formulario al servidor
+
     setModalFormVisible(false);
   };
 
   const [comentario, setComentario] = useState("");
+
+  // POSTEO PARA INSERTAR LLAMADA => CAMBIO DE DIA DE REPARTO
 
   const enviarDiaReparto = async (nombreDia, comentario) => {
     try {
@@ -97,7 +102,6 @@ const Dashboard = () => {
       const data = await response.json();
       console.log("Respuesta del servidor:", data);
 
-      // Mostrar un toast de éxito
       toast.success(
         "Solicitud de cambio de día de reparto enviada correctamente",
         {
@@ -112,12 +116,9 @@ const Dashboard = () => {
           transition: Flip,
         },
       );
-
-      // Aquí puedes manejar la respuesta del servidor según sea necesario
     } catch (error) {
       console.error("Error al enviar la solicitud:", error);
 
-      // Mostrar un toast de error
       toast.error("Error al enviar la solicitud", {
         position: "bottom-center",
         autoClose: 2000,
@@ -132,12 +133,15 @@ const Dashboard = () => {
     }
   };
 
+  // LOGICA PARA REPETIR ULTIMO PEDIDO
+
   const handleRepetirUltimoPedido = () => {
-    // Redirigir a la página de pedidos con la información de la última compra
     const ultimaCompraString = JSON.stringify(userInfo.ultimaCompra);
-    router.push(`/dashboard/pedido?ultimaCompra=${encodeURIComponent(ultimaCompraString)}`);
+    router.push(
+      `/dashboard/pedido?ultimaCompra=${encodeURIComponent(ultimaCompraString)}`,
+    );
   };
-  
+
   return (
     <div>
       {loading ? (
@@ -165,7 +169,7 @@ const Dashboard = () => {
                 year: "numeric",
               })}
             </p>
-            <p className="mr-5 text-center text-xl font-medium text-[#3184e4]">
+            <p className="mr-5 text-center lg:text-xl font-medium text-[#3184e4]">
               ${userInfo.saldo}
             </p>
             <button className="flex justify-center rounded-sm bg-[#3184e4] px-2 py-2 text-xs font-semibold text-white hover:bg-[#00478a] lg:mr-32">

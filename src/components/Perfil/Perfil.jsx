@@ -10,6 +10,8 @@ const Perfil = () => {
   const [loading, setLoading] = useState(true);
   const [disableUpdate, setDisableUpdate] = useState(false);
 
+  // FETCH PARA OBTENCION DE DAT0S DEL USUARIO
+
   useEffect(() => {
     const getData = async () => {
       try {
@@ -38,6 +40,8 @@ const Perfil = () => {
     getData();
   }, []);
 
+  // LOGICA PARA CAMBIO DE CONTRASEÑA CUENTAS HIJAS
+
   useEffect(() => {
     if (userInfo.nro_cuentas_hijas && userInfo.nro_cuentas_hijas.length > 1) {
       userInfo.nro_cuentas_hijas.forEach((cuenta) => {
@@ -50,6 +54,8 @@ const Perfil = () => {
       });
     }
   }, [userInfo]);
+
+  // POSTEO PARA INSERTAR LLAMADA => CAMBIO DE DATOS DEL PERFIL
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();

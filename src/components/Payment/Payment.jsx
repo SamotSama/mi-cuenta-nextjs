@@ -297,9 +297,9 @@ const Payment = () => {
                 className="mr-2"
                 alt="tarjeta-de-credito"
               ></Image>
-              <Link href="/friocalor/solicitar">
+              <p>
                 Adherirse al Débito Automático
-              </Link>
+              </p>
             </button>
           ) : (
             <button className=" my-2 flex w-11/12 justify-center rounded-sm bg-[#3184e4] py-2 font-semibold text-white hover:bg-[#00478a] lg:w-3/5">
@@ -310,7 +310,7 @@ const Payment = () => {
                 className="mr-2"
                 alt="tarjeta-de-credito"
               ></Image>
-              <p>
+              <p> 
                 Desadherirse al Débito Automático
               </p>
             </button>

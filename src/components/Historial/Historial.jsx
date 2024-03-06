@@ -4,6 +4,8 @@ import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import { BounceLoader } from "react-spinners";
 
+// FETCH PARA DESCARGAS DE FACTURAS Y RECIBOS
+
 const downloadInvoice = async (tipo, codigo, numero) => {
   try {
     const response = await fetch(
@@ -35,6 +37,8 @@ const downloadInvoice = async (tipo, codigo, numero) => {
   }
 };
 
+// FETCH PARA OBTENCION DE ANALISIS DE CUENTA
+
 const downloadAnalysis = async () => {
   try {
     const response = await fetch(
@@ -54,7 +58,6 @@ const downloadAnalysis = async () => {
 
     const blob = await response.blob();
 
-    // Create a link element to trigger the download
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
     link.download = `Analisis-Cuenta-${localStorage.getItem("nroCta")}.pdf`;
@@ -86,6 +89,8 @@ const Historial = () => {
   const handleAnalysis = (codigo, numero) => {
     downloadAnalysis();
   };
+
+  // FETCH PARA OBTENCION DE DAT0S Y MOVIMIENTOS DEL USUARIO
 
   useEffect(() => {
     const getData = async () => {
@@ -175,7 +180,7 @@ const Historial = () => {
               </tbody>
             </table>
           </div>
-          {tipo.tipoCliente === '2' && (
+          {tipo.tipoCliente === "2" && (
             <div className="mt-6 w-[95%]">
               <table className="mx-auto w-[95%] table-auto rounded-md border-2 bg-white p-4 text-left lg:max-w-6xl">
                 <tbody>
