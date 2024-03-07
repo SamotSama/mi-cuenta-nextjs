@@ -13,6 +13,7 @@ const Payment = () => {
   const [selectedOption, setSelectedOption] = useState("");
   const [showPaymentOptions, setShowPaymentOptions] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [formUrl, setFormUrl] = useState('');
   const onChange = (e) => {
     console.log(`checked = ${e.target.checked}`);
   };
@@ -90,7 +91,7 @@ const Payment = () => {
 
   const handleAdhesion = async () => {
     try {
-      const response = await fetch(`http://${process.env.SERVER_IP}/micuenta/ppt/suscripcion`, {
+      const response = await fetch(`https://${process.env.SERVER_IP}/micuenta/ppt/suscripcion`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -123,16 +124,25 @@ const Payment = () => {
 
       const data = await response.json();
       if (data.form_url) {
-        // Abre el modal con la URL obtenida
-        setModalVisible(true);
+          setFormUrl(data.form_url);
+          setModalVisible(true);
       } else {
-        // Manejar caso de error si es necesario
+          // Manejar caso de error si form_url no está presente en la respuesta
       }
-    } catch (error) {
+  } catch (error) {
       console.error('Error:', error);
-      // Manejar caso de error si es necesario
-    }
-  };
+      // Manejar caso de error si la solicitud falla
+  }
+};
+
+useEffect(() => {
+  handleAdhesion();
+}, []); // El segundo parámetro [] asegura que se ejecute solo una vez, después de que el componente se monte
+
+const closeModal = () => {
+  setModalVisible(false);
+  setFormUrl('');
+};
 
 
   return (
@@ -311,6 +321,13 @@ const Payment = () => {
           )}
         </div>
       )}
+      <Modal
+            open={modalVisible}
+            onCancel={closeModal}
+            footer={null}
+            width={2000}
+            height={2000}
+        ><iframe src={formUrl} className="h-[1000px] w-full" /></Modal>
     </div>
   );
 };
