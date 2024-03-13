@@ -6,6 +6,39 @@ import locale from "antd/es/locale/es_ES";
 import dayjs from "dayjs";
 import { BounceLoader } from "react-spinners";
 
+const ResumenPedido = ({ productos, cantidades }) => {
+  // Función para calcular el total del pedido
+  const calcularTotal = () => {
+    let total = 0;
+    productos.forEach((producto, index) => {
+      const precio = parseFloat(producto.precio);
+      const cantidad = parseInt(cantidades[index]);
+      if (!isNaN(precio) && !isNaN(cantidad)) {
+        total += precio * cantidad;
+      }
+    });
+    return total;
+  };
+
+  return (
+    <div>
+      {productos.map((producto, index) => (
+        <div key={producto.id}>
+          {cantidades[index] > 0 && (
+            <div>
+              <p className="py-4 pl-2 font-semibold lg:lg:pr-32">
+                {producto.nombre} - Cantidad: {cantidades[index]} - Total: $
+                {producto.precio * cantidades[index]}
+              </p>
+            </div>
+          )}
+        </div>
+      ))}
+      <p className="py-4 pl-2 font-semibold text-[#3184e4] lg:lg:pr-32">Total del pedido: ${calcularTotal()}</p>
+    </div>
+  );
+};
+
 const MarketComponent = () => {
   const [cantidad, setCantidad] = useState([]);
   const [fechaEntrega, setFechaEntrega] = useState(null);
@@ -15,6 +48,8 @@ const MarketComponent = () => {
   const [carritoCambiado, setCarritoCambiado] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [productsInfo, setProductsInfo] = useState([]);
+  const [productos, setProductos] = useState([]);
+  const [cantidades, setCantidades] = useState([]);
 
   // FETCH PARA OBTENER LOS PRODUCTOS DISPONIBLES POR REPARTO Y NROCTA
 
@@ -36,6 +71,9 @@ const MarketComponent = () => {
         if (Array.isArray(info.data)) {
           setProductsInfo(info.data);
           setLoading(false);
+
+          setProductos(info.data);
+          setCantidades(info.data.map(() => 0));
 
           setFechaEntrega(info.fechaEntrega);
 
@@ -93,7 +131,7 @@ const MarketComponent = () => {
     }
   }, [modalVisible, fechaEntrega]);
 
-    // LOGICA DE LA TIENDA DE PRODUCTOS
+  // LOGICA DE LA TIENDA DE PRODUCTOS
 
   useEffect(() => {
     if (productsInfo.length > 0) {
@@ -105,26 +143,38 @@ const MarketComponent = () => {
   const onCantidadChange = (index, change) => {
     setCantidad((prevCantidad) => {
       const newCantidad = [...prevCantidad];
-      newCantidad[index] = Math.max(
-        0,
-        newCantidad[index] + parseInt(change, 10),
-      );
-
+      newCantidad[index] = Math.max(0, newCantidad[index] + parseInt(change, 10));
+  
       const updatedCarrito = [...carrito];
       updatedCarrito[index] = {
         ...productsInfo[index],
         cantidad: newCantidad[index],
         total: newCantidad[index] * productsInfo[index].precio,
       };
-
+  
       setCarrito(updatedCarrito);
-
+  
       if (!carritoCambiado && newCantidad[index] > 0) {
         setCarritoCambiado(true);
       }
-
+  
+      const updatedProductos = updatedCarrito.map((item) => ({
+        id: item.id,
+        nombre: item.nombre,
+        precio: item.precio,
+      }));
+      const updatedCantidades = updatedCarrito.map((item) => item.cantidad);
+  
+      setProductos(updatedProductos);
+      setCantidades(updatedCantidades);
+  
       return newCantidad;
     });
+  };
+
+  const borrarCarrito = () => {
+    setCantidades(Array(productsInfo.length).fill(0));
+    setCarritoCambiado(false);
   };
 
   const showCarritoDrawer = () => {
@@ -139,10 +189,54 @@ const MarketComponent = () => {
     setFechaEntrega(date);
   };
 
-    // LOGICA DE DÍAS DISPONIBLES PARA EL REPARTO
+  // LOGICA DE DÍAS DISPONIBLES PARA EL REPARTO
 
   const disabledDate = (current) => {
     return current && (current < dayjs().startOf("day") || current.day() === 0);
+  }; 
+
+  // LOGICA PARA INSERTAR LLAMADA =>  REALIZAR PEDIDO
+
+  const confirmarPedido = async () => {
+    if (carritoCambiado && carrito.filter(item => item.cantidad > 0).length > 0) {
+      try {
+        const datosPedido = {
+          codigoCliente: localStorage.getItem("movimientosIdCliente"),
+          fechaPedido: fechaEntrega,
+          idReparto: localStorage.getItem("movimientosRuta"),
+          descripcion: carrito.filter(item => item.cantidad > 0).map(item => ({
+            codigo: item.id,
+            cantidad: item.cantidad,
+            precio: item.precio
+          })),
+          accion: 'pedido'
+        };
+  
+        const response = await fetch(`https://${process.env.SERVER_IP}/micuenta/pedido/insertar_llamada`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`
+          },
+          body: JSON.stringify(datosPedido)
+        });
+  
+        const responseData = await response.json();
+  
+        if (response.ok) {
+          toast.success('Pedido realizado con éxito', { autoClose: 3000 });
+          borrarCarrito();
+        } else {
+          toast.error('Error al realizar el pedido');
+          console.error('Error al realizar el pedido:', responseData);
+        }
+      } catch (error) {
+        toast.error('Error al realizar el pedido');
+        console.error('Error al realizar el pedido:', error);
+      }
+    } else {
+      toast.warning('No hay productos en el carrito');
+    }
   };
 
   return (
@@ -221,26 +315,20 @@ const MarketComponent = () => {
             </Button>
           )}
 
-          {/* Drawer para mostrar el carrito */}
           <Drawer
-            title="Carrito de Compras"
-            placement="bottom"
+            title="Resumen del Pedido"
+            placement="right"
             onClose={onCloseCarritoDrawer}
             open={carritoVisible}
-            height={300}
-          >
-            {carrito.map((producto, index) => (
-              <div key={index}>
-                <p>
-                  {producto.nombre} - Cantidad: {producto.cantidad} - Total: $
-                  {producto.total}
-                </p>
+            width={400}
+            footer={
+              <div style={{ textAlign: 'right' }}>
+                <Button onClick={borrarCarrito} style={{ marginRight: 8 }}>Cancelar</Button>
+                <Button onClick={confirmarPedido} type="primary" className="bg-[#3184e4] font-semibold text-white">Confirmar</Button>
               </div>
-            ))}
-            <p>
-              Total del carrito: $
-              {carrito.reduce((total, producto) => total + producto.total, 0)}
-            </p>
+            }
+          >
+            <ResumenPedido productos={productos} cantidades={cantidades} />
           </Drawer>
         </div>
       )}

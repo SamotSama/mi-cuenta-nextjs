@@ -151,7 +151,7 @@ const Dashboard = () => {
       urlRecomendar: `${localStorage.getItem("url")}`,
     };
 
-    const cuerpoCorreo = `Si entras [aquí](${datos.urlRecomendar + datos.nroCta}), tendrás tus primeros 12 Litros de regalo. ¡Aprovéchalo!`;
+    const cuerpoCorreo = `Si entras aca ${datos.urlRecomendar + datos.nroCta}, tendrás tus primeros 12 Litros de regalo. ¡Aprovéchalo!`;
 
     datos.subject = 'Hacete cliente de IVESS. ¡Te lo recomiendo! 😍💧';
     datos.content = cuerpoCorreo;
