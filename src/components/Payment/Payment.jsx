@@ -127,17 +127,15 @@ const Payment = () => {
           setFormUrl(data.form_url);
           setModalVisible(true);
       } else {
-          // Manejar caso de error si form_url no está presente en la respuesta
       }
   } catch (error) {
       console.error('Error:', error);
-      // Manejar caso de error si la solicitud falla
   }
 };
 
 useEffect(() => {
   handleAdhesion();
-}, []); // El segundo parámetro [] asegura que se ejecute solo una vez, después de que el componente se monte
+}, []);
 
 const closeModal = () => {
   setModalVisible(false);

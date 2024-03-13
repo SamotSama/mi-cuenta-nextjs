@@ -26,6 +26,13 @@ const Footer = () => {
     getEmpresa();
   }, []);
 
+  useEffect(() => {
+    if (empresaInfo && empresaInfo.urlRecomendar) {
+      localStorage.setItem("url", empresaInfo.urlRecomendar);
+    }
+  }, [empresaInfo]); 
+  
+
   return (
     <footer
       className="hidden w-full bg-[#00478a] p-4 lg:relative lg:bottom-0 lg:mt-20 lg:block"

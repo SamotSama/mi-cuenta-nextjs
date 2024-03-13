@@ -17,6 +17,11 @@ const Dashboard = () => {
   const [selectedDay, setSelectedDay] = useState(null);
   const [modalFormVisible, setModalFormVisible] = useState(false);
   const router = useRouter();
+  const [nombre, setNombre] = useState("");
+  const [email, setEmail] = useState("");
+  const [celular, setCelular] = useState("");
+  const [direccion, setDireccion] = useState("");
+  const [localidad, setLocalidad] = useState("");
 
   // FETCH PARA OBTENCION DE DAT0S DEL USUARIO
 
@@ -133,6 +138,56 @@ const Dashboard = () => {
     }
   };
 
+  // POSTEO DE RECOMENDACION DE CLIENTE
+
+  const handleSubmit = async () => {
+    const datos = {
+      nroCta: `${localStorage.getItem("nroCta")}`,
+      nombre,
+      email,
+      direccion,
+      localidad,
+      movil: celular,
+      urlRecomendar: `${localStorage.getItem("url")}`,
+    };
+
+    const cuerpoCorreo = `Si entras [aquí](${datos.urlRecomendar + datos.nroCta}), tendrás tus primeros 12 Litros de regalo. ¡Aprovéchalo!`;
+
+    datos.subject = 'Hacete cliente de IVESS. ¡Te lo recomiendo! 😍💧';
+    datos.content = cuerpoCorreo;
+    datos.to = email;
+    datos.masInfo = `Nombre:${nombre} Mail:${email} Cel:${celular} Direccion: ${direccion} Localidad: ${localidad}`;
+
+    try {
+      const response = await fetch(
+        `https://${process.env.SERVER_IP}/micuenta/email/sendEmail`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+          body: JSON.stringify(datos),
+        },
+      );
+
+      if (response.status === 200) {
+        toast.success('Correo enviado exitosamente');
+        setModalFormVisible(false);
+        setNombre('');
+        setEmail('');
+        setCelular('');
+        setDireccion('');
+        setLocalidad('');
+      } else {
+        toast.error('Error al enviar el correo');
+      }
+    } catch (error) {
+      console.error('Error al enviar el correo:', error);
+      toast.error('Error al enviar el correo');
+    }
+  };
+
   // LOGICA PARA REPETIR ULTIMO PEDIDO
 
   const handleRepetirUltimoPedido = () => {
@@ -169,7 +224,7 @@ const Dashboard = () => {
                 year: "numeric",
               })}
             </p>
-            <p className="mr-5 text-center lg:text-xl font-medium text-[#3184e4]">
+            <p className="mr-5 text-center font-medium text-[#3184e4] lg:text-xl">
               ${userInfo.saldo}
             </p>
             <button className="flex justify-center rounded-sm bg-[#3184e4] px-2 py-2 text-xs font-semibold text-white hover:bg-[#00478a] lg:mr-32">
@@ -301,7 +356,7 @@ const Dashboard = () => {
                 >
                   <Modal
                     title="Indicanos el día que deseas la visita"
-                    visible={modalVisible}
+                    open={modalVisible}
                     onCancel={handleModalCancel}
                     centered
                     footer={null}
@@ -337,7 +392,7 @@ const Dashboard = () => {
 
                   <Modal
                     title="Indicanos algunos datos de tu referido"
-                    visible={modalFormVisible}
+                    open={modalFormVisible}
                     onCancel={() => setModalFormVisible(false)}
                     centered
                     footer={null}
@@ -353,6 +408,7 @@ const Dashboard = () => {
                           className="w-[85vw] lg:w-[25vw]"
                           addonBefore="Nombre"
                           allowClear
+                          onChange={(e) => setNombre(e.target.value)}
                         />
                       </Space.Compact>
                       <Space.Compact>
@@ -360,6 +416,7 @@ const Dashboard = () => {
                           className="w-[85vw] lg:w-[25vw]"
                           addonBefore="Email"
                           allowClear
+                          onChange={(e) => setEmail(e.target.value)}
                         />
                       </Space.Compact>
                       <Space.Compact>
@@ -367,6 +424,7 @@ const Dashboard = () => {
                           className="w-[85vw] lg:w-[25vw]"
                           addonBefore="Celular"
                           allowClear
+                          onChange={(e) => setCelular(e.target.value)}
                         />
                       </Space.Compact>
                       <Space.Compact>
@@ -374,19 +432,21 @@ const Dashboard = () => {
                           className="w-[85vw] lg:w-[25vw]"
                           addonBefore="Dirección"
                           allowClear
+                          onChange={(e) => setDireccion(e.target.value)}
                         />
                       </Space.Compact>
                       <Space.Compact>
                         <Input
-                          // style={{ width: "25vw" }}
                           className="w-[85vw] lg:w-[25vw]"
                           addonBefore="Localidad"
                           allowClear
+                          onChange={(e) => setLocalidad(e.target.value)}
                         />
                       </Space.Compact>
                       <Button
                         type="primary"
                         className="mx-auto flex w-[85vw] justify-center bg-[#3184e4] font-semibold text-white lg:w-[25vw]"
+                        onClick={handleSubmit}
                       >
                         ENVIAR
                       </Button>
