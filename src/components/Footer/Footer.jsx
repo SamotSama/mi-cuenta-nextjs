@@ -30,8 +30,7 @@ const Footer = () => {
     if (empresaInfo && empresaInfo.urlRecomendar) {
       localStorage.setItem("url", empresaInfo.urlRecomendar);
     }
-  }, [empresaInfo]); 
-  
+  }, [empresaInfo]);
 
   return (
     <footer

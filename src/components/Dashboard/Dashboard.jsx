@@ -153,7 +153,7 @@ const Dashboard = () => {
 
     const cuerpoCorreo = `Si entras aca ${datos.urlRecomendar + datos.nroCta}, tendrás tus primeros 12 Litros de regalo. ¡Aprovéchalo!`;
 
-    datos.subject = 'Hacete cliente de IVESS. ¡Te lo recomiendo! 😍💧';
+    datos.subject = "Hacete cliente de IVESS. ¡Te lo recomiendo! 😍💧";
     datos.content = cuerpoCorreo;
     datos.to = email;
     datos.masInfo = `Nombre:${nombre} Mail:${email} Cel:${celular} Direccion: ${direccion} Localidad: ${localidad}`;
@@ -172,19 +172,19 @@ const Dashboard = () => {
       );
 
       if (response.status === 200) {
-        toast.success('Correo enviado exitosamente');
+        toast.success("Correo enviado exitosamente");
         setModalFormVisible(false);
-        setNombre('');
-        setEmail('');
-        setCelular('');
-        setDireccion('');
-        setLocalidad('');
+        setNombre("");
+        setEmail("");
+        setCelular("");
+        setDireccion("");
+        setLocalidad("");
       } else {
-        toast.error('Error al enviar el correo');
+        toast.error("Error al enviar el correo");
       }
     } catch (error) {
-      console.error('Error al enviar el correo:', error);
-      toast.error('Error al enviar el correo');
+      console.error("Error al enviar el correo:", error);
+      toast.error("Error al enviar el correo");
     }
   };
 

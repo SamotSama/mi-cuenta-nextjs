@@ -13,7 +13,7 @@ const Payment = () => {
   const [selectedOption, setSelectedOption] = useState("");
   const [showPaymentOptions, setShowPaymentOptions] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [formUrl, setFormUrl] = useState('');
+  const [formUrl, setFormUrl] = useState("");
   const onChange = (e) => {
     console.log(`checked = ${e.target.checked}`);
   };
@@ -91,57 +91,63 @@ const Payment = () => {
 
   const handleAdhesion = async () => {
     try {
-      const response = await fetch(`https://${process.env.SERVER_IP}/micuenta/ppt/suscripcion`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + localStorage.getItem("access_token")
-        },
-        body: JSON.stringify({
-          "codigoCliente": userInfo.idCliente,
-            "codigoTipoCliente": userInfo.tipoCliente,
-            "condicionPago": 1,
-            "idReparto": userInfo.ruta,
-            "type": "adhesion",
-            "currency_id": "ARS",
-            "detail": {
-                "external_reference": userInfo.idCliente,
-                "concept_id": "debitoautomatico",
-                "concept_description": "Debito Automatico",
-                "amount": 0
+      const response = await fetch(
+        `https://${process.env.SERVER_IP}/micuenta/ppt/suscripcion`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + localStorage.getItem("access_token"),
+          },
+          body: JSON.stringify({
+            codigoCliente: userInfo.idCliente,
+            codigoTipoCliente: userInfo.tipoCliente,
+            condicionPago: 1,
+            idReparto: userInfo.ruta,
+            type: "adhesion",
+            currency_id: "ARS",
+            detail: {
+              external_reference: userInfo.idCliente,
+              concept_id: "debitoautomatico",
+              concept_description: "Debito Automatico",
+              amount: 0,
             },
-            "payer": {
-                "name": userInfo.nombre,
-                "email": userInfo.mail,
-                "identification": {             
-                    "type": "DNI_ARG",
-                    "number": userInfo.idCliente,
-                    "country": "ARG"
-                }
-            }
-        })
-      });
+            payer: {
+              name: userInfo.nombre,
+              email: userInfo.mail,
+              identification: {
+                type: "DNI_ARG",
+                number: userInfo.idCliente,
+                country: "ARG",
+              },
+            },
+          }),
+        },
+      );
 
       const data = await response.json();
       if (data.form_url) {
-          setFormUrl(data.form_url);
-          setModalVisible(true);
+        setFormUrl(data.form_url);
+        setModalVisible(true);
       } else {
       }
-  } catch (error) {
-      console.error('Error:', error);
-  }
-};
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 
-useEffect(() => {
-  handleAdhesion();
-}, []);
+  useEffect(() => {
+    handleAdhesion();
+  }, []);
 
-const closeModal = () => {
-  setModalVisible(false);
-  setFormUrl('');
-};
+  const closeModal = () => {
+    setModalVisible(false);
+    setFormUrl("");
+  };
 
+  // POSTEO PARA REALIZAR PAGO
+
+  
 
   return (
     <div>
@@ -320,12 +326,14 @@ const closeModal = () => {
         </div>
       )}
       <Modal
-            open={modalVisible}
-            onCancel={closeModal}
-            footer={null}
-            width={2000}
-            height={2000}
-        ><iframe src={formUrl} className="h-[1000px] w-full" /></Modal>
+        open={modalVisible}
+        onCancel={closeModal}
+        footer={null}
+        width={2000}
+        height={2000}
+      >
+        <iframe src={formUrl} className="h-[1000px] w-full" />
+      </Modal>
     </div>
   );
 };

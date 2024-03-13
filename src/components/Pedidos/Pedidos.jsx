@@ -263,7 +263,7 @@ const MarketComponent = () => {
                   <img
                     src={producto.imagen.url}
                     alt="foto_producto"
-                    className=""
+                    className="w-9/12 lg:w-full"
                   />
                   <h3 className="py-5 text-sm font-semibold text-[#3184e4]">
                     {producto.nombre}
@@ -304,7 +304,6 @@ const MarketComponent = () => {
               </div>
             ))}
           </div>
-          {/* Botón para abrir el carrito */}
           {carritoCambiado && (
             <Button
               type="primary"
