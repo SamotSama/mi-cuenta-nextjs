@@ -14,6 +14,13 @@ const Payment = () => {
   const [showPaymentOptions, setShowPaymentOptions] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [formUrl, setFormUrl] = useState("");
+  const [monto, setMonto] = useState("");
+  const [formaPago, setFormaPago] = useState("");
+  const [cantPagar, setCantPagar] = useState("");
+  const [facturas, setSelectedFacturas] = useState([]);
+  const [montoParcial, setMontoParcial] = useState({});
+  const [gatewayPago, setGatewayPago] = useState("");
+  const [resultado, setResultado] = useState("");
   const onChange = (e) => {
     console.log(`checked = ${e.target.checked}`);
   };
@@ -24,11 +31,14 @@ const Payment = () => {
     setSelectedOption(e.target.value);
     if (e.target.value === "PAGO TIC") {
       setShowPaymentOptions(true);
-    } else {
+      setGatewayPago("1"); // Establecer gatewayPago en PAGO_TIC cuando se selecciona PAGO TIC
+    } else if (e.target.value === "MERCADO PAGO") {
       setShowPaymentOptions(false);
+      setGatewayPago("2"); // Establecer gatewayPago en MERCADO_PAGO cuando se selecciona Mercado Pago
+    } else {
+      setGatewayPago(""); // Establecer gatewayPago en un valor predeterminado si no se selecciona ninguna opción
     }
-  };
-
+  };  
   // LOGICA PARA ELEGIR LAS FACTURAS A PAGAR
 
   const [selectedInvoices, setSelectedInvoices] = useState([]);
@@ -147,7 +157,92 @@ const Payment = () => {
 
   // POSTEO PARA REALIZAR PAGO
 
-  
+  const handleChange = (e) => {
+    setMonto(e.target.value);
+  };
+
+  const handlePayment = async () => {
+    const datos = {
+      codigoCliente: userInfo.idCliente,
+      boton: formaPago,
+      idReparto: userInfo.ruta,
+      codigoTipoCliente: userInfo.tipoCliente,
+      codRecibo: localStorage.getItem("codigoRecibo"),
+      due_date: new Date().toISOString(),
+      last_due_date: new Date().toISOString(),
+      currency_id: "ARS",
+      idPaymentProvider: gatewayPago,
+      idOrigenPlatForm: 3,
+      payer: {
+        name: userInfo.nombre,
+        email: userInfo.mail,
+        identification: {
+          type: "DNI_ARG",
+          number: userInfo.idCliente,
+          country: "ARG",
+        },
+      },
+    };
+
+    if (cantPagar === "pagoparcial") {
+      datos.detailsResponseList = [];
+      montoParcial.forEach((value, key) => {
+        const documento =
+          userInfo.comprobanteDeudaDTOS[key].documento.split(" ");
+        datos.detailsResponseList.push({
+          amount: value,
+          concept_description: userInfo.comprobanteDeudaDTOS[key].documento,
+          concept_id: documento[0],
+          external_reference: documento[1],
+        });
+      });
+    } else if (facturas.length > 0) {
+      datos.detailsResponseList = [];
+      facturas.forEach((value) => {
+        const documento =
+          userInfo.comprobanteDeudaDTOS[value].documento.split(" ");
+        datos.detailsResponseList.push({
+          amount: userInfo.comprobanteDeudaDTOS[value].saldo,
+          concept_description: userInfo.comprobanteDeudaDTOS[value].documento,
+          concept_id: documento[0],
+          external_reference: documento[1],
+        });
+      });
+    } else {
+      datos.detailsResponseList = [
+        {
+          amount: monto,
+          concept_description: "FACTURA",
+          concept_id: "CANCELACION",
+          external_reference: userInfo.idCliente,
+        },
+      ];
+    }
+
+    const response = await fetch(
+      `https://${process.env.SERVER_IP}/micuenta/pago`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("access_token"),
+        },
+        body: JSON.stringify(datos),
+      },
+    );
+
+    if (response.status === 201) {
+      const data = await response.json();
+      if (data.body.form_url) {
+        setFormUrl(data.body.form_url);
+        setModalVisible(true);
+      } else {
+        throw new Error("Error al procesar el pago");
+      }
+    } else {
+      throw new Error("Error al procesar el pago");
+    }
+  };
 
   return (
     <div>
@@ -189,6 +284,8 @@ const Payment = () => {
                   type="number"
                   name="monto"
                   placeholder="Ingresá el monto"
+                  value={monto}
+                  onChange={handleChange}
                   required
                   className="my-2 flex justify-center rounded-md bg-gray-100 py-2 placeholder:px-2 focus:border-[#3184e4] focus:outline-none focus:ring-4 focus:ring-[#3184e4] lg:w-1/4"
                 />
@@ -293,8 +390,11 @@ const Payment = () => {
                 </div>
               </div>
             )}
-            <button className="my-2 flex w-full justify-center rounded-sm bg-[#3184e4] p-2 font-semibold text-white hover:bg-[#00478a]">
-              <Link href="/friocalor/solicitar">PAGAR</Link>
+            <button
+              className="my-2 flex w-full justify-center rounded-sm bg-[#3184e4] p-2 font-semibold text-white hover:bg-[#00478a]"
+              onClick={handlePayment}
+            >
+              PAGAR
             </button>
           </div>
           {userInfo.adheridoDebito === false ? (
