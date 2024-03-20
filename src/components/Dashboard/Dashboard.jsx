@@ -191,10 +191,13 @@ const Dashboard = () => {
   // LOGICA PARA REPETIR ULTIMO PEDIDO
 
   const handleRepetirUltimoPedido = () => {
-    const ultimaCompraString = JSON.stringify(userInfo.ultimaCompra);
+    const ultimaCompraString = JSON.stringify(userInfo.ultimasComprasDTOList.itemsDTOList);
     router.push(
       `/dashboard/pedido?ultimaCompra=${encodeURIComponent(ultimaCompraString)}`,
     );
+
+    console.log(userInfo.ultimasComprasDTOList.itemsDTOList);
+
   };
 
   return (

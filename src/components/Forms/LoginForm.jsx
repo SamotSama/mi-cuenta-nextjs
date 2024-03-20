@@ -69,9 +69,7 @@ const LoginForm = () => {
       const loginData = await makeLoginRequest(email, password);
 
       if (processLoginResponse(loginData)) {
-        // Check if there are multiple nroCta options
         if (loginData.nro_cuentas_hijas.length > 1) {
-          // Show a modal with a Select component for a user-friendly selection
           Modal.info({
             title: "Seleciona la cuenta",
             centered: true,
@@ -91,11 +89,8 @@ const LoginForm = () => {
                   centered
                   style={{ width: "100%" }}
                   onChange={(value) => {
-                    // Store the selected nroCta
                     localStorage.setItem("nroCta", value.toString());
-                    // Redirect to the dashboard
                     router.push("/dashboard");
-                    // Close the modal
                     Modal.destroyAll();
                     toast.success(`¡Bienvenido/a! Inicio de Sesión Exitoso`);
                   }}
@@ -110,12 +105,10 @@ const LoginForm = () => {
             ),
           });
         } else {
-          // If there's only one nroCta, store it directly
           localStorage.setItem(
             "nroCta",
             loginData.nro_cuentas_hijas[0].nroCta.toString(),
           );
-          // Redirect to the dashboard
           router.push("/dashboard");
           toast.success(`¡Bienvenido/a! Inicio de Sesión Exitoso`);
         }

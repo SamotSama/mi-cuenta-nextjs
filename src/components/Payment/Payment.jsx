@@ -392,7 +392,7 @@ const Payment = () => {
                     </td>
                   </tr>
                   <div id="montocontainer" className="mb-3">
-                    <hr className="my-0 m-2 border" />
+                    <hr className="m-2 my-0 border" />
                     <div className="mt-3 text-center">
                       <Radio.Group
                         onChange={(e) =>
@@ -552,7 +552,7 @@ const Payment = () => {
           {userInfo.adheridoDebito === false ? (
             <button
               onClick={handleAdhesion}
-              className=" my-2 flex w-11/12 justify-center rounded-sm bg-[#3184e4] py-2 font-semibold text-white hover:bg-[#00478a] lg:w-3/5"
+              className=" my-2 mb-56 flex w-11/12 justify-center rounded-sm bg-[#3184e4] py-2 font-semibold text-white  hover:bg-[#00478a] lg:w-3/5"
             >
               <Image
                 src="/credit-card.svg"
@@ -565,7 +565,7 @@ const Payment = () => {
             </button>
           ) : (
             <button
-              className=" my-2 flex w-11/12 justify-center rounded-sm bg-[#3184e4] py-2 font-semibold text-white hover:bg-[#00478a] lg:w-3/5"
+              className=" my-2 mb-56 flex w-11/12 justify-center rounded-sm bg-[#3184e4] py-2 font-semibold text-white hover:bg-[#00478a] lg:w-3/5"
               onClick={handleCancel}
             >
               <Image

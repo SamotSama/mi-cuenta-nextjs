@@ -27,8 +27,18 @@ const Footer = () => {
   }, []);
 
   useEffect(() => {
-    if (empresaInfo && empresaInfo.urlRecomendar) {
-      localStorage.setItem("url", empresaInfo.urlRecomendar);
+    if (empresaInfo) {
+      if (empresaInfo.urlRecomendar) {
+        localStorage.setItem("urlRecomendar", empresaInfo.urlRecomendar);
+      }
+
+      if (empresaInfo.codigoRecibo) {
+        localStorage.setItem("codigoRecibo", empresaInfo.codigoRecibo);
+      }
+
+      if (empresaInfo.gatewaysPago) {
+        localStorage.setItem("gatewaysPago", empresaInfo.gatewaysPago);
+      }
     }
   }, [empresaInfo]);
 

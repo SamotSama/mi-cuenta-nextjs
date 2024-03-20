@@ -5,6 +5,7 @@ import { DatePicker, Button, Modal, ConfigProvider, Drawer } from "antd";
 import locale from "antd/es/locale/es_ES";
 import dayjs from "dayjs";
 import { BounceLoader } from "react-spinners";
+import { useRouter } from "next/navigation";
 
 const ResumenPedido = ({ productos, cantidades }) => {
   // Función para calcular el total del pedido
@@ -50,6 +51,17 @@ const MarketComponent = () => {
   const [productsInfo, setProductsInfo] = useState([]);
   const [productos, setProductos] = useState([]);
   const [cantidades, setCantidades] = useState([]);
+  const [datosUltimaCompra, setDatosUltimaCompra] = useState(null);
+  const router = useRouter();
+
+
+  // useEffect(() => {
+  //   const ultimaCompraString = router.query.ultimaCompra;
+  //   if (ultimaCompraString) {
+  //     const ultimaCompra = JSON.parse(decodeURIComponent(ultimaCompraString));
+  //     setDatosUltimaCompra(ultimaCompra);
+  //   }
+  // }, [router.query.ultimaCompra]);
 
   // FETCH PARA OBTENER LOS PRODUCTOS DISPONIBLES POR REPARTO Y NROCTA
 
