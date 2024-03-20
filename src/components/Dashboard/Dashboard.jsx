@@ -227,9 +227,11 @@ const Dashboard = () => {
             <p className="mr-5 text-center font-medium text-[#3184e4] lg:text-xl">
               ${userInfo.saldo}
             </p>
-            <button className="flex justify-center rounded-sm bg-[#3184e4] px-2 py-2 text-xs font-semibold text-white hover:bg-[#00478a] lg:mr-32">
-              <Link href="/dashboard/pagar">PAGAR</Link>
-            </button>
+            {userInfo.saldo > 0 && (
+              <button className="flex justify-center rounded-sm bg-[#3184e4] px-2 py-2 text-xs font-semibold text-white hover:bg-[#00478a] lg:mr-32">
+                <Link href="/dashboard/pagar">PAGAR</Link>
+              </button>
+            )}
           </div>
           <div className="flex w-11/12 flex-col lg:w-3/5">
             <Image

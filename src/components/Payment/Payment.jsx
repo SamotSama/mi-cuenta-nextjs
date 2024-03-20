@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { BounceLoader } from "react-spinners";
-import { Checkbox, Modal } from "antd";
+import { Checkbox, Modal, Radio } from "antd";
 
 const Payment = () => {
   const [fecha] = useState(new Date());
@@ -31,33 +31,43 @@ const Payment = () => {
     setSelectedOption(e.target.value);
     if (e.target.value === "PAGO TIC") {
       setShowPaymentOptions(true);
-      setGatewayPago("1"); // Establecer gatewayPago en PAGO_TIC cuando se selecciona PAGO TIC
+      setGatewayPago("1");
     } else if (e.target.value === "MERCADO PAGO") {
       setShowPaymentOptions(false);
-      setGatewayPago("2"); // Establecer gatewayPago en MERCADO_PAGO cuando se selecciona Mercado Pago
+      setGatewayPago("2");
     } else {
-      setGatewayPago(""); // Establecer gatewayPago en un valor predeterminado si no se selecciona ninguna opción
+      setGatewayPago("");
     }
-  };  
+  };
   // LOGICA PARA ELEGIR LAS FACTURAS A PAGAR
 
   const [selectedInvoices, setSelectedInvoices] = useState([]);
   const [paymentType, setPaymentType] = useState({});
+  const [showPartialPayment, setShowPartialPayment] = useState(false);
+  const [partialAmounts, setPartialAmounts] = useState({});
+  const [totalAmount, setTotalAmount] = useState(0);
+
+  const handlePaymentTypeChange = (e) => {
+    const value = e.target.value;
+    setShowPartialPayment(value === "pagoparcial");
+  };
+
+  const handlePartialAmountChange = (e, facturaId) => {
+    const value = parseFloat(e.target.value);
+    setPartialAmounts({ ...partialAmounts, [facturaId]: value });
+  };
 
   const handleInvoiceSelection = (documento, saldo, checked) => {
     if (checked) {
       setSelectedInvoices([...selectedInvoices, { documento, saldo }]);
       setPaymentType({ ...paymentType, [documento]: "total" });
+    } else {
       setSelectedInvoices(
         selectedInvoices.filter((invoice) => invoice.documento !== documento),
       );
       const { [documento]: removed, ...rest } = paymentType;
       setPaymentType(rest);
     }
-  };
-
-  const handlePaymentTypeChange = (documento, value) => {
-    setPaymentType({ ...paymentType, [documento]: value });
   };
 
   const totalToPay = selectedInvoices.reduce((total, invoice) => {
@@ -148,11 +158,49 @@ const Payment = () => {
 
   useEffect(() => {
     handleAdhesion();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const closeModal = () => {
     setModalVisible(false);
     setFormUrl("");
+  };
+
+  // POSTEO PARA ANULACIÓN DE DÉBITO AUTOMÁTICO PPT
+
+  const handleCancel = async () => {
+    try {
+      const response = await fetch(
+        `https://${process.env.SERVER_IP}/micuenta/ppt/suscripcion`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + localStorage.getItem("access_token"),
+          },
+          body: JSON.stringify({
+            codigoCliente: userInfo.idCliente,
+          }),
+        },
+      );
+
+      const data = await response.json();
+
+      if (response.status === 200) {
+        if (data.success) {
+          toast.success(data.mensaje);
+        } else {
+          toast.error(data.mensaje);
+        }
+      } else if (response.status === 401) {
+        toast.error("Error de autenticación: " + data.error_description);
+      } else {
+        toast.error("Ocurrió un error al procesar la solicitud.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("Ocurrió un error al procesar la solicitud.");
+    }
   };
 
   // POSTEO PARA REALIZAR PAGO
@@ -272,131 +320,225 @@ const Payment = () => {
               ${userInfo.saldo}
             </p>
           </div>
-          {userInfo.tipoCliente === "1" ? (
+          {userInfo.saldo <= 0 ? (
             <div className="my-4 w-11/12 rounded-md border-2 bg-white p-2 lg:w-3/5">
               <h3 className="p-2 text-2xl font-medium text-[#3184e4]">
-                ¿Cuánto deseas pagar?
+                No tenés saldo pendiente.
               </h3>
-              <hr className="m-2 border" />
-              <div className="flex items-center justify-center p-2 text-2xl font-medium text-[#3184e4]">
-                <p className="mr-2">$</p>
-                <input
-                  type="number"
-                  name="monto"
-                  placeholder="Ingresá el monto"
-                  value={monto}
-                  onChange={handleChange}
-                  required
-                  className="my-2 flex justify-center rounded-md bg-gray-100 py-2 placeholder:px-2 focus:border-[#3184e4] focus:outline-none focus:ring-4 focus:ring-[#3184e4] lg:w-1/4"
-                />
-              </div>
             </div>
           ) : (
-            <div className="my-4 w-11/12 rounded-md border-2 bg-white p-2 lg:w-3/5">
-              <h3 className="p-2 text-2xl font-medium text-[#3184e4]">
-                ¿Qué deseas pagar?
-              </h3>
-              <hr className="m-2 border" />
-              {userInfo.comprobanteDeudaDTOS.map((comprobante, index) => (
-                <tr
-                  className="flex items-center justify-between text-xs"
-                  key={index}
-                >
-                  <td className="py-4 pl-2 font-medium lg:pr-60">
-                    <Checkbox
-                      onChange={(e) =>
-                        handleInvoiceSelection(
-                          comprobante.documento,
-                          comprobante.saldo,
-                          e.target.checked,
-                        )
-                      }
-                      className="mr-2"
+            <>
+              {userInfo.tipoCliente === "1" ? (
+                <div className="my-4 w-11/12 rounded-md border-2 bg-white p-2 lg:w-3/5">
+                  <h3 className="p-2 text-2xl font-medium text-[#3184e4]">
+                    ¿Cuánto deseas pagar?
+                  </h3>
+                  <hr className="m-2 border" />
+                  <div className="flex items-center justify-center p-2 text-2xl font-medium text-[#3184e4]">
+                    <p className="mr-2">$</p>
+                    <input
+                      type="number"
+                      name="monto"
+                      placeholder="Ingresá el monto"
+                      value={monto}
+                      onChange={handleChange}
+                      required
+                      className="my-2 flex justify-center rounded-md bg-gray-100 py-2 placeholder:px-2 focus:border-[#3184e4] focus:outline-none focus:ring-4 focus:ring-[#3184e4] lg:w-1/4"
                     />
-                    {comprobante.documento}
-                  </td>
-                  <td className="text-grey-500 py-4 font-medium lg:pr-60">
-                    {comprobante.fecha}
-                  </td>
-                  <td className="py-4 pl-2 font-bold text-[#3184e4] lg:mr-12">
-                    ${comprobante.saldo}
-                  </td>
-                </tr>
-              ))}
-              <hr className="m-2 border" />
-              <tr className="flex items-center justify-end">
-                <td className="text-grey-500 py-4 font-medium ">
-                  Total a pagar
-                </td>
-                <td className="py-4 pl-2 font-bold text-[#3184e4] lg:mr-12">
-                  ${totalToPay}
-                </td>
-              </tr>
-            </div>
-          )}
-          <div className="my-4 w-11/12 rounded-md border-2 bg-white p-2 lg:w-3/5">
-            <h3 className="p-2 text-2xl font-medium text-[#3184e4]">
-              Forma de pago
-            </h3>
-            <hr className="m-2 border" />
-            <div className="flex justify-center font-medium text-[#3184e4]">
-              <div className="p-2">
-                <input
-                  type="radio"
-                  id="pago-tic"
-                  name="payment"
-                  value="PAGO TIC"
-                  className="mr-2"
-                  onChange={handleOptionChange}
-                  checked={selectedOption === "PAGO TIC"}
-                />
-                <label htmlFor="pago-tic">PAGO TIC</label>
-              </div>
-              <div className="p-2">
-                <input
-                  type="radio"
-                  id="mercado-pago"
-                  name="paymentOption"
-                  value="MERCADO PAGO"
-                  className="mr-2"
-                  onChange={handleOptionChange}
-                  checked={selectedOption === "MERCADO PAGO"}
-                />
-                <label htmlFor="mercado-pago">MERCADO PAGO</label>
-              </div>
-            </div>
-          </div>
-          <div className="my-4 flex w-11/12 flex-col items-center rounded-md border-2 bg-white p-4 lg:w-3/5">
-            {showPaymentOptions && (
-              <div className="my-4 w-11/12 rounded-md border-2 bg-white p-2 ">
-                <h3 className="flex justify-center p-2 text-2xl font-medium text-[#3184e4]">
-                  Método de pago
+                  </div>
+                </div>
+              ) : (
+                <div className="my-4 w-11/12 rounded-md border-2 bg-white p-2 lg:w-3/5">
+                  <h3 className="p-2 text-2xl font-medium text-[#3184e4]">
+                    ¿Qué deseas pagar?
+                  </h3>
+                  <hr className="m-2 border" />
+                  {userInfo.comprobanteDeudaDTOS.map((comprobante, index) => (
+                    <tr
+                      className="flex items-center justify-between text-xs"
+                      key={index}
+                    >
+                      <td className="py-4 pl-2 font-medium lg:pr-60">
+                        <Checkbox
+                          onChange={(e) =>
+                            handleInvoiceSelection(
+                              comprobante.documento,
+                              comprobante.saldo,
+                              e.target.checked,
+                            )
+                          }
+                          className="mr-2"
+                        />
+                        {comprobante.documento}
+                      </td>
+                      <td className="text-grey-500 py-4 font-medium lg:pr-60">
+                        {comprobante.fecha}
+                      </td>
+                      <td className="py-4 pl-2 font-bold text-[#3184e4] lg:mr-12">
+                        ${comprobante.saldo}
+                      </td>
+                    </tr>
+                  ))}
+                  <hr className="m-2 border" />
+                  <tr className="flex items-center justify-end">
+                    <td className="text-grey-500 py-4 font-medium ">
+                      Total a pagar
+                    </td>
+                    <td className="py-4 pl-2 font-bold text-[#3184e4] lg:mr-12">
+                      ${totalToPay}
+                    </td>
+                  </tr>
+                  <div id="montocontainer" className="mb-3">
+                    <hr className="my-0" />
+                    <div className="mt-3 text-center">
+                      <Radio.Group
+                        onChange={(e) =>
+                          setShowPartialPayment(
+                            e.target.value === "pagoparcial",
+                          )
+                        }
+                        value={showPartialPayment ? "pagoparcial" : "pagototal"}
+                        className={selectedInvoices.length > 0 ? "" : "hidden"}
+                      >
+                        <Radio
+                          value="pagototal"
+                          className="mr-3 font-semibold text-[#3184e4]"
+                        >
+                          PAGO TOTAL
+                        </Radio>
+                        <Radio
+                          value="pagoparcial"
+                          className="font-semibold text-[#3184e4]"
+                        >
+                          PAGO PARCIAL
+                        </Radio>
+                      </Radio.Group>
+                    </div>
+                    {showPartialPayment && (
+                      <div className="row">
+                        <h3 className="p-2 text-center font-medium text-[#3184e4]">
+                          ¿Cuánto querés pagar de cada factura?
+                        </h3>
+                        <div className="col-lg-6 offset-lg-3">
+                          {selectedInvoices.map((invoice, index) => (
+                            <div
+                              key={index}
+                              className="flex justify-center px-3 pt-3"
+                            >
+                              <div className="mb-3 flex items-center bg-gray-300">
+                                <label
+                                  htmlFor={`montoparcial[${index}]`}
+                                  className="mr-3"
+                                >
+                                  {invoice.documento}
+                                </label>
+                                <input
+                                  type="number"
+                                  step="0.01"
+                                  className="form-input"
+                                  name={`montoparcial[${index}]`}
+                                  data-facturaid={index}
+                                  id={`montoparcial[${index}]`}
+                                  min="10"
+                                  max={invoice.saldo}
+                                  form="formulario"
+                                  placeholder="Ingresá el monto"
+                                  onChange={(e) =>
+                                    handlePartialAmountChange(e, index)
+                                  }
+                                />
+                              </div>
+                            </div>
+                          ))}
+                          <div className="px-3 py-3">
+                            <div className="flex items-center">
+                              <label className="mr-3">Total $</label>
+                              <input
+                                type="number"
+                                step="0.01"
+                                className="form-input"
+                                name="montoTotalParcial"
+                                id="montoTotalParcial"
+                                value={Object.values(partialAmounts).reduce(
+                                  (acc, curr) => acc + curr,
+                                  0,
+                                )}
+                                form="formulario"
+                                readOnly
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+              <div className="my-4 w-11/12 rounded-md border-2 bg-white p-2 lg:w-3/5">
+                <h3 className="p-2 text-2xl font-medium text-[#3184e4]">
+                  Forma de pago
                 </h3>
                 <hr className="m-2 border" />
                 <div className="flex justify-center font-medium text-[#3184e4]">
-                  {userInfo.formaPagos.map((option) => (
-                    <div className="p-2" key={option}>
-                      <input
-                        type="radio"
-                        id={option}
-                        name="paymentOption"
-                        value={option.toUpperCase()}
-                        className="mr-2"
-                        onChange={(e) => console.log(e.target.value)}
-                      />
-                      <label htmlFor={option}>{option.toUpperCase()}</label>
-                    </div>
-                  ))}
+                  <div className="p-2">
+                    <input
+                      type="radio"
+                      id="pago-tic"
+                      name="payment"
+                      value="PAGO TIC"
+                      className="mr-2"
+                      onChange={handleOptionChange}
+                      checked={selectedOption === "PAGO TIC"}
+                    />
+                    <label htmlFor="pago-tic">PAGO TIC</label>
+                  </div>
+                  <div className="p-2">
+                    <input
+                      type="radio"
+                      id="mercado-pago"
+                      name="paymentOption"
+                      value="MERCADO PAGO"
+                      className="mr-2"
+                      onChange={handleOptionChange}
+                      checked={selectedOption === "MERCADO PAGO"}
+                    />
+                    <label htmlFor="mercado-pago">MERCADO PAGO</label>
+                  </div>
                 </div>
               </div>
-            )}
-            <button
-              className="my-2 flex w-full justify-center rounded-sm bg-[#3184e4] p-2 font-semibold text-white hover:bg-[#00478a]"
-              onClick={handlePayment}
-            >
-              PAGAR
-            </button>
-          </div>
+              <div className="my-4 flex w-11/12 flex-col items-center rounded-md border-2 bg-white p-4 lg:w-3/5">
+                {showPaymentOptions && (
+                  <div className="my-4 w-11/12 rounded-md border-2 bg-white p-2 ">
+                    <h3 className="flex justify-center p-2 text-2xl font-medium text-[#3184e4]">
+                      Método de pago
+                    </h3>
+                    <hr className="m-2 border" />
+                    <div className="flex justify-center font-medium text-[#3184e4]">
+                      {userInfo.formaPagos.map((option) => (
+                        <div className="p-2" key={option}>
+                          <input
+                            type="radio"
+                            id={option}
+                            name="paymentOption"
+                            value={option.toUpperCase()}
+                            className="mr-2"
+                            onChange={(e) => console.log(e.target.value)}
+                          />
+                          <label htmlFor={option}>{option.toUpperCase()}</label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                <button
+                  className="my-2 flex w-full justify-center rounded-sm bg-[#3184e4] p-2 font-semibold text-white hover:bg-[#00478a]"
+                  onClick={handlePayment}
+                >
+                  PAGAR
+                </button>
+              </div>
+            </>
+          )}
           {userInfo.adheridoDebito === false ? (
             <button
               onClick={handleAdhesion}
@@ -412,7 +554,10 @@ const Payment = () => {
               <p>Adherirse al Débito Automático</p>
             </button>
           ) : (
-            <button className=" my-2 flex w-11/12 justify-center rounded-sm bg-[#3184e4] py-2 font-semibold text-white hover:bg-[#00478a] lg:w-3/5">
+            <button
+              className=" my-2 flex w-11/12 justify-center rounded-sm bg-[#3184e4] py-2 font-semibold text-white hover:bg-[#00478a] lg:w-3/5"
+              onClick={handleCancel}
+            >
               <Image
                 src="/credit-card.svg"
                 width={33}
