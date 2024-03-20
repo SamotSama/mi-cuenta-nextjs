@@ -21,6 +21,7 @@ const Payment = () => {
   const [montoParcial, setMontoParcial] = useState({});
   const [gatewayPago, setGatewayPago] = useState("");
   const [resultado, setResultado] = useState("");
+  const [selectedPaymentOption, setSelectedPaymentOption] = useState(null);
   const onChange = (e) => {
     console.log(`checked = ${e.target.checked}`);
   };
@@ -77,6 +78,8 @@ const Payment = () => {
       return total + parseFloat(paymentType[invoice.documento]);
     }
   }, 0);
+
+  const totalToPayFormatted = totalToPay.toFixed(2);
 
   // FETCH PARA OBTENCION DE DAT0S DEL USUARIO
 
@@ -385,11 +388,11 @@ const Payment = () => {
                       Total a pagar
                     </td>
                     <td className="py-4 pl-2 font-bold text-[#3184e4] lg:mr-12">
-                      ${totalToPay}
+                      ${totalToPayFormatted}
                     </td>
                   </tr>
                   <div id="montocontainer" className="mb-3">
-                    <hr className="my-0" />
+                    <hr className="my-0 m-2 border" />
                     <div className="mt-3 text-center">
                       <Radio.Group
                         onChange={(e) =>
@@ -425,17 +428,18 @@ const Payment = () => {
                               key={index}
                               className="flex justify-center px-3 pt-3"
                             >
-                              <div className="mb-3 flex items-center bg-gray-300">
+                              <div className="mb-3 flex w-full items-center  p-3 lg:w-2/6">
                                 <label
                                   htmlFor={`montoparcial[${index}]`}
-                                  className="mr-3"
+                                  className="text- mr-3 w-full rounded-md bg-gray-100 p-3 text-xs font-medium"
                                 >
-                                  {invoice.documento}
+                                  Factura {invoice.documento}
                                 </label>
+                                $
                                 <input
                                   type="number"
                                   step="0.01"
-                                  className="form-input"
+                                  className="form-input w-full rounded-md p-2 text-[#3184e4] focus:border-[#3184e4] focus:outline-none focus:ring-4 focus:ring-[#3184e4]"
                                   name={`montoparcial[${index}]`}
                                   data-facturaid={index}
                                   id={`montoparcial[${index}]`}
@@ -451,12 +455,13 @@ const Payment = () => {
                             </div>
                           ))}
                           <div className="px-3 py-3">
-                            <div className="flex items-center">
-                              <label className="mr-3">Total $</label>
+                            <div className="flex items-center justify-end">
+                              <label className="mr-3 font-medium ">Total</label>
+                              $
                               <input
                                 type="number"
                                 step="0.01"
-                                className="form-input"
+                                className="form-input py-4 pl-2 font-bold text-[#3184e4] lg:mr-12"
                                 name="montoTotalParcial"
                                 id="montoTotalParcial"
                                 value={Object.values(partialAmounts).reduce(
@@ -481,28 +486,28 @@ const Payment = () => {
                 <hr className="m-2 border" />
                 <div className="flex justify-center font-medium text-[#3184e4]">
                   <div className="p-2">
-                    <input
-                      type="radio"
+                    <Radio
                       id="pago-tic"
                       name="payment"
                       value="PAGO TIC"
-                      className="mr-2"
+                      className="mr-2 font-semibold text-[#3184e4]"
                       onChange={handleOptionChange}
                       checked={selectedOption === "PAGO TIC"}
-                    />
-                    <label htmlFor="pago-tic">PAGO TIC</label>
+                    >
+                      PAGO TIC
+                    </Radio>
                   </div>
                   <div className="p-2">
-                    <input
-                      type="radio"
+                    <Radio
                       id="mercado-pago"
                       name="paymentOption"
                       value="MERCADO PAGO"
-                      className="mr-2"
+                      className="mr-2 font-semibold text-[#3184e4]"
                       onChange={handleOptionChange}
                       checked={selectedOption === "MERCADO PAGO"}
-                    />
-                    <label htmlFor="mercado-pago">MERCADO PAGO</label>
+                    >
+                      MERCADO PAGO
+                    </Radio>
                   </div>
                 </div>
               </div>
@@ -516,15 +521,20 @@ const Payment = () => {
                     <div className="flex justify-center font-medium text-[#3184e4]">
                       {userInfo.formaPagos.map((option) => (
                         <div className="p-2" key={option}>
-                          <input
-                            type="radio"
+                          <Radio
+                            className="font-semibold text-[#3184e4]"
                             id={option}
                             name="paymentOption"
                             value={option.toUpperCase()}
-                            className="mr-2"
-                            onChange={(e) => console.log(e.target.value)}
-                          />
-                          <label htmlFor={option}>{option.toUpperCase()}</label>
+                            checked={
+                              selectedPaymentOption === option.toUpperCase()
+                            }
+                            onChange={(e) =>
+                              setSelectedPaymentOption(e.target.value)
+                            }
+                          >
+                            {option.toUpperCase()}
+                          </Radio>
                         </div>
                       ))}
                     </div>
