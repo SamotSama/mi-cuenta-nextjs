@@ -44,7 +44,7 @@ const Footer = () => {
 
   return (
     <footer
-      className="hidden w-full bg-[#00478a] p-4 lg:relative lg:bottom-0 lg:mt-20 lg:block"
+      className="hidden w-full bg-[#00478a] p-4 lg:relative lg:bottom-[-207px] lg:mt-20 lg:block"
       zindex={10}
     >
       <p className="font-regular flex justify-center text-xs text-[#2cace2]">

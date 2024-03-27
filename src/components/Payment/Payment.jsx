@@ -729,7 +729,7 @@ const Payment = () => {
           {userInfo.adheridoDebito === false ? (
             <button
               onClick={handleAdhesion}
-              className=" my-2 mb-56 flex w-11/12 justify-center rounded-sm bg-[#3184e4] py-2 font-semibold text-white  hover:bg-[#00478a] lg:w-3/5"
+              className=" my-2 mb-14 flex w-11/12 justify-center rounded-sm bg-[#3184e4] py-2 font-semibold text-white  hover:bg-[#00478a] lg:w-3/5"
             >
               <Image
                 src="/credit-card.svg"

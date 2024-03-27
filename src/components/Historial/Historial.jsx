@@ -138,7 +138,7 @@ const Historial = () => {
           className="mx-auto mt-80 flex items-center justify-center py-56"
         />
       ) : (
-        <div className="mt-2 flex flex-col items-center pb-28 lg:pb-1">
+        <div className="mt-2 flex flex-col items-center mb-12 lg:pb-1">
           <h2 className="mx-2 flex justify-start px-4 py-2 text-3xl font-medium text-[#3184e4]">
             Historial
           </h2>

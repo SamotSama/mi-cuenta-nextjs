@@ -13,7 +13,7 @@ const FrioCalor = () => {
   }, []);
 
   return (
-    <div className="mt-2 flex flex-col items-center">
+    <div className="mt-2 flex flex-col items-center -mb-60">
       <h2 className="mx-2 flex justify-start px-4 py-2 text-3xl font-medium text-[#3184e4]">
         Dispenser Frío - Calor
       </h2>

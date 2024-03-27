@@ -45,7 +45,7 @@ const ContactInfo = () => {
           className="mx-auto mt-80 flex items-center justify-center py-56"
         />
       ) : (
-        <div className="flex flex-col items-center pb-96">
+        <div className="flex flex-col items-center pb-36">
           <h2 className="mb-2 flex justify-start px-4 py-2 text-3xl font-medium text-[#3184e4]">
             Contacto
           </h2>
