@@ -1,13 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useState, useEffect } from "react";
 import { BounceLoader } from "react-spinners";
-import { Checkbox, Modal, Radio } from "antd";
+import { Checkbox, Modal, Radio, ConfigProvider } from "antd";
 
 const Payment = () => {
   const [fecha] = useState(new Date());
+  const [showModal, setShowModal] = useState(false);
   const [userInfo, setUserInfo] = useState({});
   const [loading, setLoading] = useState(true);
   const [selectedOption, setSelectedOption] = useState("");
@@ -21,9 +21,19 @@ const Payment = () => {
   const [montoParcial, setMontoParcial] = useState({});
   const [gatewayPago, setGatewayPago] = useState("");
   const [resultado, setResultado] = useState("");
+  const [showAutoDebitModal, setShowAutoDebitModal] = useState(false);
   const [selectedPaymentOption, setSelectedPaymentOption] = useState(null);
   const onChange = (e) => {
     console.log(`checked = ${e.target.checked}`);
+  };
+
+  const openAutoDebitModal = () => {
+    setShowAutoDebitModal(true);
+  };
+
+  // Función para cerrar el modal
+  const closeAutoDebitModal = () => {
+    setShowAutoDebitModal(false);
   };
 
   // LOGICA PARA TIPO DE PAGO EN PPT
@@ -212,8 +222,8 @@ const Payment = () => {
     setMonto(e.target.value);
   };
 
-  const handlePayment = async () => {
-    const datos = {
+  const constructPaymentDataForType1 = () => {
+    return {
       codigoCliente: userInfo.idCliente,
       boton: formaPago,
       idReparto: userInfo.ruta,
@@ -233,67 +243,205 @@ const Payment = () => {
           country: "ARG",
         },
       },
-    };
-
-    if (cantPagar === "pagoparcial") {
-      datos.detailsResponseList = [];
-      montoParcial.forEach((value, key) => {
-        const documento =
-          userInfo.comprobanteDeudaDTOS[key].documento.split(" ");
-        datos.detailsResponseList.push({
-          amount: value,
-          concept_description: userInfo.comprobanteDeudaDTOS[key].documento,
-          concept_id: documento[0],
-          external_reference: documento[1],
-        });
-      });
-    } else if (facturas.length > 0) {
-      datos.detailsResponseList = [];
-      facturas.forEach((value) => {
-        const documento =
-          userInfo.comprobanteDeudaDTOS[value].documento.split(" ");
-        datos.detailsResponseList.push({
-          amount: userInfo.comprobanteDeudaDTOS[value].saldo,
-          concept_description: userInfo.comprobanteDeudaDTOS[value].documento,
-          concept_id: documento[0],
-          external_reference: documento[1],
-        });
-      });
-    } else {
-      datos.detailsResponseList = [
+      detailsResponseList: [
         {
           amount: monto,
           concept_description: "FACTURA",
           concept_id: "CANCELACION",
-          external_reference: userInfo.idCliente,
+          external_reference: "CANCELACION"
         },
-      ];
+      ],
+    };
+  };
+
+  const constructPaymentDataForType2 = () => {
+    if (cantPagar === "pagototal") {
+      return {
+        codigoCliente: userInfo.idCliente,
+        boton: formaPago,
+        idReparto: userInfo.ruta,
+        codigoTipoCliente: userInfo.tipoCliente,
+        codRecibo: localStorage.getItem("codigoRecibo"),
+        due_date: new Date().toISOString(),
+        last_due_date: new Date().toISOString(),
+        currency_id: "ARS",
+        idPaymentProvider: gatewayPago,
+        idOrigenPlatForm: 3,
+        payer: {
+          name: userInfo.nombre,
+          email: userInfo.mail,
+          identification: {
+            type: "DNI_ARG",
+            number: userInfo.idCliente,
+            country: "ARG",
+          },
+        },
+        detailsResponseList: selectedInvoices.map((invoice) => ({
+          amount: invoice.saldo,
+          concept_description: "",
+          concept_id: "",
+          external_reference: userInfo.idCliente,
+        })),
+      };
+    } else if (cantPagar === "pagoparcial") {
+      return {
+        codigoCliente: userInfo.idCliente,
+        boton: formaPago,
+        idReparto: userInfo.ruta,
+        codigoTipoCliente: userInfo.tipoCliente,
+        codRecibo: localStorage.getItem("codigoRecibo"),
+        due_date: new Date().toISOString(),
+        last_due_date: new Date().toISOString(),
+        currency_id: "ARS",
+        idPaymentProvider: gatewayPago,
+        idOrigenPlatForm: 3,
+        payer: {
+          name: userInfo.nombre,
+          email: userInfo.mail,
+          identification: {
+            type: "DNI_ARG",
+            number: userInfo.idCliente,
+            country: "ARG",
+          },
+        },
+        detailsResponseList: facturas.map((index) => ({
+          amount: partialAmounts[index],
+          concept_description: userInfo.comprobanteDeudaDTOS[index].documento,
+          concept_id:
+            userInfo.comprobanteDeudaDTOS[index].documento.split(" ")[0],
+          external_reference:
+            userInfo.comprobanteDeudaDTOS[index].documento.split(" ")[1],
+        })),
+      };
+    }
+  };
+
+  const handlePayment = async () => {
+    if (userInfo.adheridoDebito == true) {
+      // Mostrar el modal de débito automático
+      openAutoDebitModal();
+      return; // Salir de la función para evitar que se continúe con el proceso de pago
+    }
+    let paymentData;
+    if (userInfo.tipoCliente === "1") {
+      paymentData = constructPaymentDataForType1();
+    } else {
+      paymentData = constructPaymentDataForType2();
     }
 
-    const response = await fetch(
-      `https://${process.env.SERVER_IP}/micuenta/pago`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + localStorage.getItem("access_token"),
+    try {
+      const response = await fetch(
+        `https://${process.env.SERVER_IP}/micuenta/pago`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + localStorage.getItem("access_token"),
+          },
+          body: JSON.stringify(paymentData),
         },
-        body: JSON.stringify(datos),
-      },
-    );
+      );
 
-    if (response.status === 201) {
-      const data = await response.json();
-      if (data.body.form_url) {
-        setFormUrl(data.body.form_url);
-        setModalVisible(true);
+      if (response.status === 201) {
+        const data = await response.json();
+        if (data.body.form_url) {
+          setFormUrl(data.body.form_url);
+          setModalVisible(true);
+        } else {
+          throw new Error("Error al procesar el pago");
+        }
       } else {
         throw new Error("Error al procesar el pago");
       }
-    } else {
-      throw new Error("Error al procesar el pago");
+    } catch (error) {
+      console.error("Error:", error);
     }
   };
+
+  console.log(gatewayPago)
+
+  // const handlePayment = async () => {
+  //   const datos = {
+  //     codigoCliente: userInfo.idCliente,
+  //     boton: formaPago,
+  //     idReparto: userInfo.ruta,
+  // codigoTipoCliente: userInfo.tipoCliente,
+  // codRecibo: localStorage.getItem("codigoRecibo"),
+  // due_date: new Date().toISOString(),
+  // last_due_date: new Date().toISOString(),
+  //     currency_id: "ARS",
+  //     idPaymentProvider: gatewayPago,
+  //     idOrigenPlatForm: 3,
+  //     payer: {
+  //       name: userInfo.nombre,
+  //       email: userInfo.mail,
+  //       identification: {
+  //         type: "DNI_ARG",
+  //         number: userInfo.idCliente,
+  //         country: "ARG",
+  //       },
+  //     },
+  //   };
+
+  //   if (cantPagar === "pagoparcial") {
+  //     datos.detailsResponseList = [];
+  //     montoParcial.forEach((value, key) => {
+  //       const documento =
+  //         userInfo.comprobanteDeudaDTOS[key].documento.split(" ");
+  //       datos.detailsResponseList.push({
+  //         amount: value,
+  //         concept_description: userInfo.comprobanteDeudaDTOS[key].documento,
+  //         concept_id: documento[0],
+  //         external_reference: documento[1],
+  //       });
+  //     });
+  //   } else if (facturas.length > 0) {
+  //     datos.detailsResponseList = [];
+  //     facturas.forEach((value) => {
+  //       const documento =
+  //         userInfo.comprobanteDeudaDTOS[value].documento.split(" ");
+  //       datos.detailsResponseList.push({
+  //         amount: userInfo.comprobanteDeudaDTOS[value].saldo,
+  //         concept_description: userInfo.comprobanteDeudaDTOS[value].documento,
+  //         concept_id: documento[0],
+  //         external_reference: documento[1],
+  //       });
+  //     });
+  //   } else {
+  //     datos.detailsResponseList = [
+  //       {
+  //         amount: monto,
+  //         concept_description: "FACTURA",
+  //         concept_id: "CANCELACION",
+  //         external_reference: userInfo.idCliente,
+  //       },
+  //     ];
+  //   }
+
+  //   const response = await fetch(
+  //     `https://${process.env.SERVER_IP}/micuenta/pago`,
+  //     {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: "Bearer " + localStorage.getItem("access_token"),
+  //       },
+  //       body: JSON.stringify(datos),
+  //     },
+  //   );
+
+  //   if (response.status === 201) {
+  //     const data = await response.json();
+  //     if (data.body.form_url) {
+  //       setFormUrl(data.body.form_url);
+  //       setModalVisible(true);
+  //     } else {
+  //       throw new Error("Error al procesar el pago");
+  //     }
+  //   } else {
+  //     throw new Error("Error al procesar el pago");
+  //   }
+  // };
 
   return (
     <div>
@@ -446,6 +594,7 @@ const Payment = () => {
                                   min="10"
                                   max={invoice.saldo}
                                   form="formulario"
+                                  required  
                                   placeholder="Ingresá el monto"
                                   onChange={(e) =>
                                     handlePartialAmountChange(e, index)
@@ -546,6 +695,34 @@ const Payment = () => {
                 >
                   PAGAR
                 </button>
+                <ConfigProvider
+                  theme={{
+                    components: {
+                      Modal: {
+                        titleFontSize: 20,
+                        titleColor: "#3184e4",
+                      },
+                    },
+                    token: {
+                      colorIcon: "#3184e4",
+                      colorIconHover: "#00478a",
+                    },
+                  }}
+                >
+                <Modal
+                  title="¡Estás adherido al débito automático!"
+                  open={showAutoDebitModal}
+                  onCancel={closeAutoDebitModal}
+                  centered={true}
+                  footer={null}
+                >
+                  <p>
+                    Como estás adherido al débito automático, el pago se
+                    realizará automáticamente. No es necesario que realices
+                    ninguna acción en este momento.
+                  </p>
+                </Modal>
+                </ConfigProvider>
               </div>
             </>
           )}

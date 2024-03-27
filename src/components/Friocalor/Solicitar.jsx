@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ToastContainer, toast, Flip } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -8,6 +8,16 @@ const FrioCalor = () => {
   const [dni, setDni] = useState("");
   const [archivo1, setArchivo1] = useState(null);
   const [archivo2, setArchivo2] = useState(null);
+  const [formComplete, setFormComplete] = useState(false); 
+
+  useEffect(() => {
+    // Comprueba si todos los campos requeridos están llenos
+    if (dni && archivo1 && archivo2) {
+      setFormComplete(true);
+    } else {
+      setFormComplete(false);
+    }
+  }, [dni, archivo1, archivo2]);
 
   // POSTEO PARA INSERTAR LLAMADA => SOLICITAR EQUIPO FRIO CALOR
 
@@ -83,6 +93,7 @@ const FrioCalor = () => {
               type="file"
               id="archivo1"
               name="archivo1"
+              required
               accept=".jpg, .jpeg, .png"
               className="my-2 py-2 file:mr-4 file:rounded-md file:border-0
               file:bg-[#3184e4] file:px-4
@@ -101,6 +112,7 @@ const FrioCalor = () => {
               type="file"
               id="archivo2"
               name="archivo2"
+              required
               accept=".jpg, .jpeg, .png"
               className="my-2 py-2 file:mr-4 file:rounded-md file:border-0
               file:bg-[#3184e4] file:px-4
@@ -114,7 +126,10 @@ const FrioCalor = () => {
       </div>
       <button
         type="submit"
-        className="my-2 w-11/12 rounded-sm bg-[#3184e4] py-2 font-semibold text-white hover:bg-[#00478a] lg:w-2/6"
+        disabled={!formComplete}
+        className={`my-2 w-11/12 rounded-sm py-2 font-semibold text-white lg:w-2/6 ${
+          formComplete ? 'bg-[#3184e4] hover:bg-[#00478a]' : 'bg-gray-400 cursor-not-allowed'
+        }`}
         onClick={handleFormSubmit}
       >
         ENVIAR
