@@ -710,13 +710,14 @@ const Payment = () => {
                   }}
                 >
                 <Modal
-                  title="¡Estás adherido al débito automático!"
+                  title="¡Ya estás adherido al débito automático!"
                   open={showAutoDebitModal}
                   onCancel={closeAutoDebitModal}
                   centered={true}
                   footer={null}
+                  className="text-center"
                 >
-                  <p>
+                  <p className="text-center">
                     Como estás adherido al débito automático, el pago se
                     realizará automáticamente. No es necesario que realices
                     ninguna acción en este momento.
@@ -742,7 +743,7 @@ const Payment = () => {
             </button>
           ) : (
             <button
-              className=" my-2 mb-56 flex w-11/12 justify-center rounded-sm bg-[#3184e4] py-2 font-semibold text-white hover:bg-[#00478a] lg:w-3/5"
+              className=" my-2 mb-12 flex w-11/12 justify-center rounded-sm bg-[#3184e4] py-2 font-semibold text-white hover:bg-[#00478a] lg:w-3/5"
               onClick={handleCancel}
             >
               <Image

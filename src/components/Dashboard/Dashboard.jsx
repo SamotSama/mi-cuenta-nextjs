@@ -210,7 +210,7 @@ const Dashboard = () => {
           className="mx-auto mt-80 flex items-center justify-center py-56"
         />
       ) : (
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center -mb-60">
           <div className="my-4 flex w-11/12 items-center justify-between rounded-md border-2 bg-white p-5 lg:w-3/5">
             <Image
               src="/saldo.svg"
